@@ -864,7 +864,7 @@ const STAGES=[
       ['借情緒，不抄歌','可以描述「溫暖、輕快、木吉他」，不能要求像某首歌；配樂只用有授權或自己生成的。'],
       ['音效點出重點','出爐「叮」一聲、紙袋沙沙聲讓畫面有臨場感，但不要每鏡都放。']
     ],
-    tools:[['VoAI','AI 旁白（免費 1,000 字）'],['Suno','AI 配樂（每天 50 次）'],['Google Vids','內建旁白與音樂、音量調整']],
+    tools:[['VoAI','AI 旁白（免費 1,000 字）'],['Suno','AI 配樂（免費每天 50 點）'],['Google Vids','內建旁白與音樂、音量調整']],
     deliverable:'旁白與配樂規格、音量層次與音效清單。'
   },
   guide:[
@@ -946,7 +946,7 @@ const STAGES=[
       {id:'flowDays',type:'number',label:'預計分幾天生成',req:true},
       {id:'vidsAI',type:'number',label:'Vids AI 影片／分身次數',req:true,help:'每月共用 6 次。'},
       {id:'canvaAI',type:'number',label:'Canva AI 次數',req:true,help:'每月 20 次。'},
-      {id:'sunoTries',type:'number',label:'Suno 生成次數',req:true,help:'每天 50 次。'}
+      {id:'sunoTries',type:'number',label:'Suno 生成次數',req:true,help:'免費每天 50 點；每次扣幾點，第一次生成後看介面記下。'}
     ]},
     {title:'紅線確認',fields:[
       {id:'redlines',type:'checks',label:'你會遵守的紅線',req:true,min:3,options:REDLINES}
@@ -1359,9 +1359,9 @@ RULES[6]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d3=S.d(3),d4
     if(f.daysNeed>f.days){A.push(R('R6-01','h',`Flow ${clips} 段 × 每段 ${tries} 次，每次扣 ${2*f.cost} 點，共 ${f.points} 點；每天只能生成 ${f.perDay} 次，需要 ${f.daysNeed} 天，你只排了 ${f.days} 天。`));score-=20;}
     else if(f.daysNeed===f.days){A.push(R('R6-01','m',`Flow 需要 ${f.daysNeed} 天，剛好等於排定天數，沒有重試空間。`));score-=5;}
     else A.push(R('R6-01','l',`Flow 需要 ${f.daysNeed} 天，排了 ${f.days} 天，有餘裕。`));}
-  const overQ=[vids>6&&`Vids AI ${vids}／6 次`,canva>20&&`Canva AI ${canva}／20 次`,suno>50&&`Suno ${suno} 次（每天 50 次）`].filter(Boolean);
+  const overQ=[vids>6&&`Vids AI ${vids}／6 次`,canva>20&&`Canva AI ${canva}／20 次`].filter(Boolean);
   if(overQ.length){A.push(R('R6-02','m',`${overQ.join('、')}超過免費額度。`));score-=8;}
-  else A.push(R('R6-02','l',`Vids ${vids}／6、Canva ${canva}／20、Suno ${suno}／50，都在免費額度內。`));
+  else A.push(R('R6-02','l',`Vids ${vids}／6、Canva ${canva}／20，都在免費額度內。`));
   if(noBk.length>=2){A.push(R('R6-03','h',`${noBk.map(r=>r.tool).join('、')} 沒有備案；任何一個當機或額度用完，進度就停住。`));score-=12;}
   else if(noBk.length){A.push(R('R6-03','m',`${noBk[0].tool} 沒有備案。`));score-=6;}
   else A.push(R('R6-03','l','每個工具都有備案。'));
@@ -1375,12 +1375,13 @@ RULES[6]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d3=S.d(3),d4
   const ai=srcs.some(s=>['ChatGPT 圖片','Flow 動畫','數位分身'].includes(s))||clips>0;
   if(ai&&!rl.includes(REDLINES[3])){A.push(R('R6-09','m','影片有 AI 生成畫面，紅線卻沒勾「AI 生成內容會標示」。'));score-=4;}
   H.push(R('R6-10','m',clips>0?`Flow 每段試 ${tries} 次就能得到可用的片段。`:'免費額度的規則在你製作期間不會改變。',clips>0?'第一天先生成 1 段，記錄試了幾次才滿意，再回來調整次數與天數。':'開工前到各工具的方案頁面確認目前的免費額度。'));
+  if(suno>0)H.push(R('R6-11','m',`Suno 每天 50 點夠你生成 ${suno} 次配樂。`,'第一次生成後看介面扣了幾點，用 50 ÷ 每次點數算出每天能生成幾次；不夠就分天生成，排進第 9 階段。'));
   if(clips>0&&f.cost&&f.daysNeed>f.days){const lite=flowCalc(clips,'Lite',tries,f.days);
     N.push(R('R6-N1','h',`Flow 以目前設定需要 ${f.daysNeed} 天：${f.cost>10?`改用 Lite 只要 ${lite.daysNeed} 天，`:''}或把每段次數降到 ${Math.max(1,Math.floor(f.days*f.perDay/Math.max(1,clips)))} 次，並把生成日排進第 9 階段。`));}
   if(noBk.length)N.push(R('R6-N2','m',`替 ${noBk.map(r=>r.tool).join('、')} 各寫一個備案（例：Flow 失敗改用靜態圖加推近、VoAI 用完改用 Vids 旁白）。`));
   if(!N.length)N.push(R('R6-N1','m','把各工具的帳號先登入一次，確認額度顯示正常。'));
   M.push({label:'Flow 點數',value:f.points+' 點',cls:f.daysNeed>f.days?'r':'b'},{label:'需要天數',value:`${f.daysNeed}／${f.days} 天`,cls:f.daysNeed>f.days?'r':clips&&f.daysNeed===f.days?'y':'g'},{label:'沒有備案',value:noBk.length+' 個',cls:noBk.length>=2?'r':noBk.length?'y':'g'},{label:'紅線',value:rl.length+' 條',cls:'b'});
-  const q=[{label:'Flow 點數',value:pct(f.points,50*f.days)},{label:'Vids AI',value:pct(vids,6)},{label:'Canva AI',value:pct(canva,20)},{label:'Suno（單日）',value:pct(suno,50)}];
+  const q=[{label:'Flow 點數',value:pct(f.points,50*f.days)},{label:'Vids AI',value:pct(vids,6)},{label:'Canva AI',value:pct(canva,20)}];
   if(d3&&d5.voiceTool==='VoAI')q.push({label:'VoAI 字數',value:pct(charsOf(d3.script)*num(d5.voiceTakes),1000)});
   const rows=q.map(x=>({...x,cls:x.value>100?'r':x.value===100?'y':'g',text:x.value+'%'}));
   const visual=`<h4>額度使用率（紅線＝100%）</h4>${skBars(rows,{max:Math.max(120,...rows.map(r=>r.value)),cap:100,capLabel:'超過紅線＝免費額度不夠'})}<p class="tiny muted mt8">Flow 以「排定天數 × 每天 50 點」計算；到「額度試算器」分頁可以試不同情境。</p>`;
@@ -1500,7 +1501,7 @@ function quotaHTML(){const c=quotaCfg();
       <tr><td>Google Flow</td><td>${c.clips} 段 × ${c.tries} 次</td><td>每天 50 點</td></tr>
       <tr><td>Google Vids</td><td>${c.vids} 次</td><td>每月 6 次</td></tr>
       <tr><td>Canva AI</td><td>${c.canva} 次</td><td>每月 20 次</td></tr>
-      <tr><td>Suno</td><td>${c.suno} 次</td><td>每天 50 次</td></tr></table></div>
+      <tr><td>Suno</td><td>${c.suno} 次</td><td>每天 50 點（每次扣點以介面為準）</td></tr></table></div>
       <button class="btn sm mt8" onclick="renderStage(6,'input')">到「填寫資料」調整設定</button></div>
     <div class="form-section" id="simOut"></div></div></div>`;}
 function quotaPreset(k){const p=QUOTA_PRESETS[k];['clips','model','tries','days'].forEach(id=>document.getElementById('sim_'+id).value=p[id]);quotaRun();}
