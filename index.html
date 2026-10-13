@@ -1,0 +1,2092 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>影片企劃導演工作台｜期末專題影片企劃與預計流程</title>
+<meta name="description" content="九階段引導填寫：把期末專題從一個想法排成做得完的影片企劃，逐步檢查秒數、字數、工具額度與時程，最後下載《影片企劃與預計流程報告》PDF。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet">
+<!-- rough.js 同步載入：診斷視覺化在第一次渲染就要用；其餘函式庫 defer，未載入時各功能自動降級 -->
+<script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/rough-notation@0.5.1/lib/rough-notation.iife.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+/* ======================================================
+   設計系統：導演筆記本（紙張、墨線、底片條、場記板）
+   ====================================================== */
+:root{
+  --paper:#f3ead8; --paper-2:#fbf7ee; --paper-3:#ece0c8; --card:#fffcf5;
+  --ink:#2b2622; --ink-2:#4a4038; --muted:#76695c; --muted-2:#a09280;
+  --line:#d8cab0; --line-2:#bfae8f;
+  --red:#c8553d; --red-soft:#f7e3dc; --yellow:#d9a23a; --yellow-soft:#f9edd3;
+  --green:#4f7d5c; --green-soft:#e3ede2; --blue:#2f5d73; --blue-soft:#e0eaee;
+  --navy:var(--ink); --teal:var(--blue); --primary:var(--red);
+  --hand:"LXGW WenKai TC","DFKai-SB","BiauKai","Kaiti TC",serif;
+  --type:"Special Elite","Courier New",monospace;
+  --font:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Segoe UI",sans-serif;
+  --sh:3px 3px 0 var(--ink); --sh-s:2px 2px 0 var(--ink);
+  --r-hand:255px 15px 225px 15px/15px 225px 15px 255px;
+  --r-card:16px 5px 14px 6px/6px 14px 5px 16px;
+  --topbar-h:62px; --sidebar-w:278px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.7;
+  background:var(--paper) radial-gradient(rgba(43,38,34,.07) 1px,transparent 1.3px) 0 0/20px 20px}
+a{color:var(--blue)}
+h1,h2,h3,h4{margin:0 0 .5em;line-height:1.3;color:var(--ink);font-family:var(--hand);font-weight:700}
+h1{font-size:28px} h2{font-size:21px} h3{font-size:17px} h4{font-size:15px;color:var(--ink-2)}
+p{margin:0 0 .8em}
+small{font-size:12.5px}
+code,.mono{font-family:var(--type);font-size:.9em;background:var(--paper-3);padding:1px 5px;border-radius:3px}
+button{font-family:inherit}
+input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink)}
+::placeholder{color:var(--muted-2)}
+::selection{background:var(--yellow-soft)}
+
+/* ---------- 頂部列：墨色底＋場記板斜紋 ---------- */
+.topbar{position:sticky;top:0;z-index:50;height:var(--topbar-h);background:var(--ink);color:var(--paper-2);display:flex;align-items:center;gap:14px;padding:0 18px}
+.topbar::after{content:"";position:absolute;left:0;right:0;bottom:-7px;height:7px;background:repeating-linear-gradient(-45deg,var(--ink) 0 9px,var(--paper-2) 9px 18px);border-bottom:1.5px solid var(--ink)}
+.topbar .brand{display:flex;align-items:center;gap:11px;font-family:var(--hand);font-weight:700;font-size:18px;letter-spacing:.5px;white-space:nowrap}
+.topbar .brand .logo{width:38px;height:38px;border-radius:7px 3px 8px 4px;background:var(--paper-2);color:var(--ink);display:grid;place-items:center;font-size:21px;font-weight:700;transform:rotate(-4deg);box-shadow:2px 2px 0 var(--red)}
+.topbar .brand .sub{font-family:var(--font);font-weight:400;font-size:11.5px;opacity:.7;display:block;line-height:1.2;letter-spacing:0}
+.topbar .spacer{flex:1}
+.topbar .progress{display:flex;align-items:center;gap:10px;font-family:var(--type);font-size:12.5px;min-width:190px}
+.topbar .progress .bar{flex:1;height:10px;border:1.5px solid var(--paper-2);border-radius:2px;overflow:hidden;background:repeating-linear-gradient(90deg,transparent 0 9px,rgba(251,247,238,.25) 9px 10px)}
+.topbar .progress .bar i{display:block;height:100%;background:var(--yellow);width:0;transition:width .5s}
+.topbar .btn{background:transparent;color:var(--paper-2);border:1.5px solid rgba(251,247,238,.55);box-shadow:none}
+.topbar .btn:hover{background:rgba(251,247,238,.12);color:#fff;transform:none;box-shadow:none}
+.topbar .menu-btn{display:none}
+
+/* ---------- 版面：側欄是一捲底片 ---------- */
+.app{display:flex;min-height:calc(100vh - var(--topbar-h))}
+.sidebar{width:var(--sidebar-w);flex:0 0 auto;padding:22px 26px;position:sticky;top:var(--topbar-h);height:calc(100vh - var(--topbar-h));overflow:auto;color:var(--paper-2);
+  background-color:#221d19;
+  background-image:linear-gradient(180deg,rgba(243,234,216,.8) 0 9px,transparent 9px 20px),linear-gradient(180deg,rgba(243,234,216,.8) 0 9px,transparent 9px 20px);
+  background-size:8px 20px,8px 20px;background-repeat:repeat-y;background-position:left 8px top 14px,right 8px top 14px;background-attachment:local}
+.sidebar .sb-title{font-family:var(--type);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#bfae8f;margin:6px 4px 10px}
+.sidebar .muted{color:#bfae8f}
+.main{flex:1;min-width:0;padding:32px 34px 40px}
+.container{max-width:1180px;margin:0 auto}
+.step{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;margin-bottom:6px;border-radius:3px;cursor:pointer;border:1.5px solid #4a4038;background:#2d2722;transition:.15s;position:relative}
+.step:hover{background:#3a322b}
+.step.active{background:var(--paper-2);border-color:var(--paper-2)}
+.step.active .lbl{color:var(--ink)} .step.active .en{color:var(--muted)}
+.step.locked{opacity:.45;cursor:not-allowed}
+.step .num{width:28px;height:28px;border-radius:3px;display:grid;place-items:center;font-family:var(--type);font-size:13px;flex:0 0 auto;background:#4a4038;color:var(--paper-2)}
+.step.done .num{background:var(--green);color:#fff}
+.step.current .num{background:var(--yellow);color:var(--ink)}
+.step .lbl{font-family:var(--hand);font-size:15px;font-weight:700;color:var(--paper-2);line-height:1.3}
+.step .en{font-family:var(--type);font-size:10.5px;color:#a09280;display:block;margin-top:2px}
+.step .st{font-size:10.5px;margin-top:4px;display:inline-block;padding:0 7px;border-radius:2px;background:#4a4038;color:#e6dac4}
+.step.done .st{background:var(--green);color:#fff}
+.step.current .st{background:var(--yellow);color:var(--ink)}
+.step.active .st{outline:1px solid var(--ink-2)}
+.sb-home{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:3px;cursor:pointer;font-family:var(--hand);font-weight:700;font-size:15px;color:var(--paper-2);border:1.5px dashed #6a5d50}
+.sb-home:hover{background:#3a322b}
+.sb-home.active{background:var(--paper-2);color:var(--ink);border-style:solid}
+.sb-sep{height:0;border-top:1.5px dashed #4a4038;margin:12px 2px}
+.sidebar .btn{background:#2d2722;color:var(--paper-2);border-color:#6a5d50;box-shadow:none}
+.sidebar .btn:hover{background:#3a322b;transform:none;box-shadow:none}
+.sidebar .btn.danger{color:#f0a493}
+
+/* ---------- 卡片與元件 ---------- */
+.card{background:var(--card);border:2px solid var(--ink);border-radius:var(--r-card);box-shadow:4px 4px 0 var(--ink);padding:22px 24px;margin-bottom:22px}
+.card.tight{padding:14px 18px}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.card-h h2{margin:0}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 17px;border-radius:var(--r-hand);border:2px solid var(--ink);background:var(--card);color:var(--ink);font-weight:700;font-size:14px;cursor:pointer;transition:transform .12s,box-shadow .12s;line-height:1.2;white-space:nowrap;box-shadow:var(--sh-s)}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+.btn:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--ink)}
+.btn.primary{background:var(--red);color:#fff}
+.btn.teal{background:var(--blue);color:#fff}
+.btn.danger{color:var(--red);border-color:var(--red);box-shadow:2px 2px 0 var(--red)}
+.btn.ghost{background:transparent;border-style:dashed;box-shadow:none}
+.btn.ghost:hover{box-shadow:none;background:rgba(43,38,34,.05)}
+.btn.sm{padding:5px 11px;font-size:12.5px;box-shadow:1.5px 1.5px 0 var(--ink)}
+.btn.lg{padding:12px 24px;font-size:16px;font-family:var(--hand)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:1px 9px;border-radius:3px;font-size:11.5px;font-weight:700;letter-spacing:.3px;line-height:1.7;white-space:nowrap;border:1.5px solid currentColor}
+.badge.ex{background:var(--paper-3);color:var(--muted)}
+.badge.in{background:var(--blue-soft);color:var(--blue)}
+.badge.dx{background:var(--green-soft);color:var(--green)}
+.badge.hy{background:var(--yellow-soft);color:#93680f}
+.badge.g{background:var(--green-soft);color:var(--green)} .badge.y{background:var(--yellow-soft);color:#93680f} .badge.r{background:var(--red-soft);color:var(--red)}
+.badge.navy{background:var(--ink);color:var(--paper-2);border-color:var(--ink)}
+.pill{display:inline-block;padding:2px 11px;border-radius:var(--r-hand);background:var(--paper-2);border:1.5px solid var(--ink-2);font-size:12.5px;color:var(--ink-2)}
+.kpi{background:var(--paper-2);border:2px dashed var(--ink-2);border-radius:6px;padding:13px 15px;position:relative}
+.kpi .v{font-family:var(--hand);font-size:28px;font-weight:700;color:var(--ink);line-height:1.15}
+.kpi .l{font-size:12px;color:var(--muted);margin-top:4px}
+.kpi.g{border-left:7px solid var(--green)} .kpi.y{border-left:7px solid var(--yellow)} .kpi.r{border-left:7px solid var(--red)} .kpi.b{border-left:7px solid var(--blue)}
+.light{display:inline-block;width:15px;height:15px;border-radius:50%;vertical-align:middle;border:2px solid var(--ink)}
+.light.g{background:var(--green)} .light.y{background:var(--yellow)} .light.r{background:var(--red)} .light.n{background:var(--paper-3)}
+.note{background:var(--blue-soft);border:1.5px solid var(--ink-2);border-left:6px solid var(--blue);padding:10px 14px;border-radius:2px 8px 8px 2px;font-size:13.5px;margin:10px 0;box-shadow:2px 3px 0 rgba(43,38,34,.12)}
+.note.warn{border-left-color:var(--yellow);background:var(--yellow-soft)}
+.note.ok{border-left-color:var(--green);background:var(--green-soft)}
+.note.err{border-left-color:var(--red);background:var(--red-soft)}
+.note.gray{border-left-color:var(--muted-2);background:var(--paper-2)}
+.muted{color:var(--muted)} .small{font-size:12.5px} .tiny{font-size:11.5px}
+.right{text-align:right} .center{text-align:center}
+.mt0{margin-top:0}.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt24{margin-top:24px}.mb0{margin-bottom:0}.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}
+.flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.sb{justify-content:space-between}
+hr.sep{border:0;border-top:1.5px dashed var(--line-2);margin:16px 0}
+ul.clean{padding-left:18px;margin:4px 0}
+ul.clean li{margin:3px 0}
+ol.steps{padding-left:0;list-style:none;counter-reset:s;margin:0}
+ol.steps li{position:relative;padding:9px 0 9px 44px;border-bottom:1.5px dashed var(--line);counter-increment:s}
+ol.steps li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:9px;width:32px;height:26px;border:2px solid var(--ink);border-radius:3px;background:var(--yellow-soft);color:var(--ink);font-family:var(--type);font-size:12px;display:grid;place-items:center}
+ol.steps li:last-child{border-bottom:0}
+
+/* 表格 */
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th,.tbl td{border:1px solid var(--line-2);padding:8px 10px;text-align:left;vertical-align:top}
+.tbl th{background:var(--paper-3);font-family:var(--hand);font-weight:700;color:var(--ink);font-size:13.5px;white-space:nowrap}
+.tbl tr:nth-child(even) td{background:rgba(236,224,200,.3)}
+.tbl.compact th,.tbl.compact td{padding:5px 8px;font-size:12.5px}
+.tbl-wrap{overflow:auto;border-radius:4px;border:2px solid var(--ink)}
+.tbl-wrap .tbl{border:0}
+.tbl-wrap .tbl th:first-child,.tbl-wrap .tbl td:first-child{border-left:0}
+.tbl-wrap .tbl th:last-child,.tbl-wrap .tbl td:last-child{border-right:0}
+.tbl-wrap .tbl tr:first-child th{border-top:0}
+.tbl-wrap .tbl tr:last-child td{border-bottom:0}
+
+/* 表單：橫線紙上填寫 */
+.field{margin-bottom:18px}
+.field label.lbl{display:flex;align-items:center;gap:6px;font-family:var(--hand);font-weight:700;font-size:15.5px;color:var(--ink);margin-bottom:5px;flex-wrap:wrap}
+.field .req{color:var(--red);font-weight:800}
+.field .help{font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.field .ex{font-size:12px;color:var(--muted-2);padding:4px 2px 0;line-height:1.55}
+.field .ex b{color:var(--muted);font-weight:700;font-family:var(--type);font-size:11px;letter-spacing:.5px;margin-right:2px}
+.field input[type=text],.field input[type=number],.field select,.field textarea{width:100%;padding:9px 11px;border:2px solid var(--ink-2);border-radius:7px 3px 6px 4px;background:#fffefa;outline:none;transition:.15s}
+.field textarea{min-height:92px;resize:vertical;line-height:28px;padding-top:6px;background:#fffefa linear-gradient(transparent 27px,var(--line) 27px) 0 6px/100% 28px local}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--ink);box-shadow:3px 3px 0 var(--yellow)}
+.field.invalid input,.field.invalid select,.field.invalid textarea,.field.invalid .tbl-wrap{border-color:var(--red);box-shadow:3px 3px 0 var(--red-soft)}
+.field .err-msg{display:none;color:var(--red);font-size:12.5px;margin-top:4px;font-weight:700}
+.field.invalid .err-msg{display:block}
+.chk-group{display:flex;flex-wrap:wrap;gap:8px}
+.chk{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border:1.5px solid var(--ink-2);border-radius:var(--r-hand);background:#fffefa;cursor:pointer;font-size:13px;user-select:none}
+.chk input{margin:0;accent-color:var(--red)}
+.chk.on{background:var(--yellow-soft);border:2px solid var(--ink);font-weight:700;box-shadow:var(--sh-s)}
+.likert{display:flex;gap:4px;flex-wrap:wrap}
+.likert label{flex:1;min-width:46px;text-align:center;border:1.5px solid var(--ink-2);border-radius:4px;padding:6px 4px;cursor:pointer;font-size:12.5px;background:#fffefa}
+.likert label.on{background:var(--ink);color:var(--paper-2);border-color:var(--ink)}
+.likert input{display:none}
+.tbl-edit input,.tbl-edit select,.tbl-edit textarea{width:100%;min-width:90px;padding:6px 8px;border:1.5px solid var(--line-2);border-radius:4px;background:#fffefa;font-size:13px}
+.tbl-edit textarea{min-height:40px;resize:vertical}
+.tbl-edit td{padding:5px 6px;vertical-align:middle}
+.tbl-edit td.calc{font-weight:700;text-align:center;background:var(--paper-3);white-space:nowrap;font-family:var(--type)}
+.tbl-edit .rm{border:0;background:transparent;color:var(--muted-2);cursor:pointer;font-size:16px;padding:2px 6px;border-radius:4px}
+.tbl-edit .rm:hover{color:var(--red);background:var(--red-soft)}
+.form-section{border:1.5px solid var(--ink-2);border-radius:6px 3px 7px 4px;padding:16px 18px;margin-bottom:18px;background:var(--paper-2)}
+.form-section>h3{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:8px;border-bottom:1.5px dashed var(--line-2);flex-wrap:wrap}
+.form-section>h3 .n{width:28px;height:28px;border-radius:3px;background:var(--ink);color:var(--paper-2);font-family:var(--type);font-size:13px;display:grid;place-items:center}
+
+/* 分頁：筆記本索引標籤 */
+.tabs{display:flex;gap:4px;border-bottom:2px solid var(--ink);margin-bottom:22px;overflow-x:auto;padding:4px 4px 0}
+.tab{padding:8px 15px;font-family:var(--hand);font-weight:700;font-size:15px;color:var(--muted);cursor:pointer;border:2px solid var(--ink-2);border-bottom:0;border-radius:9px 9px 0 0;background:var(--paper-3);white-space:nowrap;display:flex;align-items:center;gap:6px;position:relative;top:2px}
+.tab:hover{color:var(--ink);background:var(--paper-2)}
+.tab.active{color:var(--red);background:var(--card);border-color:var(--ink);border-bottom:2px solid var(--card);z-index:1}
+.tab .dot{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--muted-2)}
+.tab.has .dot{background:var(--green);border-color:var(--green)}
+.tabpanel{display:none}.tabpanel.active{display:block}
+
+/* 階段標頭：場記板 */
+.stage-hero{display:flex;gap:22px;align-items:flex-start;background:var(--card);border:2px solid var(--ink);border-radius:var(--r-card);padding:24px 24px 20px;margin-bottom:20px;box-shadow:4px 4px 0 var(--ink);position:relative}
+.stage-hero .big{width:66px;height:58px;margin-top:14px;border-radius:2px 2px 6px 6px;background:var(--ink);color:var(--paper-2);font-family:var(--type);font-size:28px;display:grid;place-items:center;flex:0 0 auto;position:relative}
+.stage-hero .big::before{content:"";position:absolute;left:-2px;right:-2px;top:-15px;height:12px;border:2px solid var(--ink);border-radius:2px;background:repeating-linear-gradient(-45deg,var(--ink) 0 6px,var(--paper-2) 6px 12px);transform:rotate(-8deg);transform-origin:left bottom}
+.stage-hero h1{font-size:27px;margin-bottom:0}
+.stage-hero .en{font-family:var(--type);color:var(--muted);font-size:12.5px;margin-bottom:8px;letter-spacing:.5px}
+.stage-hero .goal{font-size:14px;color:var(--ink-2)}
+
+/* 首頁：場記板主視覺 */
+.slate{border:2px solid var(--ink);border-radius:6px;box-shadow:5px 5px 0 var(--ink);margin-bottom:24px;overflow:hidden;background:var(--ink);color:var(--paper-2)}
+.slate-clap{height:34px;background:repeating-linear-gradient(-55deg,var(--ink) 0 24px,var(--paper-2) 24px 48px);border-bottom:3px solid var(--paper-2);transform-origin:0 100%;animation:clap 1.3s ease-out .2s both}
+@keyframes clap{0%{transform:rotate(-9deg)}55%{transform:rotate(-9deg)}70%{transform:rotate(0)}82%{transform:rotate(-1.5deg)}100%{transform:rotate(0)}}
+.slate-body{display:grid;grid-template-columns:1.35fr 1fr;gap:26px;padding:26px 28px 28px;align-items:center}
+.slate .eyebrow{font-family:var(--type);font-size:12.5px;letter-spacing:2.5px;color:var(--yellow)}
+.slate h1{color:var(--paper-2);font-size:36px;margin:6px 0 10px}
+.slate .lead{color:#dccfb8;font-size:15px;max-width:640px}
+.slate-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1.5px solid rgba(251,247,238,.5);margin:14px 0 18px}
+.slate-grid div{padding:7px 10px;border-right:1.5px solid rgba(251,247,238,.5)}
+.slate-grid div:last-child{border-right:0}
+.slate-grid b{display:block;font-family:var(--type);font-weight:400;font-size:10.5px;letter-spacing:1.5px;color:#bfae8f}
+.slate-grid span{font-family:var(--hand);font-size:19px;font-weight:700}
+.slate .btn{box-shadow:2px 2px 0 var(--paper-2);border-color:var(--paper-2)}
+.slate .btn:hover{box-shadow:3px 3px 0 var(--paper-2)}
+.slate .btn.ghost{color:var(--paper-2)}
+.slate-art{margin:0;background:var(--paper-2);border-radius:4px;padding:10px;transform:rotate(1.5deg);box-shadow:4px 4px 0 rgba(0,0,0,.35)}
+.slate-art img,.slate-art svg{display:block;width:100%;height:auto;border-radius:2px}
+.slate-art figcaption{font-family:var(--hand);color:var(--ink-2);font-size:13px;text-align:center;margin-top:6px}
+.hero{background:var(--card);border:2px solid var(--ink);border-radius:var(--r-card);padding:28px 30px;margin-bottom:22px;box-shadow:4px 4px 0 var(--ink)}
+.hero .eyebrow{font-family:var(--type);font-size:12px;letter-spacing:2px;color:var(--red)}
+.hero h1{font-size:32px;margin:6px 0 8px}
+.hero .lead{font-size:15.5px;color:var(--muted);max-width:760px}
+.reel{background-color:var(--ink);border-radius:4px;padding:20px 10px;overflow-x:auto;
+  background-image:linear-gradient(90deg,var(--paper-3) 0 10px,transparent 10px 22px),linear-gradient(90deg,var(--paper-3) 0 10px,transparent 10px 22px);
+  background-size:22px 7px,22px 7px;background-repeat:repeat-x;background-position:6px 6px,6px calc(100% - 6px)}
+.reel .stage-tiles{display:grid;grid-template-columns:repeat(9,minmax(104px,1fr));gap:6px}
+.stage-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.tile{border:2px solid transparent;border-radius:3px;padding:10px 9px 9px;background:var(--paper-2);cursor:pointer;transition:transform .15s;position:relative;display:flex;flex-direction:column;gap:3px;min-height:128px}
+.tile:hover{transform:translateY(-3px)}
+.tile.now{border-color:var(--yellow);box-shadow:0 0 0 3px rgba(217,162,58,.35)}
+.tile.locked{opacity:.55}
+.tile .n{font-family:var(--type);font-size:11px;color:var(--muted);letter-spacing:1px}
+.tile b{display:block;font-family:var(--hand);font-size:16px;color:var(--ink);line-height:1.25}
+.tile span{font-size:11px;color:var(--muted)}
+.tile .st{margin-top:auto;align-self:flex-start}
+.profile{display:grid;grid-template-columns:170px 1fr;gap:22px;align-items:start}
+.avatar-wrap{position:relative;border-radius:4px;overflow:hidden;background:var(--blue);aspect-ratio:368/430;border:2px solid var(--ink);box-shadow:var(--sh);transform:rotate(-2deg)}
+.avatar-wrap svg{width:100%;height:100%;display:block}
+.avatar-wrap .corner{position:absolute;width:20px;height:20px;border:3px solid var(--yellow)}
+.avatar-wrap .c1{top:7px;left:7px;border-right:0;border-bottom:0}.avatar-wrap .c2{top:7px;right:7px;border-left:0;border-bottom:0}.avatar-wrap .c3{bottom:7px;left:7px;border-right:0;border-top:0}.avatar-wrap .c4{bottom:7px;right:7px;border-left:0;border-top:0}
+.profile .meta{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13.5px;margin-top:10px}
+.profile .meta dt{color:var(--muted);font-weight:700;white-space:nowrap;font-family:var(--hand)}
+.profile .meta dd{margin:0}
+.pain{display:flex;gap:12px;align-items:flex-start;padding:11px 12px;border:1.5px dashed var(--ink-2);border-radius:5px;background:var(--paper-2)}
+.pain .ic{width:40px;height:30px;border:2px solid var(--red);border-radius:3px;color:var(--red);font-family:var(--type);display:grid;place-items:center;flex:0 0 auto;font-size:13px;transform:rotate(-6deg)}
+.pain b{display:block;color:var(--ink);margin-bottom:1px;font-family:var(--hand);font-size:15.5px}
+.pain span{font-size:13px;color:var(--muted)}
+.legend{display:flex;gap:10px;flex-wrap:wrap}
+.legend .it{display:flex;align-items:center;gap:8px;padding:6px 11px;border:1.5px dashed var(--line-2);border-radius:4px;background:var(--paper-2);font-size:13px}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.flow .fx{padding:4px 10px;border-radius:var(--r-hand);background:var(--paper-2);border:1.5px solid var(--ink-2);font-size:13px;font-weight:700}
+.flow .ar{color:var(--muted-2)}
+
+/* 診斷結果 */
+.dx-block{border:1.5px solid var(--ink-2);border-radius:6px 3px 7px 4px;padding:16px 18px;margin-bottom:16px;background:var(--paper-2)}
+.dx-block h3{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.dx-item{display:flex;gap:10px;padding:9px 0;border-bottom:1.5px dashed var(--line);font-size:13.5px}
+.dx-item:last-child{border-bottom:0}
+.dx-item .sev{flex:0 0 auto;width:11px;height:11px;border-radius:50%;margin-top:7px;border:1.5px solid var(--ink)}
+.sev.h{background:var(--red)} .sev.m{background:var(--yellow)} .sev.l{background:var(--green)} .sev.i{background:var(--blue)}
+.dx-item .rule{font-family:var(--type);font-size:11px;color:var(--ink-2);background:var(--paper-3);border:1px solid var(--line-2);padding:0 6px;border-radius:2px;white-space:nowrap;align-self:flex-start;margin-top:3px}
+.score-ring{display:flex;align-items:center;gap:18px}
+.ring{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;position:relative;flex:0 0 auto;border:2px solid var(--ink)}
+.ring::after{content:"";position:absolute;inset:10px;border-radius:50%;background:var(--card);border:2px solid var(--ink)}
+.ring b{position:relative;z-index:1;font-family:var(--hand);font-size:30px;color:var(--ink)}
+.engine-tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--type);font-size:11.5px;color:var(--ink-2);background:var(--paper-2);border:1.5px dashed var(--ink-2);border-radius:3px;padding:2px 10px}
+.engine-tag i{width:8px;height:8px;border-radius:50%;background:var(--green)}
+.bar-row{display:grid;grid-template-columns:150px 1fr 60px;gap:10px;align-items:center;font-size:13px;margin:6px 0}
+.bar-row .bar{height:13px;background:var(--paper-2);border:1.5px solid var(--ink-2);border-radius:2px;overflow:hidden}
+.bar-row .bar i{display:block;height:100%;background:repeating-linear-gradient(-45deg,var(--blue) 0 4px,#4a7a91 4px 8px)}
+.bar-row .bar i.r{background:var(--red)} .bar-row .bar i.y{background:var(--yellow)} .bar-row .bar i.g{background:var(--green)}
+.dx-head{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center}
+
+/* 手繪視覺化（3_rules：rough.js） */
+.skbox{position:relative;padding:12px 14px}
+.skbox-bg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.skbox-in{position:relative}
+.skbars{display:grid;gap:5px}
+.skbar-row{display:grid;grid-template-columns:130px 1fr 92px;gap:10px;align-items:center;font-size:13px}
+.skbar-row span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.skbar-row svg{width:100%;height:18px;display:block;overflow:visible}
+.skbar-row b{text-align:right;font-family:var(--type);font-weight:400;font-size:12.5px}
+.skbar-cap{font-size:11.5px;color:var(--red);text-align:right;margin-top:2px}
+.triad{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.triad-k{font-family:var(--hand);font-size:14px;color:var(--muted)}
+.triad-v{font-weight:700;font-size:15px;margin-top:2px;word-break:break-word}
+.triad-w{color:var(--red);font-size:12px;font-weight:700;margin-top:4px}
+.shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+.slot{border:1.5px solid var(--ink-2);border-radius:6px 3px 7px 4px;padding:8px 10px;background:var(--card);display:flex;flex-direction:column;gap:1px;font-size:12.5px}
+.slot b{font-family:var(--type);font-weight:400;font-size:11.5px;color:var(--muted)}
+.slot span{font-weight:700;line-height:1.35}
+.slot em{font-style:normal;font-size:11px;color:var(--muted)}
+.slot.need{background:var(--ink);color:var(--paper-2);border-color:var(--ink)}
+.slot.need b,.slot.need em{color:#d9cdb6}
+.slot.other{border:2px solid var(--red);background:var(--red-soft)}
+.slot.other em{color:var(--red);font-weight:700}
+.slot.used{background:var(--green-soft);border-color:var(--green)}
+.slot.unused{opacity:.5;border-style:dashed;background:transparent}
+.slot.miss{opacity:1;border:2px dashed var(--red)}
+.slot.miss em{color:var(--red);font-weight:700}
+.acts{display:flex;gap:6px}
+.act{min-width:64px}
+.act .skbox{text-align:center;padding:10px 6px}
+.act b{display:block;font-family:var(--hand);font-size:16px}
+.act span{font-size:12px;color:var(--muted)}
+.filmstrip{display:flex;gap:4px;padding:17px 6px;border-radius:3px;overflow-x:auto;background-color:var(--ink);
+  background-image:linear-gradient(90deg,var(--paper-3) 0 8px,transparent 8px 16px),linear-gradient(90deg,var(--paper-3) 0 8px,transparent 8px 16px);
+  background-size:16px 6px,16px 6px;background-repeat:repeat-x;background-position:4px 5px,4px calc(100% - 5px)}
+.frame{min-width:46px;background:var(--paper-2);border:2px solid transparent;border-radius:2px;padding:6px;font-size:11.5px;display:flex;flex-direction:column;gap:2px}
+.frame b{font-family:var(--type);font-weight:400;font-size:13px}
+.frame span{font-weight:700}
+.frame em{font-style:normal;color:var(--muted);word-break:break-all}
+.frame i{font-style:normal;font-size:10.5px;color:var(--red);background:var(--red-soft);border-radius:2px;padding:0 3px;align-self:flex-start}
+.frame.warn{border-color:var(--yellow);background:var(--yellow-soft)}
+.frame.bad{border-color:var(--red)}
+.checklist{display:grid;gap:6px}
+.ck{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:4px;font-size:13.5px;flex-wrap:wrap}
+.ck svg{width:22px;height:22px;flex:0 0 auto;overflow:visible}
+.ck span{flex:1;min-width:140px}
+.ck em{font-style:normal;font-size:11.5px;color:var(--muted);text-align:right}
+.ck.on{background:var(--green-soft)}
+.ck.warn{background:var(--yellow-soft)}
+.ck.warn em{color:#93680f;font-weight:700}
+.ck.off span{color:var(--muted)}
+.ck.off em{color:var(--red)}
+
+/* 帶入、底部操作、浮層 */
+.carry{border:2px dashed var(--blue);background:var(--blue-soft);border-radius:6px;padding:12px 16px;margin-bottom:18px;font-size:13.5px}
+.carry h4{color:var(--blue);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.carry .chips{display:flex;flex-wrap:wrap;gap:6px}
+.carry .chip{background:var(--card);border:1.5px solid var(--ink-2);border-radius:var(--r-hand);padding:3px 11px;font-size:12.5px;cursor:pointer}
+.carry .chip:hover{border-color:var(--blue);color:var(--blue);box-shadow:2px 2px 0 var(--blue)}
+.carry .chip.static{cursor:default;border-style:dashed}
+.carry .chip.static:hover{border-color:var(--ink-2);color:inherit;box-shadow:none}
+.footer-actions{position:sticky;bottom:0;background:rgba(255,252,245,.95);border-top:2px solid var(--ink);padding:12px 0;margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;z-index:5}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper-2);padding:10px 18px;border-radius:4px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:300;box-shadow:3px 3px 0 var(--yellow);max-width:92vw}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:var(--red);box-shadow:3px 3px 0 var(--ink)}
+.svg-wrap{overflow:auto;border:1.5px solid var(--ink-2);border-radius:4px;background:var(--card);padding:8px}
+.svg-wrap svg{display:block;min-width:600px;width:100%;height:auto}
+.modal-bg{position:fixed;inset:0;background:rgba(43,38,34,.5);display:none;align-items:center;justify-content:center;z-index:250;padding:16px}
+.modal-bg.show{display:flex}
+.modal{background:var(--card);border:2px solid var(--ink);border-radius:var(--r-card);max-width:540px;width:100%;padding:24px;box-shadow:6px 6px 0 var(--ink)}
+.lock-screen{text-align:center;padding:56px 20px}
+.lock-screen .ic{font-size:46px}
+
+/* 報告 */
+.report-cover{background:var(--ink);color:var(--paper-2);border-radius:4px;padding:52px 40px 34px;margin-bottom:24px;position:relative;overflow:hidden}
+.report-cover::before{content:"";position:absolute;left:0;right:0;top:0;height:20px;background:repeating-linear-gradient(-55deg,var(--ink) 0 16px,var(--paper-2) 16px 32px);border-bottom:2px solid var(--paper-2)}
+.report-cover h1{color:var(--paper-2);font-size:32px}
+.report-cover .sub{opacity:.85}
+.report-section{margin-bottom:28px}
+.report-section h2{display:inline-block;font-size:22px;margin-bottom:14px;padding:0 6px;background:linear-gradient(transparent 58%,var(--yellow-soft) 58%)}
+.report-section h3{font-size:16.5px;margin:14px 0 6px}
+.two-col{columns:2;column-gap:28px}
+#reportDoc{background:transparent}
+
+/* 試算器 */
+.sim-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.sim-grid3{display:grid;grid-template-columns:1fr 1.05fr 1.35fr;gap:12px}
+.sim-lights{display:flex;gap:12px;flex-wrap:wrap}
+.sim-light{flex:1;min-width:120px;border:1.5px dashed var(--ink-2);border-radius:5px;padding:12px;text-align:center;background:var(--paper-2)}
+.sim-light .light{width:26px;height:26px;margin-bottom:6px}
+.sim-light b{display:block;font-size:13px;color:var(--ink)}
+.sim-light span{font-size:12px;color:var(--muted)}
+.thr-tbl th,.thr-tbl td{white-space:nowrap;padding:5px 6px}
+.thr-tbl input{width:66px!important;min-width:0!important}
+
+/* 開場說明（p5.js，無音效） */
+.intro{position:fixed;inset:0;z-index:200;background:var(--paper);display:none;flex-direction:column}
+.intro.show{display:flex}
+.intro-stage{flex:1;min-height:0;position:relative;overflow:hidden}
+.intro-stage canvas{display:block}
+.intro.no-p5 .intro-stage{display:none}
+.intro.no-p5{justify-content:center}
+.intro-ui{padding:16px 24px 22px;border-top:2px solid var(--ink);background:var(--paper-2)}
+.intro.no-p5 .intro-ui{border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);margin:0 16px;border-radius:6px}
+.intro-cap{max-width:860px;margin:0 auto}
+.intro-no{font-family:var(--type);font-size:12.5px;letter-spacing:2px;color:var(--red)}
+.intro-cap h2{font-size:28px;margin:4px 0 6px}
+.intro-cap p{color:var(--ink-2);font-size:15.5px;min-height:3.2em;margin:0}
+.intro-bar{max-width:860px;margin:12px auto 0;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.intro-dots{display:flex;gap:6px}
+.intro-dots i{width:26px;height:8px;border-radius:2px;border:1.5px solid var(--ink-2);background:transparent;cursor:pointer;overflow:hidden;position:relative}
+.intro-dots i.done{background:var(--ink-2)}
+.intro-dots i.on::after{content:"";position:absolute;inset:0;background:var(--red);transform-origin:left;animation:dot var(--dur,7.5s) linear forwards}
+.intro-dots i.on.hold::after{animation:none}
+@keyframes dot{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+.credit{max-width:1180px;margin:34px auto 0;text-align:right;font-size:12px;color:var(--muted-2)}
+
+/* PDF 擷取模式：固定寬度、隱藏互動元素 */
+body.pdf-mode #reportDoc{width:960px;max-width:none;padding:8px 6px;background:#fffdf7}
+body.pdf-mode .rough-annotation{display:none!important}
+/* html2canvas 不支援 repeating-linear-gradient：PDF 改用一般漸層平鋪 */
+body.pdf-mode .bar-row .bar i:not(.r):not(.y):not(.g){background:var(--blue)}
+body.pdf-mode .report-cover::before{background:linear-gradient(90deg,var(--ink) 0 16px,var(--paper-2) 16px 32px) 0 0/32px 100% repeat-x}
+
+@media (prefers-reduced-motion:reduce){
+  .slate-clap,.intro-dots i.on::after{animation:none}
+  .btn,.tile{transition:none}
+}
+
+/* ---------- RWD ---------- */
+@media (max-width:1180px){.sim-grid3{grid-template-columns:1fr 1fr}}
+@media (max-width:1080px){
+  .g4{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(2,1fr)} .stage-tiles{grid-template-columns:repeat(2,1fr)}
+  .sim-grid{grid-template-columns:1fr 1fr}
+  .slate-body{grid-template-columns:1fr}
+  .slate-art{max-width:460px}
+}
+@media (max-width:860px){
+  .topbar{padding:0 12px;gap:8px}
+  .topbar .progress{display:none}
+  .topbar .brand .sub{display:none}
+  .topbar .menu-btn{display:inline-flex}
+  .topbar .btn.top-nav{display:none}
+  .topbar .brand{font-size:15.5px}
+  .app{flex-direction:column}
+  .sidebar{position:fixed;left:0;top:var(--topbar-h);width:min(300px,86vw);height:calc(100vh - var(--topbar-h));transform:translateX(-105%);transition:.25s;z-index:60;box-shadow:6px 0 0 var(--ink)}
+  .sidebar.open{transform:none}
+  .main{padding:22px 14px 40px}
+  .g2,.g3,.g4,.stage-tiles,.sim-grid,.sim-grid3,.triad{grid-template-columns:1fr}
+  .profile{grid-template-columns:1fr}
+  .avatar-wrap{max-width:180px}
+  .hero{padding:22px 18px}
+  .hero h1{font-size:24px}
+  .slate-body{padding:20px 16px 22px}
+  .slate h1{font-size:27px}
+  .slate-grid{grid-template-columns:repeat(2,1fr)}
+  .slate-grid div:nth-child(2){border-right:0}
+  .slate-grid div:nth-child(-n+2){border-bottom:1.5px solid rgba(251,247,238,.5)}
+  .stage-hero{flex-direction:column;gap:10px;padding:20px 16px 16px}
+  .stage-hero h1{font-size:23px}
+  .bar-row{grid-template-columns:110px 1fr 50px}
+  .skbar-row{grid-template-columns:86px 1fr 70px;gap:6px}
+  .dx-head{grid-template-columns:1fr}
+  .two-col{columns:1}
+  .card{padding:16px 14px;box-shadow:3px 3px 0 var(--ink)}
+  .report-cover{padding:40px 20px 24px}
+  .footer-actions .btn{flex:1;justify-content:center}
+  .intro-cap h2{font-size:22px}
+  .intro-cap p{font-size:14px}
+  .intro-ui{padding:12px 14px 16px}
+}
+.sb-overlay{position:fixed;inset:0;top:var(--topbar-h);background:rgba(43,38,34,.4);display:none;z-index:55}
+.sb-overlay.show{display:block}
+
+/* ---------- 列印（A4 報告） ---------- */
+@media print{
+  @page{size:A4;margin:14mm 13mm}
+  html,body{background:#fff;font-size:11.5pt}
+  .topbar,.sidebar,.footer-actions,.no-print,.toast,.sb-overlay,.modal-bg,.intro,.credit,.rough-annotation{display:none!important}
+  .app{display:block}
+  .main{padding:0}
+  .container{max-width:none}
+  .card,.dx-block,.form-section,.report-cover,.stage-hero{box-shadow:none;break-inside:avoid;page-break-inside:avoid}
+  .report-cover{-webkit-print-color-adjust:exact;print-color-adjust:exact;background:var(--ink)!important;color:#fff!important}
+  .report-section{break-inside:auto}
+  .report-section h2{break-after:avoid}
+  .badge,.light,.kpi,.note,.bar-row .bar i,.sev,.ring,.slot,.frame,.filmstrip,.ck,.report-section h2{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .tbl{font-size:10pt}
+  .tbl th,.tbl td{padding:4px 6px}
+  .page-break{break-before:page;page-break-before:always}
+  a{text-decoration:none;color:inherit}
+  .svg-wrap{border:0;padding:0}
+  .svg-wrap svg{min-width:0}
+  .two-col{columns:2}
+  .grid.g4{grid-template-columns:repeat(4,1fr)}
+  .grid.g2,.grid.g3{grid-template-columns:repeat(2,1fr)}
+  .kpi .v{font-size:18pt}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <button class="btn sm menu-btn" id="menuBtn" aria-label="開啟導覽">☰</button>
+  <div class="brand"><div class="logo">影</div><div id="brandText">影片企劃導演工作台</div></div>
+  <div class="spacer"></div>
+  <div class="progress"><span id="progText">0 / 9 階段</span><div class="bar"><i id="progBar"></i></div></div>
+  <button class="btn sm top-nav" onclick="go('home')">首頁</button>
+  <button class="btn sm top-nav" onclick="go('report')">企劃報告</button>
+  <button class="btn sm top-nav" onclick="confirmReset()">重置</button>
+</header>
+<div class="sb-overlay" id="sbOverlay" onclick="toggleSidebar(false)"></div>
+<div class="app"><aside class="sidebar" id="sidebar"></aside><main class="main"><div class="container" id="view"></div><footer class="credit">製作者：黃政文</footer></main></div>
+<div class="toast" id="toast"></div>
+<div class="modal-bg" id="modal"><div class="modal" id="modalBody"></div></div>
+<div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="填寫說明">
+  <div id="introStage" class="intro-stage"></div>
+  <div class="intro-ui">
+    <div class="intro-cap"><div class="intro-no" id="introNo"></div><h2 id="introT"></h2><p id="introS"></p></div>
+    <div class="intro-bar"><div class="intro-dots" id="introDots"></div>
+      <div class="btn-row"><button class="btn ghost" id="introPrev">上一段</button><button class="btn primary" id="introNext">下一段</button><button class="btn" id="introSkip">略過說明</button></div>
+    </div>
+  </div>
+</div>
+<script>
+/* =====================================================================
+   PART A: content for "影片企劃導演工作台" (Day14 final project plan)
+   Order: APP -> CASE -> AVATAR_SVG -> constants -> STAGES
+   PART A must not call PART B consts (num, esc, cut, stage...) at load time;
+   only inside functions (carry, calc, validate) that run later.
+   ===================================================================== */
+
+const APP={
+  storageKey:'gw_videoplan_d14_v1',
+  platform:'影片企劃導演工作台',
+  topic:'期末專題影片企劃與預計流程',
+  brandSub:'主題 → 腳本 → 分鏡 → 聲音 → 時程｜九階段',
+  flowName:'九階段影片企劃',
+  eyebrow:'VIDEO PLAN · DIRECTOR DESK',
+  exportPrefix:'videoplan_progress',
+  version:'1.0.0'
+};
+
+/* Mail relay (Google Apps Script web app). Empty endpoint = sending not configured yet. */
+const MAIL={endpoint:''};
+
+/* Optional hero illustration (data URI). Empty = no image. */
+const HERO_IMG='';
+
+/* First-visit intro (p5.js, no audio). k = animation id used by the engine. */
+const INTRO=[
+  {k:'title',t:'歡迎來到影片企劃導演工作台',s:'接下來 3 小時，你會把期末專題從「想做一支影片」，排成「回家照著做就能完成」的企劃。'},
+  {k:'strip',t:'九個階段，一格一格往前',s:'主題 → 零件 → 腳本 → 分鏡 → 聲音 → 額度 → 剪輯 → 發布 → 時程。前一格確認後，下一格才會解鎖。'},
+  {k:'cards',t:'每格先看三張說明卡',s:'方法說明講為什麼，操作指引講怎麼填，參考範例讓你看別人這樣填會被抓出什麼問題。'},
+  {k:'write',t:'自己寫，不照抄',s:'欄位下方的灰字是範例提示，只能參考。照抄別人的主題，回家就做不出來。'},
+  {k:'check',t:'按「確認診斷」，系統逐條檢查',s:'秒數、字數、工具額度、每週時數都會被檢查，每條結論附規則編號，告訴你哪裡做不到。'},
+  {k:'send',t:'最後：下載 PDF、寄給老師',s:'九階段完成後，報告頁可下載《影片企劃與預計流程報告》並一鍵寄給老師，Day15 就用它發表。'}
+];
+
+/* ---------------- Example person (fictional) ---------------- */
+const CASE={
+  name:'林佳穎',
+  title:'麵包店二代店長（虛構範例）',
+  system:'巷口手工麵包店｜社區型手作烘焙（虛構範例）',
+  heroLead:'這個工作台陪你把期末專題排成一份做得完的影片企劃：先定主題與觀眾，盤點你前 13 天做過的零件，再寫腳本、拆分鏡、配聲音、算額度、排時程。每一步先看說明與範例，再填你自己的版本，系統會即時檢查秒數、字數、額度與時數做不做得到。最後產出《影片企劃與預計流程報告》，可下載 PDF 並寄給老師。（參考範例為虛構人物）',
+  intro:'<p>林佳穎接手家裡經營 18 年的巷口手工麵包店，平日客人多是附近上班族與住戶，週末常有剩貨。她想做一支 60 秒的 IG Reels 推「週末預購」：週五晚上 9 點前私訊預訂，週六早上 8 點取貨。</p><p>她每週能投入影片的時間約 6 小時，手上有前 13 天做過的腳本初稿、主視覺海報、AI 旁白與 Vids 初剪，卻還沒想清楚哪些零件要用、哪些不用。</p>',
+  flow:['定主題','選零件與路線','寫腳本','拆分鏡','配聲音','算額度','剪輯後製','發布改編','排時程'],
+  meta:[
+    ['角色','麵包店二代店長，一個人包辦拍攝、剪輯與社群'],
+    ['核心問題','「13 個零件都做過，期末到底要做哪一支？要怎麼排才做得完？」'],
+    ['期待結果','一份照著做就能完成的企劃：腳本、分鏡、工具額度與每週進度']
+  ],
+  pains:[
+    ['主題太大','想同時介紹店史、全部麵包與週末預購，60 秒塞不下。'],
+    ['觀眾寫成所有人','沒有指定給誰看，文案和畫面都抓不到重點。'],
+    ['零件全都想用','13 個零件都想放，路線混在一起，做到一半就卡住。'],
+    ['字數超過秒數','旁白寫了 9 句，以每秒 3.3 字估算超過 60 秒。'],
+    ['額度沒有算','Flow 每天 50 點，一次生成 2 段一起扣，重試幾次就用完。'],
+    ['時程靠感覺','沒有排每週要完成什麼，也沒有備案工具。']
+  ],
+  vision:'先收斂成「一支影片、一群觀眾、一個行動」，再用做過的零件拼出最短可完成路線，每一步都檢查字數、秒數、額度與時數。',
+  visionItems:[
+    ['一句話主題','給誰看、多長、看完做什麼'],
+    ['路線定錨','實拍、分身、動畫、翻新四選一，不中途換'],
+    ['三幕腳本','約 1:2:1 分配秒數，字數不超過秒數 × 3.3'],
+    ['分鏡表','一鏡 5～8 秒，一句旁白配一個畫面'],
+    ['聲音金字塔','旁白 100%、音效 50～70%、原音 30～50%、配樂 15～25%'],
+    ['可執行時程','每週任務、額度預算與備案工具']
+  ],
+  logic:'先決定不做什麼，再決定怎麼做。',
+  outcomes:[['1 支','60 秒直式短片'],['198 字','旁白字數上限'],['9 鏡','分鏡數'],['3 週','完成時程'],['18 小時','可投入總時數'],['1 份','PDF 企劃報告']],
+  outcomeNote:'以上為虛構範例的規劃值，請換成你自己的影片長度、時間與工具額度。'
+};
+
+const AVATAR_SVG=`<svg viewBox="0 0 368 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="林佳穎頭像：綁頭巾、穿圍裙、拿著法國麵包的麵包店店長（虛構範例角色）">
+<rect width="368" height="430" fill="#f3e3c8"/><circle cx="184" cy="200" r="150" fill="#ead2a8"/>
+<path d="M64 430 C70 330 120 302 184 302 C248 302 298 330 304 430 Z" fill="#c8553d"/>
+<path d="M128 430 L140 332 C160 320 208 320 228 332 L240 430 Z" fill="#fffaf0"/>
+<rect x="164" y="250" width="40" height="58" rx="12" fill="#efc4a2"/>
+<path d="M110 196 C104 112 150 82 186 82 C226 82 266 112 258 196 L254 252 C232 264 136 264 114 252 Z" fill="#3a2418"/>
+<ellipse cx="184" cy="194" rx="62" ry="74" fill="#f6d2b4"/>
+<path d="M118 152 C128 102 240 102 250 152 C226 134 142 134 118 152 Z" fill="#e0531f"/>
+<circle cx="152" cy="128" r="4" fill="#fffaf0"/><circle cx="184" cy="121" r="4" fill="#fffaf0"/><circle cx="216" cy="128" r="4" fill="#fffaf0"/>
+<path d="M148 184 Q160 178 172 184" stroke="#3a2418" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M196 184 Q208 178 220 184" stroke="#3a2418" stroke-width="3" fill="none" stroke-linecap="round"/>
+<ellipse cx="160" cy="200" rx="6" ry="7" fill="#2a1d14"/><ellipse cx="208" cy="200" rx="6" ry="7" fill="#2a1d14"/>
+<circle cx="146" cy="222" r="9" fill="#f2a98f" opacity=".55"/><circle cx="222" cy="222" r="9" fill="#f2a98f" opacity=".55"/>
+<path d="M170 236 Q184 248 198 236" stroke="#b45a4a" stroke-width="4" fill="none" stroke-linecap="round"/>
+<g transform="rotate(-28 270 360)"><rect x="196" y="344" width="156" height="34" rx="17" fill="#d99a4e"/><path d="M222 351 l12 20 M252 351 l12 20 M282 351 l12 20 M312 351 l12 20" stroke="#a8682a" stroke-width="4" stroke-linecap="round"/></g>
+</svg>`;
+
+/* ---------------- Shared option lists ---------------- */
+const PLATFORMS=['IG Reels','YouTube Shorts','FB Reels','LINE VOOM','YouTube（橫式）','作品集（16:9）'];
+const PARTS=['01 腳本初稿','02 主視覺海報','03 企劃分鏡','04 實拍素材','05 AI 旁白','06 專屬配樂','07 Vids 初剪','08 後製版','09 角色場景圖','10 動畫片段','11 數位分身','12 產製 SOP','13 直式版'];
+const SOURCES=['實拍','既有照片','ChatGPT 圖片','Photopea／Canva 合成','Flow 動畫','數位分身','Vids 素材庫'];
+const TOOLS=['ChatGPT','ChatGPT 圖片','Photopea','Canva','VoAI','Suno','Google Flow','Google Vids','手機相機','其他'];
+const REDLINES=['入鏡的人都簽肖像同意','配樂只用有授權或自己生成的','不把別人的個資上傳到 AI 工具','AI 生成內容會標示','數位分身只用自己的臉與聲音'];
+const POSTCHECKS=['字幕逐字校對','音量依金字塔調整','片頭 3 秒沒有 Logo','結尾有行動呼籲字卡','AI 生成內容已標示','匯出前用手機看過一次'];
+const FIVECHECKS=['前 3 秒有提問、衝突或驚喜','只有一條主線','每 5～10 秒有新資訊','一句旁白配一個畫面','結尾有明確行動呼籲'];
+const WEEKS=['第 1 週','第 2 週','第 3 週','第 4 週','第 5 週','第 6 週'];
+/* Narration length: count characters, ignore whitespace and punctuation */
+const charsOf=s=>String(s||'').replace(/[\s，。、！？：；「」『』（）《》〈〉…～,.!?:;'"()~]/g,'').length;
+
+const EX_SCRIPT=[
+  '歡迎來到巷口手工麵包店，我們在這條巷子裡已經烤了十八年的麵包。',
+  '每天凌晨五點，爸爸就開始揉麵團，用的是自家養了十年的老麵種。',
+  '麵包出爐的那一刻，整條巷子都是奶油和小麥的香味。',
+  '這是我們剛開店時的老照片，那時候只有三種麵包，現在已經有二十多種。',
+  '我們的招牌吉祥物小麥君，也想跟大家打聲招呼。',
+  '架上有鹽可頌、紅豆麵包、全麥吐司，還有每天限量的肉桂捲。',
+  '很多附近的小朋友放學後，都會來買一個菠蘿麵包當點心。',
+  '現在開放週末預購，週五晚上九點前私訊我們，週六早上八點就能取貨。',
+  '不用排隊，熱騰騰的麵包直接帶回家，趕快私訊預訂吧！'
+];
+
+/* =====================================================================
+   Nine stages
+   Field types: text | number | textarea | select(options) | checks(options,min) | table(cols,min)
+   Table col: {k,l,t:'text'|'textarea'|'select'|'number'|'calc',o?,w?,calc?}
+   Common: req, ph, help, dep (+depVal default '是', depReq = required while shown)
+   ===================================================================== */
+const STAGES=[
+/* ---------------------------------------------------------------- 1 */
+{
+  id:1,key:'theme',title:'主題定錨',en:'Theme Anchor',
+  goal:'用一句話說清楚：給誰看、多長、看完要做什麼。主題越小，越做得完。',
+  method:{
+    intro:'期末專題最常卡住的原因，不是工具不會用，而是一開始沒決定要做哪一支。前 13 天你做的是零件，這一步先決定「這一支影片」的觀眾、長度與行動，後面八個階段都會拿它來檢查。',
+    points:[
+      ['一句話主題','格式：給〔誰〕看的〔幾秒〕影片，讓他〔做什麼〕。說不出一句話，代表主題還太大。'],
+      ['觀眾只選一群','「所有人」等於沒有觀眾。寫出年齡、身分、在哪裡會滑到你的影片。'],
+      ['行動要具體','看完要做的事寫成動作加時間，例：週五晚上 9 點前私訊預訂，而不是「多多支持」。'],
+      ['先算時間再談野心','每週能投入幾小時乘以幾週，就是你全部的預算；第 9 階段會拿它檢查時程。']
+    ],
+    tools:[['一句話主題公式','給誰／多長／做什麼'],['AI 是手腳，不是大腦','主題由你決定，ChatGPT 只幫你改寫'],['提示詞四要素','角色、觀眾、任務、格式']],
+    deliverable:'一句話主題、明確的觀眾與行動呼籲、影片規格與可投入時間。'
+  },
+  guide:[
+    '填姓名與 Email：寄出企劃時，老師靠它知道是誰交的。',
+    '寫觀眾：只選一群人，寫出年齡、身分與看影片的場合。',
+    '寫行動呼籲：看完要做的一個動作，最好有時間或數字。',
+    '用公式寫一句話主題，再填影片長度與主要發布平台。',
+    '填每週可投入時數與預計幾週完成；有人幫忙拍攝或入鏡就選「是」並說明。',
+    '按「確認診斷」：系統會檢查觀眾是否太廣、主題是否塞太多、行動是否具體、長度是否符合平台。'
+  ],
+  demo:'參考範例是虛構人物林佳穎（巷口手工麵包店二代店長）。她把觀眾寫成「所有人」，主題同時想講店史、所有麵包與週末預購。看診斷怎麼抓出這兩個最常見的問題。',
+  sections:[
+    {title:'你的基本資料',fields:[
+      {id:'name',type:'text',label:'你的姓名',req:true,ph:'寄出企劃時當作信件主旨'},
+      {id:'email',type:'text',label:'你的 Email',req:true,ph:'name@gmail.com',help:'只在寄出企劃時讓老師知道是誰、方便回信。資料平常只存在你的瀏覽器。'},
+      {id:'identity',type:'text',label:'你的身分（或你替誰拍這支影片）',req:true,ph:'例：自己經營的手作飾品品牌'}
+    ]},
+    {title:'觀眾與行動',fields:[
+      {id:'audience',type:'textarea',label:'這支影片給誰看？',req:true,help:'只選一群人：年齡、身分、在哪裡會看到。',ph:'例：住在學校附近、通勤會滑 IG 的 20～30 歲上班族'},
+      {id:'goal',type:'select',label:'影片目的',req:true,options:['推廣商品或服務','記錄生活或作品','知識分享','品牌形象','求職作品集','其他']},
+      {id:'cta',type:'text',label:'看完希望觀眾做的一件事（行動呼籲）',req:true,ph:'例：週五前私訊預訂',help:'寫成動作加時間或數字。'}
+    ]},
+    {title:'一句話主題與規格',fields:[
+      {id:'theme',type:'textarea',label:'一句話主題',req:true,help:'格式：給〔誰〕看的〔幾秒〕影片，讓他〔做什麼〕。',ph:'例：給新手爸媽看的 30 秒影片，讓他們學會一招哄睡'},
+      {id:'length',type:'number',label:'影片長度（秒）',req:true,ph:'60'},
+      {id:'platform',type:'select',label:'主要發布平台',req:true,options:PLATFORMS},
+      {id:'weeklyHours',type:'number',label:'每週可投入時數（小時）',req:true,ph:'6'},
+      {id:'weeks',type:'number',label:'預計幾週內完成',req:true,ph:'3'},
+      {id:'hasPartner',type:'select',label:'有沒有人幫你拍攝或入鏡？',req:true,options:['是','否']},
+      {id:'partnerNote',type:'textarea',label:'誰幫忙、做什麼、什麼時候有空',dep:'hasPartner',depReq:true,ph:'例：室友週日下午可以幫忙掌鏡 2 小時'}
+    ]}
+  ],
+  example:{
+    name:'林佳穎',email:'jiaying.demo@example.com',identity:'巷口手工麵包店二代店長（虛構範例）',
+    audience:'附近的住戶和上班族，其實希望所有人都能認識我們的麵包。',
+    goal:'推廣商品或服務',cta:'週五晚上 9 點前私訊預訂週末麵包',
+    theme:'給附近上班族看的 60 秒影片，介紹店史、所有麵包和週末預購，讓他們私訊預訂。',
+    length:60,platform:'IG Reels',weeklyHours:6,weeks:3,hasPartner:'是',
+    partnerNote:'先生週六早上可以幫忙拿手機拍 1 小時；店員小芳願意入鏡。'
+  },
+  validate:d=>{const m=[];const e=String(d.email||'').trim();
+    if(e&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e))m.push('Email 格式不正確，請再確認（例：name@gmail.com）。');
+    ['length','weeklyHours','weeks'].forEach(k=>{if(String(d[k]??'').trim()!==''&&num(d[k])<=0)m.push(`${k==='length'?'影片長度':k==='weeks'?'完成週數':'每週可投入時數'}需大於 0。`);});
+    return m;},
+  carry:()=>[]
+},
+/* ---------------------------------------------------------------- 2 */
+{
+  id:2,key:'parts',title:'零件與路線',en:'Parts & Route',
+  goal:'從前 13 天做過的零件挑出這支影片真的要用的，並在實拍、分身、動畫、翻新四條路線中選一條走到底。',
+  method:{
+    intro:'你已經有 13 個零件，但期末不是把 13 個都放進去。先盤點每個零件的狀態，再決定路線：路線決定你要拍、要生成，還是要改舊片。路線中途換，等於重做一半。',
+    points:[
+      ['零件先盤點再挑','逐一標出已完成、半成品、沒做；「沒做」的零件要用，就要算進時程。'],
+      ['四大類不能缺','腳本、畫面、聲音、配樂四類都要有來源，缺一類影片就不完整。'],
+      ['路線四選一','實拍（03、04、07、08）、分身（03、11、07）、動畫（09、10、07）、翻新（07、08、06）。'],
+      ['少即是多','5～6 個零件做到位，勝過 12 個零件都半套；其他留給下一支影片。']
+    ],
+    tools:[['零件架','你在 D01～D13 做出的 13 個成品'],['路線表','四條路線各自的必要零件'],['數位分身紅線','只能用你自己的臉與聲音']],
+    deliverable:'零件使用清單與一條確定的製作路線。'
+  },
+  guide:[
+    '打開你前 13 天的作品資料夾，對照零件清單逐一確認狀態。',
+    '每個零件選「會用／改了再用／不用」，改了再用的要寫怎麼改。',
+    '從四條路線選一條，寫下為什麼選它（你已經有什麼、還缺什麼）。',
+    '如果還想混用其他路線的做法，選「是」並說明，系統會提醒你風險。',
+    '按「確認診斷」：系統會檢查零件數量、是否跨路線、四大類是否齊全、沒做的零件是否被排進來。'
+  ],
+  demo:'範例中林佳穎選了實拍路線，卻把 12 個零件都標成要用，還想加數位分身與吉祥物動畫。看診斷如何指出「零件太多」與「混用路線」。',
+  sections:[
+    {title:'零件盤點',fields:[
+      {id:'parts',type:'table',label:'你的零件清單',req:true,min:4,help:'至少列 4 個；不用的零件也可以列出來標「不用」。',cols:[
+        {k:'part',l:'零件',t:'select',o:PARTS,w:'28%'},{k:'status',l:'目前狀態',t:'select',o:['已完成','半成品','沒做'],w:'16%'},
+        {k:'use',l:'這支要用嗎',t:'select',o:['會用','改了再用','不用'],w:'18%'},{k:'note',l:'怎麼改／備註',t:'text',w:'38%'}]}
+    ]},
+    {title:'製作路線',fields:[
+      {id:'route',type:'select',label:'選一條路線',req:true,options:['實拍','分身','動畫','翻新']},
+      {id:'routeWhy',type:'textarea',label:'為什麼選這條路線？',req:true,ph:'例：手上已有 20 段實拍素材，家人週末可以幫忙拍'},
+      {id:'mixRoute',type:'select',label:'是否還想混用其他路線的做法？',req:true,options:['否','是']},
+      {id:'mixNote',type:'textarea',label:'想混用什麼？',dep:'mixRoute',depReq:true}
+    ]}
+  ],
+  example:{
+    parts:[
+      {part:'01 腳本初稿',status:'已完成',use:'改了再用',note:'縮短成 60 秒版本'},
+      {part:'02 主視覺海報',status:'已完成',use:'會用',note:'當封面'},
+      {part:'03 企劃分鏡',status:'半成品',use:'改了再用',note:'依新腳本重拆'},
+      {part:'04 實拍素材',status:'已完成',use:'會用',note:'店內出爐畫面'},
+      {part:'05 AI 旁白',status:'已完成',use:'改了再用',note:'新稿重錄'},
+      {part:'06 專屬配樂',status:'已完成',use:'會用',note:''},
+      {part:'07 Vids 初剪',status:'已完成',use:'會用',note:''},
+      {part:'08 後製版',status:'半成品',use:'會用',note:''},
+      {part:'09 角色場景圖',status:'已完成',use:'會用',note:'麵包吉祥物小麥君'},
+      {part:'10 動畫片段',status:'半成品',use:'會用',note:'吉祥物跳舞'},
+      {part:'11 數位分身',status:'已完成',use:'會用',note:'講店史'},
+      {part:'13 直式版',status:'沒做',use:'會用',note:''}
+    ],
+    route:'實拍',routeWhy:'手上已經有店內出爐與揉麵的實拍素材，先生週六早上可以幫忙拍。',
+    mixRoute:'是',mixNote:'想在中間加一段數位分身講店史，結尾放吉祥物動畫。'
+  },
+  carry:S=>{const d1=S.d(1);if(!d1)return[];
+    return[{title:'第 1 階段：你的主題（參考）',static:[cut(d1.theme,40),`${num(d1.length)} 秒｜${d1.platform}`,`每週 ${num(d1.weeklyHours)} 小時 × ${num(d1.weeks)} 週`]}];}
+},
+/* ---------------------------------------------------------------- 3 */
+{
+  id:3,key:'story',title:'故事結構',en:'Story Structure',
+  goal:'用三幕結構排好秒數，寫出不超過字數上限的旁白稿，前 3 秒就抓住人。',
+  method:{
+    intro:'短影音的腳本是用秒數寫的。旁白以每秒 3.3 字估算（每秒 4 字是極限，聽起來會趕），60 秒大約 198 字。先排三幕秒數，再寫旁白，寫完一定要數字數。',
+    points:[
+      ['前 3 秒定生死','用提問、衝突或驚喜開場；Logo 和自我介紹放到最後，觀眾不會等你。'],
+      ['三幕約 1:2:1','開場短、中段最長、結尾收束；60 秒可以是 10、35、15 秒。'],
+      ['字數＝秒數 × 3.3','超過就刪句子，不要靠加快旁白硬塞。'],
+      ['一條主線','每 5～10 秒給一個新資訊，一句旁白配一個畫面，結尾給明確行動。']
+    ],
+    tools:[['三幕結構','開場、中段、結尾'],['好影片五檢核','開場、主線、資訊密度、一句一畫面、行動呼籲'],['ChatGPT','請它依字數上限幫你刪減，你再決定留哪句']],
+    deliverable:'三幕秒數分配與定稿旁白（含字數）。'
+  },
+  guide:[
+    '先寫前 3 秒：畫面與第一句話，並選開場類型。',
+    '用「前階段帶入」把影片長度換成三幕建議秒數，再依內容微調。',
+    '寫一條主線：一句話說完這支影片的故事。',
+    '寫旁白稿：一句一行，系統會依每秒 3.3 字計算長度。',
+    '寫結尾行動呼籲，並勾選你的腳本做到好影片五檢核的哪幾項。',
+    '按「確認診斷」：系統會檢查字數是否超過上限、開場類型、三幕秒數與五檢核。'
+  ],
+  demo:'範例旁白寫了 9 句，字數超過 60 秒的上限，開場又是 Logo 加歡迎詞。注意診斷算出的「實際需要秒數」，以及建議先刪哪幾句。',
+  sections:[
+    {title:'開場 3 秒',fields:[
+      {id:'hook',type:'textarea',label:'前 3 秒的畫面與第一句話',req:true,ph:'例：鬧鐘從 4:59 跳到 5:00，旁白：「凌晨五點，整條巷子只有一家店亮著。」'},
+      {id:'hookType',type:'select',label:'開場類型',req:true,options:['提問','衝突','驚喜','品牌 Logo','自我介紹']}
+    ]},
+    {title:'三幕秒數與主線',fields:[
+      {id:'act1',type:'number',label:'開場（秒）',req:true},
+      {id:'act2',type:'number',label:'中段（秒）',req:true},
+      {id:'act3',type:'number',label:'結尾（秒）',req:true},
+      {id:'mainLine',type:'text',label:'一條主線（一句話說完故事）',req:true,ph:'例：凌晨五點的老店，把剛出爐的麵包留給預訂的你'}
+    ]},
+    {title:'旁白稿與結尾',fields:[
+      {id:'script',type:'textarea',label:'旁白稿（一句一行）',req:true,help:'系統以每秒 3.3 字估算長度，標點與空白不計入字數。'},
+      {id:'endCta',type:'textarea',label:'結尾行動呼籲（旁白或字卡）',req:true},
+      {id:'checks5',type:'checks',label:'好影片五檢核：你的腳本做到哪幾項？',options:FIVECHECKS}
+    ]}
+  ],
+  example:{
+    hook:'店門口招牌亮起，Logo 動畫轉一圈，旁白：「歡迎來到巷口手工麵包店。」',hookType:'品牌 Logo',
+    act1:10,act2:35,act3:15,mainLine:'十八年的老麵包店，開放週末預購',
+    script:EX_SCRIPT.join('\n'),
+    endCta:'週五晚上 9 點前私訊預訂，週六早上 8 點取貨。',
+    checks5:['只有一條主線','每 5～10 秒有新資訊','結尾有明確行動呼籲']
+  },
+  carry:S=>{const d1=S.d(1);if(!d1)return[];const len=num(d1.length),a=Math.round(len/6),c=Math.round(len/4),b=len-a-c;
+    return[
+      {title:'第 1 階段：影片長度 → 三幕秒數建議',note:`${len} 秒：開場短、中段最長、結尾收束（約 1:2:1）。`,chips:[
+        {label:`開場 ${a} 秒`,field:'act1',value:String(a),replace:true},{label:`中段 ${b} 秒`,field:'act2',value:String(b),replace:true},{label:`結尾 ${c} 秒`,field:'act3',value:String(c),replace:true}]},
+      {title:'第 1 階段：行動呼籲 → 結尾',chips:[{label:cut(d1.cta,20),field:'endCta',value:d1.cta}]}
+    ];}
+},
+/* ---------------------------------------------------------------- 4 */
+{
+  id:4,key:'shots',title:'分鏡與畫面',en:'Shot List',
+  goal:'把旁白拆成一鏡一鏡：每鏡幾秒、畫面從哪裡來、動態多大、入鏡的人是否同意。',
+  method:{
+    intro:'分鏡表就是你回家後的拍攝清單。每一列都是一個要完成的畫面：寫清楚秒數、來源與動態，你就知道要拍什麼、要生成什麼、要跟誰拿同意。',
+    points:[
+      ['一鏡 5～8 秒','30 秒約 6 鏡 × 5 秒；單鏡超過 8 秒，觀眾就會滑走。'],
+      ['動態分三級','微動、中動、大動；大動最吸睛也最難做，整支最多 1 鏡。'],
+      ['來源寫清楚','實拍、ChatGPT 圖片、Canva 合成、Flow 動畫：來源決定你要用哪個工具、花多少額度。'],
+      ['肖像要同意','拍到認得出來的人臉就要取得同意；未成年要監護人同意，路人能避就避。']
+    ],
+    tools:[['分鏡表','旁白、畫面、秒數、來源、動態'],['Google Flow','動畫片段，每天 50 點'],['ChatGPT 圖片／Photopea／Canva','靜態畫面與字卡']],
+    deliverable:'完整分鏡表（含秒數、來源、動態與肖像同意）。'
+  },
+  guide:[
+    '用「前階段帶入」把旁白稿一句一列帶進分鏡表。',
+    '每列補上畫面描述與秒數，總秒數要等於影片長度。',
+    '選畫面來源與動態等級：靜態、微動、中動、大動。',
+    '有人臉的鏡頭選同意狀態；還沒取得同意的要誠實標出。',
+    '寫肖像同意的取得方式，以及還缺的素材。',
+    '按「確認診斷」：系統會檢查單鏡秒數、大動數量、總秒數、路線一致性與肖像同意。'
+  ],
+  demo:'範例 9 鏡合計 60 秒，但第 4 鏡老照片停了 10 秒，吉祥物動畫用了 2 鏡大動，還有一鏡拍到放學小朋友卻沒有取得同意。',
+  sections:[
+    {title:'分鏡表',fields:[
+      {id:'shots',type:'table',label:'分鏡表',req:true,min:4,help:'一句旁白一列；「字數／上限」依每秒 3.3 字自動計算。',cols:[
+        {k:'line',l:'旁白／字卡',t:'textarea',w:'25%'},{k:'shot',l:'畫面描述',t:'text',w:'19%'},{k:'sec',l:'秒數',t:'number',w:'8%'},
+        {k:'source',l:'畫面來源',t:'select',o:SOURCES,w:'15%'},{k:'motion',l:'動態',t:'select',o:['靜態','微動','中動','大動'],w:'9%'},
+        {k:'face',l:'人臉與同意',t:'select',o:['無人臉','本人','已同意的人','未確認同意'],w:'13%'},
+        {k:'fit',l:'字數／上限',t:'calc',w:'11%',calc:r=>String(r.sec??'').trim()?`${charsOf(r.line)}／${Math.floor(num(r.sec)*3.3)}`:'－'}]}
+    ]},
+    {title:'素材與同意',fields:[
+      {id:'consentPlan',type:'textarea',label:'肖像同意怎麼取得？',req:true,ph:'例：入鏡的朋友拍攝前簽肖像同意書；路人一律不拍臉'},
+      {id:'assetsNote',type:'textarea',label:'還缺哪些素材？',ph:'例：店門口夜景、包裝特寫'}
+    ]}
+  ],
+  example:{
+    shots:[
+      {line:EX_SCRIPT[0],shot:'招牌 Logo 動畫',sec:'4',source:'Photopea／Canva 合成',motion:'中動',face:'無人臉'},
+      {line:EX_SCRIPT[1],shot:'凌晨揉麵團特寫（爸爸的手）',sec:'6',source:'實拍',motion:'微動',face:'已同意的人'},
+      {line:EX_SCRIPT[2],shot:'麵包出爐冒蒸氣',sec:'6',source:'實拍',motion:'中動',face:'無人臉'},
+      {line:EX_SCRIPT[3],shot:'開店老照片慢慢放大',sec:'10',source:'既有照片',motion:'微動',face:'已同意的人'},
+      {line:EX_SCRIPT[4],shot:'吉祥物小麥君揮手跳舞',sec:'6',source:'Flow 動畫',motion:'大動',face:'無人臉'},
+      {line:EX_SCRIPT[5],shot:'架上麵包橫移拍攝',sec:'8',source:'實拍',motion:'微動',face:'無人臉'},
+      {line:EX_SCRIPT[6],shot:'放學小朋友在店門口吃麵包',sec:'6',source:'實拍',motion:'中動',face:'未確認同意'},
+      {line:EX_SCRIPT[7],shot:'小麥君比出預購手勢',sec:'6',source:'Flow 動畫',motion:'大動',face:'無人臉'},
+      {line:EX_SCRIPT[8],shot:'預購方式字卡與私訊按鈕',sec:'8',source:'Photopea／Canva 合成',motion:'靜態',face:'無人臉'}
+    ],
+    consentPlan:'店員小芳已經口頭答應入鏡；爸爸只拍手部。放學的小朋友還沒問。',
+    assetsNote:'店門口早晨外觀、預購取貨的紙袋特寫。'
+  },
+  carry:S=>{const d3=S.d(3);if(!d3)return[];const lines=String(d3.script||'').split(/\n/).map(s=>s.trim()).filter(Boolean).slice(0,15);
+    return[
+      {title:'第 3 階段：旁白稿 → 分鏡（一句一列）',note:'帶入後補上畫面、秒數、來源、動態與同意狀態。',chips:lines.map((l,i)=>({label:`${i+1}. ${cut(l,12)}`,field:'shots',value:{line:l,shot:'',sec:'',source:'',motion:'',face:''}}))},
+      {title:'第 3 階段：三幕秒數（參考）',static:[`開場 ${num(d3.act1)} 秒`,`中段 ${num(d3.act2)} 秒`,`結尾 ${num(d3.act3)} 秒`]}
+    ];}
+},
+/* ---------------------------------------------------------------- 5 */
+{
+  id:5,key:'sound',title:'聲音設計',en:'Sound Design',
+  goal:'決定旁白、配樂與音效的工具和音量層次，守住音樂授權紅線。',
+  method:{
+    intro:'觀眾可以忍受畫面普通，卻很難忍受聽不清楚。聲音設計要決定三件事：旁白用什麼工具錄、配樂從哪裡來、四種聲音的音量誰大誰小。',
+    points:[
+      ['音量金字塔','旁白 100%、音效 50～70%、原音 30～50%、配樂 15～25%；配樂太大會蓋過旁白。'],
+      ['先定稿再錄','VoAI 免費 1,000 字，試錄幾版就用完；字數乘以版本數要先算。'],
+      ['借情緒，不抄歌','可以描述「溫暖、輕快、木吉他」，不能要求像某首歌；配樂只用有授權或自己生成的。'],
+      ['音效點出重點','出爐「叮」一聲、紙袋沙沙聲讓畫面有臨場感，但不要每鏡都放。']
+    ],
+    tools:[['VoAI','AI 旁白（免費 1,000 字）'],['Suno','AI 配樂（每天 50 次）'],['Google Vids','內建旁白與音樂、音量調整']],
+    deliverable:'旁白與配樂規格、音量層次與音效清單。'
+  },
+  guide:[
+    '選旁白工具，寫聲線與語氣，填預計試錄幾版。',
+    '選配樂來源，用情緒、樂器、速度描述你要的配樂。',
+    '心裡有參考歌曲就誠實填寫，並選擇是「只借情緒」還是「想做得很像」。',
+    '依音量金字塔填四種聲音的音量百分比。',
+    '用「前階段帶入」把分鏡逐鏡帶進音效清單，寫要加的音效。',
+    '按「確認診斷」：系統會算出旁白總字數、檢查配樂授權紅線與音量層次。'
+  ],
+  demo:'範例想讓配樂「跟某首知名流行歌一樣」，配樂音量設 40%，旁白還打算用 VoAI 試錄 5 版。看系統怎麼用第 3 階段的字數算出超額。',
+  sections:[
+    {title:'旁白',fields:[
+      {id:'voiceTool',type:'select',label:'旁白工具',req:true,options:['VoAI','Google Vids 旁白','自己錄音','ChatGPT 語音','其他']},
+      {id:'voiceStyle',type:'text',label:'聲線與語氣',req:true,ph:'例：溫暖女聲、語速中等、像跟鄰居聊天'},
+      {id:'voiceTakes',type:'number',label:'預計試錄幾版',req:true,ph:'2'}
+    ]},
+    {title:'配樂',fields:[
+      {id:'musicTool',type:'select',label:'配樂來源',req:true,options:['Suno','Google Vids 內建音樂','YouTube 音效庫','自己創作','其他']},
+      {id:'musicMood',type:'textarea',label:'配樂描述（情緒、樂器、速度）',req:true,ph:'例：溫暖、早晨、木吉他、輕快 100 BPM'},
+      {id:'musicCopy',type:'select',label:'參考歌曲的用法',req:true,options:['沒有參考歌曲','只借情緒，不照抄','想做得跟某首歌很像']},
+      {id:'musicRef',type:'textarea',label:'參考的歌曲或聲音（選填）'}
+    ]},
+    {title:'音量層次與音效',fields:[
+      {id:'volVoice',type:'number',label:'旁白音量 %',req:true,ph:'100'},
+      {id:'volSfx',type:'number',label:'音效音量 %',req:true,ph:'60'},
+      {id:'volOrig',type:'number',label:'現場原音音量 %',req:true,ph:'40'},
+      {id:'volMusic',type:'number',label:'配樂音量 %',req:true,ph:'20'},
+      {id:'sfxList',type:'textarea',label:'音效清單（第幾鏡加什麼）'}
+    ]}
+  ],
+  example:{
+    voiceTool:'VoAI',voiceStyle:'溫暖女聲、語速中等，像跟鄰居聊天',voiceTakes:5,
+    musicTool:'Suno',musicMood:'溫暖的早晨感，木吉他加輕快手拍，約 100 BPM。',
+    musicCopy:'想做得跟某首歌很像',musicRef:'想要跟某首知名流行歌一樣的前奏旋律，大家一聽就有感覺。',
+    volVoice:100,volSfx:60,volOrig:40,volMusic:40,
+    sfxList:'第 3 鏡 麵包出爐：烤箱「叮」一聲\n第 9 鏡 預購字卡：紙袋沙沙聲'
+  },
+  carry:S=>{const d3=S.d(3),d4=S.d(4),out=[];
+    if(d3){const n=charsOf(d3.script);out.push({title:'第 3 階段：旁白字數（參考）',static:[`旁白 ${n} 字`,`約 ${Math.round(n/3.3)} 秒（每秒 3.3 字）`]});}
+    if(d4){const sh=(d4.shots||[]).filter(s=>String(s.line||'').trim());
+      if(sh.length)out.push({title:'第 4 階段：分鏡 → 音效清單',note:'點選加入，再寫這一鏡要的音效。',chips:sh.map((s,i)=>({label:`第 ${i+1} 鏡`,field:'sfxList',value:`第 ${i+1} 鏡 ${cut(s.shot||s.line,10)}：`}))});}
+    return out;}
+},
+/* ---------------------------------------------------------------- 6 */
+{
+  id:6,key:'quota',title:'工具與額度',en:'Tools & Quota',
+  goal:'把每一站的工具、備案與免費額度算清楚，避免做到一半額度用完。',
+  method:{
+    intro:'免費額度就是你的製作預算。Flow 每天 50 點且不累積，一次生成 2 段都要扣點；Vids 的 AI 影片與分身每月共用 6 次；Canva AI 每月 20 次。先算清楚，再排進時程。',
+    points:[
+      ['六站分工','構思、腳本、視覺、聲音、動態、組裝，每站寫一個主要工具。'],
+      ['每個工具一個備案','工具當機、額度用完、生成不滿意，都要有退路。'],
+      ['Flow 點數最緊','Veo 3.1 Lite 每段 10 點、Fast 每段 20 點，一次 2 段一起扣；50 點大約只能試 2～3 次。'],
+      ['紅線先勾','肖像同意、音樂授權、個資、AI 標示、分身只用自己，開工前就確認。']
+    ],
+    tools:[['額度試算器','本階段擴充分頁，可試不同情境'],['Google Flow','每天 50 點，不累積'],['Google Vids','AI 影片與分身每月共用 6 次'],['Canva','AI 功能每月 20 次']],
+    deliverable:'工具分工表（含備案）、額度預算與紅線確認。'
+  },
+  guide:[
+    '用「前階段帶入」把分鏡與聲音用到的工具帶進分工表。',
+    '每個工具寫要做的事與備案工具。',
+    '填 Flow 的段數、模型、每段試幾次、分幾天生成；其他工具填預計使用次數。',
+    '到「額度試算器」分頁試算不同情境。',
+    '勾選你會遵守的紅線。',
+    '按「確認診斷」：系統會計算 Flow 點數夠不夠、各工具是否超額、哪些工具沒有備案、紅線是否與分鏡一致。'
+  ],
+  demo:'範例要用 Fast 模型生成 2 段吉祥物動畫、每段試 3 次，卻只排 2 天；3 個工具沒有備案，紅線也漏勾肖像同意。',
+  sections:[
+    {title:'工具分工',fields:[
+      {id:'tools',type:'table',label:'工具分工表',req:true,min:4,cols:[
+        {k:'station',l:'站別',t:'select',o:['構思','腳本','視覺','聲音','動態','組裝'],w:'14%'},{k:'tool',l:'主要工具',t:'select',o:TOOLS,w:'20%'},
+        {k:'task',l:'要做什麼',t:'text',w:'36%'},{k:'backup',l:'備案',t:'text',w:'30%'}]}
+    ]},
+    {title:'額度預算',fields:[
+      {id:'flowClips',type:'number',label:'Flow 動畫段數',req:true,help:'不用 Flow 填 0。'},
+      {id:'flowModel',type:'select',label:'Flow 模型',req:true,options:['不用 Flow','Veo 3.1 Lite（每段 10 點）','Veo 3.1 Fast（每段 20 點）']},
+      {id:'flowTries',type:'number',label:'每段預計試幾次',req:true},
+      {id:'flowDays',type:'number',label:'預計分幾天生成',req:true},
+      {id:'vidsAI',type:'number',label:'Vids AI 影片／分身次數',req:true,help:'每月共用 6 次。'},
+      {id:'canvaAI',type:'number',label:'Canva AI 次數',req:true,help:'每月 20 次。'},
+      {id:'sunoTries',type:'number',label:'Suno 生成次數',req:true,help:'每天 50 次。'}
+    ]},
+    {title:'紅線確認',fields:[
+      {id:'redlines',type:'checks',label:'你會遵守的紅線',req:true,min:3,options:REDLINES}
+    ]}
+  ],
+  example:{
+    tools:[
+      {station:'腳本',tool:'ChatGPT',task:'把旁白縮到 198 字內',backup:'自己刪句'},
+      {station:'視覺',tool:'Canva',task:'招牌動畫與預購字卡',backup:'Photopea'},
+      {station:'動態',tool:'Google Flow',task:'吉祥物動畫 2 段',backup:''},
+      {station:'聲音',tool:'VoAI',task:'旁白',backup:''},
+      {station:'聲音',tool:'Suno',task:'早晨溫暖配樂',backup:'Vids 內建音樂'},
+      {station:'組裝',tool:'Google Vids',task:'剪輯、字幕、匯出',backup:''}
+    ],
+    flowClips:2,flowModel:'Veo 3.1 Fast（每段 20 點）',flowTries:3,flowDays:2,vidsAI:1,canvaAI:8,sunoTries:10,
+    redlines:['配樂只用有授權或自己生成的','不把別人的個資上傳到 AI 工具','AI 生成內容會標示']
+  },
+  carry:S=>{const d4=S.d(4),d5=S.d(5),rows=[];
+    const add=(station,tool,task)=>{if(!rows.some(r=>r.tool===tool&&r.task===task))rows.push({station,tool,task,backup:''});};
+    const MAP={'ChatGPT 圖片':['視覺','ChatGPT 圖片','角色或場景圖'],'Photopea／Canva 合成':['視覺','Canva','字卡與合成畫面'],'Flow 動畫':['動態','Google Flow','動畫片段'],'數位分身':['組裝','Google Vids','數位分身片段'],'Vids 素材庫':['組裝','Google Vids','素材庫畫面'],'實拍':['視覺','手機相機','實拍畫面']};
+    const shots=d4?(d4.shots||[]).filter(s=>String(s.line||'').trim()):[];
+    shots.forEach(s=>{const m=MAP[s.source];if(m)add(...m);});
+    if(d5){const V={'VoAI':['聲音','VoAI','旁白'],'Google Vids 旁白':['聲音','Google Vids','旁白'],'ChatGPT 語音':['聲音','ChatGPT','旁白']};if(V[d5.voiceTool])add(...V[d5.voiceTool]);if(d5.musicTool==='Suno')add('聲音','Suno','配樂');}
+    if(d4||d5)add('組裝','Google Vids','剪輯與匯出');
+    const out=[];
+    if(rows.length)out.push({title:'第 4、5 階段：用到的工具 → 分工表',note:'帶入後補上備案工具。',chips:rows.map(r=>({label:`${r.tool}：${r.task}`,field:'tools',value:r}))});
+    if(d4){const n=shots.filter(s=>s.source==='Flow 動畫').length;out.push({title:'第 4 階段：Flow 動畫鏡數 → 段數',chips:[{label:`${n} 段`,field:'flowClips',value:String(n),replace:true}]});}
+    return out;}
+},
+/* ---------------------------------------------------------------- 7 */
+{
+  id:7,key:'edit',title:'剪輯與後製',en:'Edit & Post',
+  goal:'決定剪輯工具、畫面比例、字幕與後製檢查，並找人審片。',
+  method:{
+    intro:'剪輯不是把素材排起來就好。字幕要校對、音量要依金字塔調、匯出前要用手機看一次。第一次剪完一定會想改，所以要先排好誰幫你看初剪。',
+    points:[
+      ['比例跟著平台','直式平台用 9:16，作品集用 16:9；比例錯了要整支重排。'],
+      ['AI 字幕要校對','自動字幕常聽錯同音字、店名與數字，逐字對照旁白稿再上片。'],
+      ['後製檢查表','開場沒有 Logo、結尾有行動字卡、AI 內容已標示、手機上看過一次。'],
+      ['找人審片','找一位沒看過企劃的人看初剪，請他說出影片在講什麼。']
+    ],
+    tools:[['Google Vids','剪輯、字幕、音量、匯出'],['Canva','封面與字卡'],['手機預覽','匯出前全螢幕看一次']],
+    deliverable:'剪輯規格、後製檢查表與審片安排。'
+  },
+  guide:[
+    '選剪輯工具與主版本畫面比例。',
+    '決定字幕做法：AI 產生後是否逐字校對。',
+    '寫封面與標題構想，可以帶入第 1 階段的一句話主題。',
+    '勾選後製檢查表會做的項目，填匯出規格。',
+    '寫誰幫你審片、想問他哪些問題。',
+    '按「確認診斷」：系統會檢查字幕校對、比例與平台、開場 Logo、配樂音量與 AI 標示。'
+  ],
+  demo:'範例用 AI 自動字幕卻不校對；勾了「音量依金字塔調整」，但第 5 階段的配樂仍是 40%；開場的 Logo 也還在。',
+  sections:[
+    {title:'剪輯規格',fields:[
+      {id:'editTool',type:'select',label:'剪輯工具',req:true,options:['Google Vids','CapCut','Canva','其他']},
+      {id:'ratio',type:'select',label:'主版本畫面比例',req:true,options:['9:16 直式','16:9 橫式','1:1 方形']},
+      {id:'subtitle',type:'select',label:'字幕做法',req:true,options:['AI 產生後逐字校對','AI 產生，不校對','自己打字幕','不加字幕']},
+      {id:'coverPlan',type:'textarea',label:'封面與標題',req:true,ph:'例：剛出爐的可頌特寫，大字「週末麵包先幫你留」'}
+    ]},
+    {title:'後製檢查',fields:[
+      {id:'postChecks',type:'checks',label:'後製檢查表（會做的打勾）',req:true,min:3,options:POSTCHECKS},
+      {id:'exportSpec',type:'text',label:'匯出規格',req:true,ph:'例：1080×1920、MP4'}
+    ]},
+    {title:'審片',fields:[
+      {id:'reviewer',type:'text',label:'誰幫你看初剪？',req:true},
+      {id:'reviewQs',type:'textarea',label:'想問看片的人哪些問題？'}
+    ]}
+  ],
+  example:{
+    editTool:'Google Vids',ratio:'9:16 直式',subtitle:'AI 產生，不校對',
+    coverPlan:'剛出爐的鹽可頌特寫，大字「週末麵包先幫你留」。',
+    postChecks:['音量依金字塔調整','結尾有行動呼籲字卡','匯出前用手機看過一次'],
+    exportSpec:'1080×1920、MP4',reviewer:'先生與店員小芳',
+    reviewQs:'預購方式有沒有看懂？哪一段想快轉？'
+  },
+  carry:S=>{const d1=S.d(1),d3=S.d(3),out=[];
+    if(d1)out.push({title:'第 1 階段：一句話主題 → 封面構想',chips:[{label:cut(d1.theme,20),field:'coverPlan',value:`封面標題參考：${d1.theme}`}]});
+    if(d3)out.push({title:'第 3 階段：開場 → 審片問題',chips:[{label:'前 3 秒留得住人嗎',field:'reviewQs',value:`前 3 秒「${cut(unquote(lead(d3.hook)),16)}」會不會讓你想滑走？`}]});
+    return out;}
+},
+/* ---------------------------------------------------------------- 8 */
+{
+  id:8,key:'release',title:'發布與改編',en:'Release & Adapt',
+  goal:'決定每個平台的版本長度與比例、發布時間、文案，以及判斷成效的數字。',
+  method:{
+    intro:'同一支影片放到不同平台，長度與比例要跟著改。先決定主平台，再決定要不要剪精華版或橫式版；最後寫下「看什麼數字算成功」，發布後才知道下一支怎麼改。',
+    points:[
+      ['平台長度不同','YouTube Shorts 15～60 秒；IG、FB Reels 15～30 秒；LINE VOOM 30～60 秒。'],
+      ['作品集用 16:9','求職或作品集用橫式；只有直式版，放進作品集會很小。'],
+      ['文案帶行動','貼文第一行就寫行動呼籲，不要只寫心情。'],
+      ['先定成功數字','依目的選指標：推廣看預訂或詢問數，品牌看分享與追蹤。']
+    ],
+    tools:[['平台規格表','長度與比例'],['Google Vids','另存不同比例版本'],['IG 專業主控板','觀看、分享、私訊數據']],
+    deliverable:'發布版本表、發布時間與文案、成效指標與目標。'
+  },
+  guide:[
+    '用「前階段帶入」把主平台帶進版本表，再加其他平台的版本。',
+    '每個版本填秒數、比例與要改的地方。',
+    '填發布日期時段、貼文文案與 Hashtag。',
+    '選一個判斷成效的數字並寫目標。',
+    '按「確認診斷」：系統會檢查各平台長度、比例、是否有 16:9 版本、指標是否對應目的。'
+  ],
+  demo:'範例三個版本都是 60 秒直式：IG Reels 超過建議長度，也沒有作品集要用的 16:9 版本。',
+  sections:[
+    {title:'發布版本',fields:[
+      {id:'versions',type:'table',label:'版本表',req:true,min:2,cols:[
+        {k:'plat',l:'平台',t:'select',o:PLATFORMS,w:'26%'},{k:'sec',l:'秒數',t:'number',w:'12%'},
+        {k:'ratio',l:'比例',t:'select',o:['9:16','16:9','1:1'],w:'14%'},{k:'change',l:'這個版本要改什麼',t:'text',w:'48%'}]}
+    ]},
+    {title:'發布計畫',fields:[
+      {id:'postDate',type:'text',label:'預計發布日期與時段',req:true,ph:'例：第 3 週週四 19:00'},
+      {id:'caption',type:'textarea',label:'貼文文案',req:true},
+      {id:'hashtags',type:'text',label:'Hashtag'},
+      {id:'measure',type:'select',label:'用哪個數字判斷成效？',req:true,options:['私訊或預訂數','觀看次數','按讚與留言','分享次數','追蹤人數']},
+      {id:'target',type:'text',label:'目標數字',req:true,ph:'例：首週 20 筆預訂'}
+    ]}
+  ],
+  example:{
+    versions:[
+      {plat:'IG Reels',sec:'60',ratio:'9:16',change:'主版本'},
+      {plat:'YouTube Shorts',sec:'60',ratio:'9:16',change:'同一版，標題改成問句'},
+      {plat:'LINE VOOM',sec:'60',ratio:'9:16',change:'同一版，加店家 LINE 連結'}
+    ],
+    postDate:'第 3 週週四 19:00（預購截止前一天）',
+    caption:'週末麵包先幫你留！週五晚上 9 點前私訊預訂，週六早上 8 點直接取貨。',
+    hashtags:'#巷口手工麵包 #週末預購 #社區麵包店',measure:'私訊或預訂數',target:'首週 20 筆預訂'
+  },
+  carry:S=>{const d1=S.d(1);if(!d1)return[];const wide=/橫式|16:9/.test(d1.platform);
+    return[
+      {title:'第 1 階段：主平台 → 版本表',chips:[{label:`${d1.platform} ${num(d1.length)} 秒`,field:'versions',value:{plat:d1.platform,sec:String(num(d1.length)),ratio:wide?'16:9':'9:16',change:'主版本'}}]},
+      {title:'第 1 階段：行動呼籲 → 貼文文案',chips:[{label:cut(d1.cta,20),field:'caption',value:d1.cta}]}
+    ];}
+},
+/* ---------------------------------------------------------------- 9 */
+{
+  id:9,key:'schedule',title:'執行時程',en:'Schedule & Backup',
+  goal:'把前八個階段排成每週任務，確認時數做得到，並準備備案與最低可交付版本。',
+  method:{
+    intro:'企劃的最後一步是排進行事曆。每週可投入時數是硬上限，排超過就一定會延誤。再寫下最可能卡住的地方與備案，以及「時間不夠時砍掉什麼還能交」。',
+    points:[
+      ['每週不超過上限','每週任務時數加總，不超過第 1 階段填的可投入時數。'],
+      ['先做最難的','需要額度或別人配合的事（Flow 生成、拍攝、肖像同意）排前面。'],
+      ['每個卡點一個備案','工具、額度、天氣、協助者時間，都寫出替代做法。'],
+      ['最低可交付版本','時間不夠時保留什麼、砍掉什麼，事先決定比事後慌張好。']
+    ],
+    tools:[['每週任務表','任務、週次、時數、完成品'],['行事曆','把任務排進真實日期'],['Day15 發表','用一句話介紹你的企劃']],
+    deliverable:'每週執行時程、備案與最低可交付版本、Day15 發表的一句話。'
+  },
+  guide:[
+    '用「前階段帶入」把第 6 階段的工具分工帶進任務表。',
+    '每個任務選週次、填時數與完成品。',
+    '檢查每週加總，不要超過你每週可投入的時數。',
+    '寫最可能卡住的地方與備案，以及最低可交付版本。',
+    '寫 Day15 發表時的一句話介紹；需要協助就選「是」並說明。',
+    '按「確認診斷」：系統會檢查總時數、每週時數、備案，以及與第 6 階段工具的一致性。'
+  ],
+  demo:'範例排了 22 小時，但林佳穎每週 6 小時 × 3 週只有 18 小時，三週都超量；備案只寫「應該不會卡住」。',
+  sections:[
+    {title:'每週任務',fields:[
+      {id:'schedule',type:'table',label:'每週任務表',req:true,min:3,cols:[
+        {k:'task',l:'任務',t:'textarea',w:'40%'},{k:'week',l:'週次',t:'select',o:WEEKS,w:'16%'},
+        {k:'hours',l:'時數',t:'number',w:'12%'},{k:'output',l:'完成品',t:'text',w:'32%'}]}
+    ]},
+    {title:'備案與交付',fields:[
+      {id:'backupPlan',type:'textarea',label:'最可能卡住的地方與備案',req:true},
+      {id:'minVersion',type:'textarea',label:'最低可交付版本',req:true,help:'時間不夠時，保留什麼、砍掉什麼還能交。'}
+    ]},
+    {title:'Day15 發表',fields:[
+      {id:'pitchLine',type:'text',label:'一句話介紹你的企劃',req:true},
+      {id:'needHelp',type:'select',label:'發表前需要老師協助嗎？',req:true,options:['否','是']},
+      {id:'helpNote',type:'textarea',label:'需要什麼協助？',dep:'needHelp',depReq:true}
+    ]}
+  ],
+  example:{
+    schedule:[
+      {task:'改寫旁白稿、重拆分鏡',week:'第 1 週',hours:'3',output:'定稿腳本與分鏡表'},
+      {task:'週六早上實拍出爐與揉麵',week:'第 1 週',hours:'4',output:'實拍素材 20 段'},
+      {task:'ChatGPT 圖片、Flow 生成吉祥物動畫',week:'第 2 週',hours:'5',output:'動畫片段 2 段'},
+      {task:'VoAI 旁白、Suno 配樂',week:'第 2 週',hours:'2',output:'旁白與配樂檔'},
+      {task:'Vids 剪輯、字幕、調音量',week:'第 3 週',hours:'5',output:'初剪版'},
+      {task:'家人審片、修改、匯出與發布',week:'第 3 週',hours:'3',output:'完成版與貼文'}
+    ],
+    backupPlan:'應該不會卡住，照計畫做就好。',
+    minVersion:'至少完成實拍加旁白加字幕的 45 秒版本，吉祥物動畫可以拿掉。',
+    pitchLine:'給附近上班族的 60 秒週末預購短片',
+    needHelp:'是',helpNote:'Flow 生成的吉祥物每次長得不一樣，想請老師看提示詞。'
+  },
+  carry:S=>{const d1=S.d(1),d6=S.d(6),out=[];
+    if(d1)out.push(
+      {title:'第 1 階段：可投入時間（參考）',static:[`每週 ${num(d1.weeklyHours)} 小時`,`${num(d1.weeks)} 週，共 ${num(d1.weeklyHours)*num(d1.weeks)} 小時`]},
+      {title:'第 1 階段：一句話主題 → 發表介紹',chips:[{label:cut(d1.theme,20),field:'pitchLine',value:d1.theme,replace:true}]});
+    if(d6){const t=(d6.tools||[]).filter(r=>String(r.station||'').trim());
+      if(t.length)out.push({title:'第 6 階段：工具分工 → 任務',note:'帶入後選週次並填時數。',chips:t.map(r=>({label:`${r.tool}：${cut(r.task,10)}`,field:'schedule',value:{task:`${r.tool}：${r.task}`,week:'',hours:'',output:''}}))});}
+    return out;}
+}
+];
+/* =====================================================================
+   PART A-2：診斷規則（RULES）、擴充分頁（EXTRA_TABS）、成果報告（REPORT）
+   主題：期末專題影片企劃（九階段）。視覺化用 rough.js 手繪風（載入失敗時退回一般 SVG）。
+   規則撰寫慣例：
+   - RULES[n]=(d,S)=>({...})：d 是本階段剛確認的資料；S.d(id) 取前階段已確認資料（未確認為 null）
+   - 每條結論用 R('Rn-xx',嚴重度,文字,驗證方式)；嚴重度 h 高／m 中／l 正向／i 資訊
+   - 扣分寫在觸發處（score-=N），填寫者能追溯「為什麼是這個分數」
+   - 跨階段交叉檢核（例如第 7 階段回頭看第 5 階段的配樂音量）是本引擎最有價值的部分
+   - 本檔只在函式內使用 PART B 的 helper（R、num、esc、barRows…），不可在載入時直接呼叫
+   ===================================================================== */
+const filled=(rows,k)=>(rows||[]).filter(r=>String(r[k]==null?'':r[k]).trim());
+const hasNum=s=>/\d/.test(String(s||''));
+const sumOf=(rows,k)=>(rows||[]).reduce((a,r)=>a+num(r[k]),0);
+const lead=s=>String(s||'').split(/[（(]/)[0].trim();          // 取括號前的主句，避免截斷後括號不成對
+const unquote=s=>String(s||'').trim().replace(/^[「"]+|[」"]+$/g,''); // 去掉填寫者已加的引號，避免「「」」
+const plain=s=>String(s||'').replace(/[「」『』"]/g,'');
+const lines=s=>String(s||'').split(/\n/).map(x=>x.trim()).filter(Boolean);
+const RULES={};
+
+/* ---------------- 課程規格（116 版工具組） ---------------- */
+const PLAT_RANGE={'IG Reels':[15,30],'FB Reels':[15,30],'YouTube Shorts':[15,60],'LINE VOOM':[30,60]};
+const isWide=s=>/橫式|16:9/.test(String(s||''));
+const partNo=s=>String(s||'').slice(0,2);
+const ROUTE_PARTS={實拍:['03','04','07','08'],分身:['03','11','07'],動畫:['09','10','07'],翻新:['07','08','06']};
+const ROUTE_ONLY={'04':'實拍','11':'分身','09':'動畫','10':'動畫'};
+const DISALLOW={實拍:['Flow 動畫','數位分身'],分身:['Flow 動畫'],動畫:['實拍','數位分身'],翻新:['Flow 動畫','數位分身']};
+const GOAL_MEASURE={'推廣商品或服務':['私訊或預訂數'],'記錄生活或作品':['觀看次數','按讚與留言'],'知識分享':['分享次數','觀看次數'],'品牌形象':['分享次數','追蹤人數']};
+const FLOW_COST=m=>/Lite/.test(String(m||''))?10:/Fast/.test(String(m||''))?20:0;
+/* Flow：每天 50 點不累積；一次生成 2 段，兩段都扣點 */
+const flowCalc=(clips,model,tries,days)=>{const cost=FLOW_COST(model),req=Math.max(0,clips)*Math.max(0,tries),points=req*2*cost,perDay=cost?Math.floor(50/(2*cost)):0,daysNeed=perDay?Math.ceil(req/perDay):0;return{cost,req,points,perDay,daysNeed,days};};
+
+/* ---------------- 手繪風 SVG（rough.js；未載入或出錯時退回一般圖形） ---------------- */
+let _skg=null;
+const skGen=()=>{if(_skg)return _skg;if(typeof rough==='undefined')return null;try{_skg=rough.generator();}catch(e){console.warn('rough.js 初始化失敗，改用一般圖形',e);return null;}return _skg;};
+const skPaths=dr=>(_skg.toPaths(dr)||[]).map(p=>`<path d="${p.d}" stroke="${p.stroke}" stroke-width="${p.strokeWidth}" fill="${p.fill||'none'}" vector-effect="non-scaling-stroke"/>`).join('');
+const skDraw=(make,fallback)=>{const g=skGen();if(!g)return fallback;try{return skPaths(make(g));}catch(e){console.warn('rough.js 繪製失敗',e);return fallback;}};
+const skOpt=(o,base)=>{const opt={...base};['fill','fillStyle','hachureGap','hachureAngle'].forEach(k=>{if(o[k]!=null)opt[k]=o[k];});return opt;};
+const skRect=(x,y,w,h,o)=>{o=o||{};const st=o.stroke||'#2b2622',sw=o.strokeWidth||1.4;
+  return skDraw(g=>g.rectangle(x,y,w,h,skOpt(o,{roughness:o.roughness!=null?o.roughness:1.4,stroke:st,strokeWidth:sw,seed:o.seed||7})),
+    `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${o.fill||'none'}" stroke="${st}" stroke-width="${sw}" ${o.fill?'fill-opacity=".55"':''} vector-effect="non-scaling-stroke"/>`);};
+const skLine=(x1,y1,x2,y2,o)=>{o=o||{};const st=o.stroke||'#2b2622',sw=o.strokeWidth||1.4;
+  return skDraw(g=>g.line(x1,y1,x2,y2,{roughness:o.roughness!=null?o.roughness:1.2,stroke:st,strokeWidth:sw,seed:o.seed||7}),
+    `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${st}" stroke-width="${sw}" vector-effect="non-scaling-stroke"/>`);};
+const skBox=(inner,o)=>{o=o||{};return`<div class="skbox ${o.cls||''}"><svg class="skbox-bg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${skRect(2,2,96,96,{stroke:o.stroke||'#2b2622',seed:o.seed||7,roughness:1.1})}</svg><div class="skbox-in">${inner}</div></div>`;};
+const SK_COL={r:'#c8553d',y:'#d9a23a',g:'#4f7d5c','':'#2f5d73',b:'#2f5d73'};
+const skX=(v,max)=>Math.max(0,Math.min(300,max?v/max*300:0));
+/* rows=[{label,value,text?,cls?,band?:[lo,hi]}]；o={max?,cap?,capLabel?}：band 畫建議範圍，cap 畫紅線 */
+const skBars=(rows,o)=>{o=o||{};const max=o.max||Math.max(1,...rows.map(r=>num(r.value)));const cap=o.cap!=null?skX(o.cap,max):null;
+  return`<div class="skbars">${rows.map((r,i)=>{const w=skX(num(r.value),max),col=SK_COL[r.cls||''];
+    const band=r.band?skRect(skX(r.band[0],max),1,Math.max(1,skX(r.band[1],max)-skX(r.band[0],max)),16,{stroke:'none',fill:'rgba(79,125,92,.18)',fillStyle:'solid',roughness:0.6,seed:30+i}):'';
+    const bar=w>0?skRect(0,3,w,12,{stroke:col,fill:col,fillStyle:'hachure',hachureGap:3.5,hachureAngle:-41,roughness:1.2,seed:11+i}):'';
+    const capL=cap!=null?skLine(cap,0,cap,18,{stroke:'#c8553d',strokeWidth:2,roughness:0.8,seed:50+i}):'';
+    return`<div class="skbar-row"><span title="${esc(r.label)}">${esc(cut(r.label,14))}</span><svg viewBox="0 0 300 18" preserveAspectRatio="none" aria-hidden="true">${band}${bar}${capL}</svg><b>${esc(r.text!=null?r.text:r.value)}</b></div>`;}).join('')}${o.capLabel?`<div class="skbar-cap">${esc(o.capLabel)}</div>`:''}</div>`;};
+
+/* ---------------------------------------------------------------- 1 主題定錨 */
+RULES[1]=(d)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;
+  const len=num(d.length),hrs=num(d.weeklyHours)*num(d.weeks),rg=PLAT_RANGE[d.platform],offLen=!!rg&&(len<rg[0]||len>rg[1]);
+  const m=String(d.theme||'').match(/影片(.*?)讓/),seg=m?m[1]:String(d.theme||'');
+  const topics=seg.split(/、|和|及|與|還有|以及/).map(s=>s.replace(/^[，,。；\s]+|[，,。；\s]+$/g,'')).filter(Boolean);
+  const broad=/所有人|大家|每個人|任何人/.test(d.audience||''),many=topics.length>=3;
+  if(broad){A.push(R('R1-01','h','觀眾寫到「所有人」：想講給每個人聽，等於沒有人覺得你在跟他說話，文案和畫面都會失焦。'));C.push(R('R1-01','m','觀眾只留一群人，寫出年齡、身分與看影片的場合，例：住附近、通勤會滑 IG 的上班族。'));score-=15;}
+  else A.push(R('R1-01','l','觀眾只鎖定一群人，後面的文案、畫面與發布平台都能對準他們。'));
+  if(many){A.push(R('R1-02','h',`一句話主題同時想講 ${topics.length} 件事（${topics.map(t=>cut(t,10)).join('、')}），${len?len+' 秒':'一支短影片'}塞不下，每件事都只能帶過。`));C.push(R('R1-02','m',`只留一個和行動呼籲「${cut(unquote(d.cta),16)}」直接相關的話題，其他留給下一支影片。`));score-=12;}
+  else if(topics.length===2){A.push(R('R1-02','m',`一句話主題有 2 個話題（${topics.map(t=>cut(t,10)).join('、')}），確認兩者是同一條主線，不是兩支影片。`));score-=5;}
+  else A.push(R('R1-02','l','一句話主題只有一個話題，夠聚焦。'));
+  const th=String(d.theme||'');
+  if(/給.+看/.test(th)&&/\d+\s*秒/.test(th)&&/讓/.test(th))A.push(R('R1-03','l','一句話主題包含「給誰看、幾秒、讓他做什麼」三個要素。'));
+  else{A.push(R('R1-03','m','一句話主題缺少「給誰看、幾秒、讓他做什麼」其中一項，後面階段會少了檢查基準。'));C.push(R('R1-03','m','照公式重寫：給〔誰〕看的〔幾秒〕影片，讓他〔做什麼〕。'));score-=8;}
+  if(hasNum(d.cta))A.push(R('R1-04','l',`行動呼籲「${cut(unquote(d.cta),24)}」有時間或數字，觀眾知道什麼時候、做什麼。`));
+  else{A.push(R('R1-04','m','行動呼籲沒有時間或數字，觀眾看完不知道什麼時候該做。'));C.push(R('R1-04','m','把行動寫成動作加時間，例：週五晚上 9 點前私訊預訂。'));score-=8;}
+  if(offLen){A.push(R('R1-05','m',`${d.platform} 建議 ${rg[0]}～${rg[1]} 秒，你規劃 ${len} 秒，完播率會下降。`));C.push(R('R1-05','m',`主版本改成 ${rg[0]}～${rg[1]} 秒，或把主平台換成長度相符的平台（YouTube Shorts、LINE VOOM 可到 60 秒）。`));score-=6;}
+  else if(rg)A.push(R('R1-05','l',`${len} 秒符合 ${d.platform} 的建議長度。`));
+  if(hrs<10){A.push(R('R1-06','m',`可投入總時數只有 ${hrs} 小時，一支要拍攝、生成又要剪輯的影片通常不夠。`));C.push(R('R1-06','m','縮短影片長度或減少畫面來源；第 9 階段排時程時以這個時數為上限。'));score-=8;}
+  else A.push(R('R1-06','l',`每週 ${num(d.weeklyHours)} 小時 × ${num(d.weeks)} 週，共 ${hrs} 小時，是第 9 階段排時程的上限。`));
+  H.push(R('R1-07','m',`你的觀眾最常在 ${d.platform||'你選的平台'} 看到這類影片，而且願意看完 ${len||'整支'} 秒。`,'發布前問 3 位符合觀眾條件的人：平常在哪個平台滑短影片、這個長度會不會看完。'));
+  if(d.goal==='求職作品集'&&!isWide(d.platform)){A.push(R('R1-08','m','目的是求職作品集，主平台卻是直式短影音；作品集通常用 16:9 橫式播放。'));score-=4;}
+  if(d.hasPartner==='是')C.push(R('R1-09','m',`有人可以協助（${cut(lead(d.partnerNote),30)}）：把他有空的時段寫進第 9 階段，拍攝排在他有空的那天。`));
+  N.push(R('R1-N1',broad||many?'h':'m',broad||many?'今天就把一句話主題改成只有一群觀眾、一個話題，再進第 2 階段挑零件。':'把一句話主題寫在作品資料夾的第一頁，之後每一步都拿它對照。'));
+  N.push(R('R1-N2','m','打開行事曆，先把每週可投入的時段圈出來，第 9 階段會用到。'));
+  M.push({label:'主題話題數',value:topics.length+' 個',cls:many?'r':topics.length===2?'y':'g'},{label:'影片長度',value:len+' 秒',cls:offLen?'y':'g'},{label:'可投入總時數',value:hrs+' 小時',cls:hrs<10?'y':'b'},{label:'平台建議長度',value:rg?`${rg[0]}～${rg[1]} 秒`:'不限',cls:'b'});
+  const tri=(k,v,warn,seed)=>skBox(`<div class="triad-k">${k}</div><div class="triad-v">${esc(cut(v,40))||'－'}</div>${warn?`<div class="triad-w">${warn}</div>`:''}`,{seed,stroke:warn?'#c8553d':'#2b2622'});
+  const visual=`<h4>一句話主題拆解</h4><div class="triad">${tri('誰看',d.audience,broad?'觀眾太廣':'',3)}${tri('多長',`${len} 秒｜${d.platform||'－'}`,offLen?'不符平台建議':'',5)}${tri('做什麼',d.cta,hasNum(d.cta)?'':'缺少時間或數字',9)}</div>
+  <h4 class="mt12">主題裡的話題</h4><div class="btn-row">${topics.map(t=>`<span class="pill">${esc(cut(t,16))}</span>`).join('')||'<span class="tiny muted">－</span>'}</div><p class="tiny muted mt8">話題超過 1 個，代表這支影片想講太多事；紅框是要先修的地方。</p>`;
+  return{score:Math.max(0,Math.min(100,score)),scoreLabel:'主題聚焦度',metrics:M,assessment:A,hypotheses:H,recommendations:C,nextActions:N,visual};};
+
+/* ---------------------------------------------------------------- 2 零件與路線 */
+RULES[2]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d1=S.d(1)||{};
+  const rows=filled(d.parts,'part'),used=rows.filter(r=>r.use!=='不用'),nos=used.map(r=>partNo(r.part));
+  const route=d.route||'',need=ROUTE_PARTS[route]||[],miss=need.filter(n=>!nos.includes(n));
+  const cross=used.filter(r=>ROUTE_ONLY[partNo(r.part)]&&ROUTE_ONLY[partNo(r.part)]!==route);
+  const notDone=used.filter(r=>r.status==='沒做'),rework=used.filter(r=>r.use==='改了再用');
+  if(used.length>8){A.push(R('R2-01','h',`這支影片要用 ${used.length} 個零件，超過 8 個，每個都只能做半套。`));C.push(R('R2-01','m','零件收斂到 5～6 個：路線必要零件加上旁白與配樂，其他留給下一支。'));score-=15;}
+  else if(used.length>6){A.push(R('R2-01','m',`要用 ${used.length} 個零件，略多；確認每個都在時程內做得完。`));score-=5;}
+  else A.push(R('R2-01','l',`只用 ${used.length} 個零件，做得到位。`));
+  if(need.length&&miss.length){A.push(R('R2-02','m',`${route}路線的必要零件缺 ${miss.join('、')}，這條路線走不完。`));C.push(R('R2-02','m',`把 ${miss.map(n=>PARTS.find(p=>p.startsWith(n))||n).join('、')} 排進這支影片，或改選手上零件更齊的路線。`));score-=8;}
+  else if(need.length)A.push(R('R2-02','l',`${route}路線的必要零件（${need.join('、')}）都在清單裡。`));
+  if(cross.length){A.push(R('R2-03','h',`選了${route}路線，卻用了其他路線專屬的零件：${cross.map(r=>`${cut(r.part,8)}（${ROUTE_ONLY[partNo(r.part)]}）`).join('、')}。`));score-=10;}
+  if(d.mixRoute==='是'){A.push(R('R2-04','h',`還想混用其他路線（${cut(lead(d.mixNote),30)}）：每多一條路線，就多一套工具、額度與摸索時間。`));
+    H.push(R('R2-05','m','混用路線可能讓製作時間多出一倍以上。','先用一個週末只做主路線的一鏡並計時，再估混用要多花多少時間。'));score-=8;}
+  if(notDone.length){A.push(R('R2-06','m',`${notDone.map(r=>cut(r.part,8)).join('、')} 目前「沒做」卻排進這支影片，要從零開始做，第 9 階段要算進時數。`));score-=4;}
+  if(rework.length)H.push(R('R2-07','m',`${rework.length} 個「改了再用」的零件（${rework.map(r=>partNo(r.part)).join('、')}），修改時間可能比預期長。`,'挑一個改了再用的零件實際改 30 分鐘，記錄完成多少，再推估全部要幾小時。'));
+  const CATS=[['腳本',['01','03']],['畫面',['02','04','09','10','11']],['聲音',['05','11']],['配樂',['06']]];
+  const lack=CATS.filter(c=>!c[1].some(n=>nos.includes(n))).map(c=>c[0]);
+  if(lack.length){A.push(R('R2-08','m',`缺少 ${lack.join('、')} 類零件，要確認這一類素材從哪裡來。`));score-=6;}
+  else A.push(R('R2-08','l','腳本、畫面、聲音、配樂四大類都有來源。'));
+  if(route==='實拍'&&d1.hasPartner==='否'){A.push(R('R2-09','m','走實拍路線，但第 1 階段沒有人幫你拍攝或入鏡；自拍要多預留架設與重拍時間。'));score-=5;}
+  const keep=[...new Set(need.concat(['05','06'].filter(n=>nos.includes(n))))];
+  if(used.length>6||cross.length)N.push(R('R2-N1','h',`本週把零件清單刪到 ${keep.length} 個：${keep.join('、')}，其他標成「不用」。`));
+  else N.push(R('R2-N1','m','把每個要用的零件檔案集中到同一個資料夾，檔名加上零件編號。'));
+  if(d.mixRoute==='是'||cross.length)N.push(R('R2-N2','m',`把混用的想法寫進「下一支影片」清單，這支只走${route}路線。`));
+  M.push({label:'使用零件數',value:used.length+' 個',cls:used.length>8?'r':used.length>6?'y':'g'},{label:'路線',value:route||'－',cls:'b'},{label:'跨路線零件',value:cross.length+' 個',cls:cross.length?'r':'g'},{label:'沒做但要用',value:notDone.length+' 個',cls:notDone.length?'y':'g'});
+  const slot=p=>{const no=partNo(p),r=rows.find(x=>partNo(x.part)===no),u=!!r&&r.use!=='不用';
+    const cls=!u?'unused':ROUTE_ONLY[no]&&ROUTE_ONLY[no]!==route?'other':need.includes(no)?'need':'used';
+    const tag={need:'主路線',other:'跨路線',used:'會用',unused:need.includes(no)?'缺少':'不用'}[cls];
+    return`<div class="slot ${cls}${!u&&need.includes(no)?' miss':''}"><b>${no}</b><span>${esc(p.slice(3))}</span><em>${tag}${u&&r.status==='沒做'?'｜沒做':''}</em></div>`;};
+  const visual=`<h4>零件架（13 格）</h4><div class="shelf">${PARTS.map(slot).join('')}</div><p class="tiny muted mt8">深色＝${esc(route||'主')}路線必要零件；紅框＝其他路線專屬；淡色＝不用。紅框越多，這支影片越可能做不完。</p>`;
+  return{score:Math.max(0,Math.min(100,score)),scoreLabel:'零件與路線可行度',metrics:M,assessment:A,hypotheses:H,recommendations:C,nextActions:N,visual};};
+
+/* ---------------------------------------------------------------- 3 故事結構 */
+RULES[3]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d1=S.d(1)||{};
+  const a1=num(d.act1),a2=num(d.act2),a3=num(d.act3),acts=a1+a2+a3,len=num(d1.length)||acts;
+  const ls=lines(d.script),n=charsOf(d.script),limit=Math.floor(len*3.3),needSec=Math.round(n/3.3),over=n-limit;
+  const per=ls.length?n/ls.length:0,cutN=per&&over>0?Math.ceil(over/per):0;
+  const logo=['品牌 Logo','自我介紹'].includes(d.hookType),ck=d.checks5||[];
+  if(over>0){A.push(R('R3-01','h',`旁白 ${n} 字，超過 ${len} 秒的上限 ${limit} 字（多 ${over} 字），以每秒 3.3 字估算需要 ${needSec} 秒。`));C.push(R('R3-01','m',`刪掉約 ${cutN} 句，不要靠加快語速硬塞；每秒 4 字已是極限。`));score-=20;}
+  else if(n<limit*0.6)A.push(R('R3-01','i',`旁白 ${n} 字，只用了上限 ${limit} 字的 ${pct(n,limit)}%，記得用畫面與字卡補足節奏。`));
+  else A.push(R('R3-01','l',`旁白 ${n} 字，在 ${len} 秒的上限 ${limit} 字內。`));
+  if(logo){A.push(R('R3-02','h',`開場是「${d.hookType}」：觀眾在前 3 秒就會滑走，Logo 和自我介紹要放到結尾。`));C.push(R('R3-02','m','前 3 秒改用提問、衝突或驚喜，例：「凌晨五點，整條巷子只有一家店亮著。」'));score-=12;}
+  else A.push(R('R3-02','l',`開場用「${d.hookType}」，有機會留住觀眾。`));
+  if(acts!==len){A.push(R('R3-03','m',`三幕合計 ${acts} 秒，和影片長度 ${len} 秒不一致。`));score-=8;}
+  else if(!(a2>a1&&a2>a3)){A.push(R('R3-03','m',`中段 ${a2} 秒不是最長，三幕建議約 1:2:1。`));score-=4;}
+  else A.push(R('R3-03','l',`三幕 ${a1}／${a2}／${a3} 秒，中段最長，接近 1:2:1。`));
+  const miss5=FIVECHECKS.filter(x=>!ck.includes(x));
+  if(miss5.length>=2){A.push(R('R3-04','m',`好影片五檢核還缺 ${miss5.length} 項：${miss5.join('、')}。`));score-=6;}
+  else A.push(R('R3-04','l',`好影片五檢核做到 ${ck.length} 項。`));
+  if(logo&&ck.includes(FIVECHECKS[0])){A.push(R('R3-05','m','勾了「前 3 秒有提問、衝突或驚喜」，開場類型卻是 Logo 或自我介紹，兩者矛盾。'));score-=6;}
+  if(ls.length&&len/ls.length>10){A.push(R('R3-06','m',`${ls.length} 句旁白撐 ${len} 秒，平均每句超過 10 秒，畫面會拖。`));score-=4;}
+  if(hasNum(d.endCta))A.push(R('R3-07','l','結尾行動呼籲有時間或數字。'));
+  else C.push(R('R3-07','m','結尾行動呼籲加上時間或數字，例：週五晚上 9 點前私訊。'));
+  H.push(R('R3-08','m',over>0?`刪掉 ${cutN} 句後，主線「${cut(unquote(d.mainLine),20)}」仍然完整。`:`主線「${cut(unquote(d.mainLine),20)}」一聽就懂。`,'把旁白稿念給一位沒看過企劃的人聽，請他用一句話說出影片在講什麼，和你的主線比對。'));
+  if(over>0)N.push(R('R3-N1','h',`本週先刪 ${cutN} 句，把旁白壓到 ${limit} 字內；可以請 ChatGPT 依字數上限提出刪減建議，由你決定留哪句。`));
+  if(logo)N.push(R('R3-N2','m','重寫前 3 秒：先寫一個提問或衝突，Logo 改放到結尾字卡。'));
+  if(!N.length)N.push(R('R3-N1','m','用手機計時念一次旁白，確認實際秒數和規劃一致。'));
+  M.push({label:'旁白字數',value:n+' 字',cls:over>0?'r':'g'},{label:'字數上限',value:limit+' 字',cls:'b'},{label:'實際需要秒數',value:needSec+' 秒',cls:needSec>len?'r':'g'},{label:'開場類型',value:d.hookType||'－',cls:logo?'r':'g'});
+  const act=(t,s,i)=>`<div class="act" style="flex:${Math.max(1,s)}">${skBox(`<b>${t}</b><span>${s} 秒</span>`,{seed:21+i})}</div>`;
+  const visual=`<h4>三幕時間軸（${acts} 秒）</h4><div class="acts">${act('開場',a1,0)}${act('中段',a2,1)}${act('結尾',a3,2)}</div>
+  <h4 class="mt12">旁白字數與上限</h4>${skBars([{label:'旁白字數',value:n,cls:over>0?'r':'g',text:n+' 字'}],{max:Math.ceil(Math.max(n,limit,1)*1.15),cap:limit,capLabel:`紅線：${len} 秒 × 3.3 字 = ${limit} 字`})}
+  <h4 class="mt12">每句字數</h4>${barRows(ls.map((l,i)=>({label:`${i+1}. ${l}`,value:charsOf(l),text:charsOf(l)+' 字'})),Math.max(1,...ls.map(l=>charsOf(l))))}`;
+  return{score:Math.max(0,Math.min(100,score)),scoreLabel:'腳本可執行度',metrics:M,assessment:A,hypotheses:H,recommendations:C,nextActions:N,visual};};
+
+/* ---------------------------------------------------------------- 4 分鏡與畫面 */
+RULES[4]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d1=S.d(1)||{},d2=S.d(2)||{},d3=S.d(3)||{};
+  const sh=(d.shots||[]).filter(r=>String(r.line||'').trim()||String(r.shot||'').trim());
+  const total=sumOf(sh,'sec'),len=num(d1.length)||total,route=d2.route||'',bad=DISALLOW[route]||[];
+  const fit=s=>charsOf(s.line)<=Math.floor(num(s.sec)*3.3);
+  const idx=f=>sh.map((s,i)=>f(s)?i+1:0).filter(Boolean),nos=a=>`第 ${a.join('、')} 鏡`;
+  const long=idx(s=>num(s.sec)>8),over=idx(s=>!fit(s)),big=idx(s=>s.motion==='大動'),noOk=idx(s=>s.face==='未確認同意'),off=idx(s=>bad.includes(s.source)),flow=idx(s=>s.source==='Flow 動畫');
+  if(total===len)A.push(R('R4-01','l',`${sh.length} 鏡合計 ${total} 秒，等於影片長度。`));
+  else{A.push(R('R4-01','m',`分鏡合計 ${total} 秒，和影片長度 ${len} 秒差 ${Math.abs(total-len)} 秒。`));score-=8;}
+  if(long.length){A.push(R('R4-02','m',`${nos(long)}超過 8 秒，觀眾會覺得停太久。`));C.push(R('R4-02','m','超過 8 秒的鏡頭拆成兩鏡，或加推近、橫移等動態。'));score-=5;}
+  if(over.length){A.push(R('R4-03','m',`${nos(over)}旁白字數超過該鏡秒數 × 3.3，畫面換了話還沒說完。`));C.push(R('R4-03','m','先依第 3 階段刪句，再把字多的句子配給秒數長的鏡頭。'));score-=8;}
+  else A.push(R('R4-03','l','每鏡旁白都在秒數 × 3.3 字內。'));
+  if(big.length>1){A.push(R('R4-04','m',`${nos(big)}都是大動，整支最多 1 鏡；大動最難做，也最耗額度。`));score-=10;}
+  if(noOk.length){A.push(R('R4-05','h',`${nos(noOk)}拍到的人還沒確認同意，沒有同意就不能發布；未成年要監護人同意。`));C.push(R('R4-05','m','拍攝前取得書面同意；拿不到就改拍手部、背影或不拍臉。'));score-=15;}
+  if(off.length){A.push(R('R4-06','m',`走${route}路線，${nos(off)}卻用「${[...new Set(off.map(i=>sh[i-1].source))].join('、')}」，等於混用路線。`));score-=6;}
+  const sLines=lines(d3.script).length;
+  if(sLines&&sh.length<sLines){A.push(R('R4-07','m',`分鏡 ${sh.length} 鏡少於旁白 ${sLines} 句，有句子沒有畫面。`));score-=5;}
+  else if(sLines)A.push(R('R4-07','l',`${sh.length} 鏡對應 ${sLines} 句旁白，一句一畫面。`));
+  H.push(R('R4-08','m',flow.length?`${nos(flow)}用 Flow 生成，同一個角色每次生成的長相可能不一樣。`:'規劃的秒數和實際拍出來的長度會有落差。',flow.length?'先用同一段角色描述生成 2 次並排比較；不一致就改用 ChatGPT 圖片當首幀再生成。':'先實拍或生成其中 2 鏡，計時後和分鏡表比對。'));
+  if(noOk.length)N.push(R('R4-N1','h',`拍攝前先取得${nos(noOk)}入鏡者的同意（未成年要監護人同意）；拿不到就改拍手部或背影。`));
+  if(big.length>1)N.push(R('R4-N2','m','大動只留 1 鏡，其他改成微動或靜態字卡。'));
+  if(!N.length)N.push(R('R4-N1','m','把分鏡表存到手機，拍攝當天逐鏡打勾。'));
+  M.push({label:'鏡數',value:sh.length+' 鏡',cls:'b'},{label:'總秒數',value:`${total}／${len} 秒`,cls:total===len?'g':'y'},{label:'大動',value:big.length+' 鏡',cls:big.length>1?'r':'g'},{label:'未確認同意',value:noOk.length+' 鏡',cls:noOk.length?'r':'g'});
+  const frame=(s,i)=>{const f=[];if(num(s.sec)>8)f.push('超過 8 秒');if(!fit(s))f.push('字數超過');if(s.motion==='大動')f.push('大動');if(s.face==='未確認同意')f.push('未確認同意');if(bad.includes(s.source))f.push('跨路線');
+    return`<div class="frame${f.length?' warn':''}${s.face==='未確認同意'?' bad':''}" style="flex:${Math.max(1,num(s.sec))}"><b>${i+1}</b><span>${num(s.sec)} 秒</span><em>${esc(cut(s.source,8))}</em>${f.map(x=>`<i>${x}</i>`).join('')}</div>`;};
+  const visual=`<h4>底片條（寬度＝秒數）</h4><div class="filmstrip">${sh.map(frame).join('')}</div><p class="tiny muted mt8">黃框＝有待修問題，紅框＝肖像未確認同意；每格標出問題，修完再拍。</p>`;
+  return{score:Math.max(0,Math.min(100,score)),scoreLabel:'分鏡可拍度',metrics:M,assessment:A,hypotheses:H,recommendations:C,nextActions:N,visual};};
+
+/* ---------------------------------------------------------------- 5 聲音設計 */
+RULES[5]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d3=S.d(3);
+  const vM=num(d.volMusic),vS=num(d.volSfx),vO=num(d.volOrig),vV=num(d.volVoice),takes=num(d.voiceTakes);
+  const n=d3?charsOf(d3.script):0,use=n*takes,voai=d.voiceTool==='VoAI'&&!!d3,copy=d.musicCopy==='想做得跟某首歌很像';
+  if(copy){A.push(R('R5-01','h','配樂想做得跟某首歌很像：旋律或編曲相似就可能侵權，平台也可能靜音或下架。'));C.push(R('R5-01','m','只描述情緒、樂器與速度（例：溫暖、早晨、木吉他、100 BPM），不要求像任何一首歌。'));score-=20;}
+  else A.push(R('R5-01','l',d.musicCopy==='只借情緒，不照抄'?'參考歌曲只借情緒，不照抄旋律。':'沒有指定參考歌曲，配樂用描述生成。'));
+  if(vM>25){A.push(R('R5-02','m',`配樂 ${vM}% 超過 25%，會蓋過旁白。`));C.push(R('R5-02','m','配樂調到 15～25%，有旁白的段落再壓低一點。'));score-=12;}
+  else if(vM<15)A.push(R('R5-02','i',`配樂 ${vM}%，低於 15% 可能聽不太到。`));
+  else A.push(R('R5-02','l',`配樂 ${vM}%，在 15～25% 的建議範圍內。`));
+  if(voai&&use>1000){A.push(R('R5-03','m',`旁白 ${n} 字 × 試錄 ${takes} 版 = ${use} 字，超過 VoAI 免費 1,000 字。`));score-=12;}
+  else if(voai)A.push(R('R5-03','l',`旁白 ${n} 字 × ${takes} 版 = ${use} 字，在 VoAI 免費 1,000 字內。`));
+  if(d.musicTool==='Suno')H.push(R('R5-04','m','Suno 生成的配樂能貼合畫面節奏。','先用 Suno 生成 3 首 30 秒試聽，挑一首對著初剪畫面播放，確認節奏與情緒。'));
+  else H.push(R('R5-04','m',`${d.musicTool||'你選的配樂來源'}的授權可以用在公開發布的影片。`,'到該來源的授權說明頁確認：可否用在公開影片、是否需要標示出處。'));
+  const offV=[vV<90&&`旁白 ${vV}%`,(vS<50||vS>70)&&`音效 ${vS}%`,(vO<30||vO>50)&&`原音 ${vO}%`].filter(Boolean);
+  if(offV.length){A.push(R('R5-05','m',`${offV.join('、')}不在音量金字塔的建議範圍。`));score-=6;}
+  const sfx=lines(d.sfxList).length;
+  if(sfx)A.push(R('R5-06','l',`音效清單列了 ${sfx} 處，用在重點畫面。`));
+  else A.push(R('R5-06','i','還沒有音效清單；重點畫面加一個音效（例：開門聲、按鈕聲），臨場感會更好。'));
+  if(copy)N.push(R('R5-N1','h','把參考歌曲改成情緒描述，用 Suno 自己生成配樂。'));
+  if(voai&&use>1000)N.push(R('R5-N2','m',`旁白先定稿再錄：${n} 字在 VoAI 免費額度內最多錄 ${Math.floor(1000/Math.max(1,n))} 版，試錄次數改到這個數字以內。`));
+  if(!N.length)N.push(R('R5-N1','m','用耳機聽一次旁白加配樂，確認每個字都聽得清楚。'));
+  M.push({label:'配樂音量',value:vM+'%',cls:vM>25?'r':'g'},{label:'旁白試錄總字數',value:voai?use+' 字':'－',cls:voai&&use>1000?'r':'b'},{label:'VoAI 免費額度',value:'1000 字',cls:'b'},{label:'參考歌曲',value:copy?'想做得很像':d.musicCopy||'－',cls:copy?'r':'g'});
+  const vb=(l,v,b)=>({label:l,value:v,band:b,cls:v>=b[0]&&v<=b[1]?'g':'r',text:v+'%'});
+  const visual=`<h4>音量金字塔（綠色帶＝建議範圍）</h4>${skBars([vb('旁白',vV,[90,100]),vb('音效',vS,[50,70]),vb('原音',vO,[30,50]),vb('配樂',vM,[15,25])],{max:100})}
+  ${voai?`<h4 class="mt12">VoAI 用量</h4>${skBars([{label:'旁白 × 試錄版數',value:use,cls:use>1000?'r':'g',text:use+' 字'}],{max:Math.ceil(Math.max(use,1000)*1.15),cap:1000,capLabel:'紅線：VoAI 免費 1,000 字'})}`:''}`;
+  return{score:Math.max(0,Math.min(100,score)),scoreLabel:'聲音設計完整度',metrics:M,assessment:A,hypotheses:H,recommendations:C,nextActions:N,visual};};
+
+/* ---------------------------------------------------------------- 6 工具與額度 */
+RULES[6]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d3=S.d(3),d4=S.d(4)||{},d5=S.d(5)||{};
+  const clips=num(d.flowClips),tries=num(d.flowTries),f=flowCalc(clips,d.flowModel,tries,num(d.flowDays));
+  const vids=num(d.vidsAI),canva=num(d.canvaAI),suno=num(d.sunoTries),rl=d.redlines||[];
+  const tl=filled(d.tools,'tool'),noBk=tl.filter(r=>!String(r.backup||'').trim());
+  const sh=d4.shots||[],srcs=sh.map(s=>s.source),faces=sh.filter(s=>['本人','已同意的人','未確認同意'].includes(s.face)).length;
+  if(clips>0&&f.cost){
+    if(f.daysNeed>f.days){A.push(R('R6-01','h',`Flow ${clips} 段 × 每段 ${tries} 次，每次扣 ${2*f.cost} 點，共 ${f.points} 點；每天只能生成 ${f.perDay} 次，需要 ${f.daysNeed} 天，你只排了 ${f.days} 天。`));score-=20;}
+    else if(f.daysNeed===f.days){A.push(R('R6-01','m',`Flow 需要 ${f.daysNeed} 天，剛好等於排定天數，沒有重試空間。`));score-=5;}
+    else A.push(R('R6-01','l',`Flow 需要 ${f.daysNeed} 天，排了 ${f.days} 天，有餘裕。`));}
+  const overQ=[vids>6&&`Vids AI ${vids}／6 次`,canva>20&&`Canva AI ${canva}／20 次`,suno>50&&`Suno ${suno} 次（每天 50 次）`].filter(Boolean);
+  if(overQ.length){A.push(R('R6-02','m',`${overQ.join('、')}超過免費額度。`));score-=8;}
+  else A.push(R('R6-02','l',`Vids ${vids}／6、Canva ${canva}／20、Suno ${suno}／50，都在免費額度內。`));
+  if(noBk.length>=2){A.push(R('R6-03','h',`${noBk.map(r=>r.tool).join('、')} 沒有備案；任何一個當機或額度用完，進度就停住。`));score-=12;}
+  else if(noBk.length){A.push(R('R6-03','m',`${noBk[0].tool} 沒有備案。`));score-=6;}
+  else A.push(R('R6-03','l','每個工具都有備案。'));
+  const noFlow=/不用/.test(d.flowModel||'');
+  if((clips>0&&noFlow)||(clips===0&&d.flowModel&&!noFlow)){A.push(R('R6-04','m',`Flow 段數 ${clips} 段和模型「${d.flowModel}」不一致。`));score-=8;}
+  if(faces&&!rl.includes(REDLINES[0])){A.push(R('R6-05','m',`第 4 階段有 ${faces} 鏡拍到人臉，紅線卻沒勾「入鏡的人都簽肖像同意」。`));score-=10;}
+  if(rl.includes(REDLINES[1])&&d5.musicCopy==='想做得跟某首歌很像'){A.push(R('R6-06','m','勾了「配樂只用有授權或自己生成的」，第 5 階段卻想讓配樂像某首歌，兩者矛盾。'));score-=6;}
+  const flowShots=srcs.filter(s=>s==='Flow 動畫').length;
+  if(sh.length&&flowShots!==clips){A.push(R('R6-07','m',`第 4 階段有 ${flowShots} 鏡 Flow 動畫，這裡填 ${clips} 段，數量不一致。`));score-=5;}
+  if(srcs.includes('數位分身')&&!rl.includes(REDLINES[4])){A.push(R('R6-08','m','分鏡用到數位分身，紅線卻沒勾「數位分身只用自己的臉與聲音」。'));score-=6;}
+  const ai=srcs.some(s=>['ChatGPT 圖片','Flow 動畫','數位分身'].includes(s))||clips>0;
+  if(ai&&!rl.includes(REDLINES[3])){A.push(R('R6-09','m','影片有 AI 生成畫面，紅線卻沒勾「AI 生成內容會標示」。'));score-=4;}
+  H.push(R('R6-10','m',clips>0?`Flow 每段試 ${tries} 次就能得到可用的片段。`:'免費額度的規則在你製作期間不會改變。',clips>0?'第一天先生成 1 段，記錄試了幾次才滿意，再回來調整次數與天數。':'開工前到各工具的方案頁面確認目前的免費額度。'));
+  if(clips>0&&f.cost&&f.daysNeed>f.days){const lite=flowCalc(clips,'Lite',tries,f.days);
+    N.push(R('R6-N1','h',`Flow 以目前設定需要 ${f.daysNeed} 天：${f.cost>10?`改用 Lite 只要 ${lite.daysNeed} 天，`:''}或把每段次數降到 ${Math.max(1,Math.floor(f.days*f.perDay/Math.max(1,clips)))} 次，並把生成日排進第 9 階段。`));}
+  if(noBk.length)N.push(R('R6-N2','m',`替 ${noBk.map(r=>r.tool).join('、')} 各寫一個備案（例：Flow 失敗改用靜態圖加推近、VoAI 用完改用 Vids 旁白）。`));
+  if(!N.length)N.push(R('R6-N1','m','把各工具的帳號先登入一次，確認額度顯示正常。'));
+  M.push({label:'Flow 點數',value:f.points+' 點',cls:f.daysNeed>f.days?'r':'b'},{label:'需要天數',value:`${f.daysNeed}／${f.days} 天`,cls:f.daysNeed>f.days?'r':clips&&f.daysNeed===f.days?'y':'g'},{label:'沒有備案',value:noBk.length+' 個',cls:noBk.length>=2?'r':noBk.length?'y':'g'},{label:'紅線',value:rl.length+' 條',cls:'b'});
+  const q=[{label:'Flow 點數',value:pct(f.points,50*f.days)},{label:'Vids AI',value:pct(vids,6)},{label:'Canva AI',value:pct(canva,20)},{label:'Suno（單日）',value:pct(suno,50)}];
+  if(d3&&d5.voiceTool==='VoAI')q.push({label:'VoAI 字數',value:pct(charsOf(d3.script)*num(d5.voiceTakes),1000)});
+  const rows=q.map(x=>({...x,cls:x.value>100?'r':x.value===100?'y':'g',text:x.value+'%'}));
+  const visual=`<h4>額度使用率（紅線＝100%）</h4>${skBars(rows,{max:Math.max(120,...rows.map(r=>r.value)),cap:100,capLabel:'超過紅線＝免費額度不夠'})}<p class="tiny muted mt8">Flow 以「排定天數 × 每天 50 點」計算；到「額度試算器」分頁可以試不同情境。</p>`;
+  return{score:Math.max(0,Math.min(100,score)),scoreLabel:'工具與額度可行度',metrics:M,assessment:A,hypotheses:H,recommendations:C,nextActions:N,visual};};
+
+/* ---------------------------------------------------------------- 7 剪輯與後製 */
+RULES[7]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d1=S.d(1)||{},d3=S.d(3)||{},d4=S.d(4)||{},d5=S.d(5)||{},d6=S.d(6)||{};
+  const pc=d.postChecks||[],wide=isWide(d1.platform),r169=/16:9/.test(d.ratio||''),vM=num(d5.volMusic);
+  const noProof=d.subtitle==='AI 產生，不校對',logoHook=['品牌 Logo','自我介紹'].includes(d3.hookType);
+  const ai=(d4.shots||[]).some(s=>['ChatGPT 圖片','Flow 動畫','數位分身'].includes(s.source))||num(d6.flowClips)>0;
+  if(noProof){A.push(R('R7-01','h','AI 字幕不校對：自動字幕常聽錯同音字、專有名詞與數字，錯字會直接出現在畫面上。'));C.push(R('R7-01','m','改成「AI 產生後逐字校對」，對照第 3 階段旁白稿檢查專有名詞、數字與時間。'));score-=15;}
+  else if(d.subtitle==='不加字幕'){A.push(R('R7-01','m','不加字幕：很多人靜音滑短影音，沒有字幕就聽不到你的旁白。'));score-=6;}
+  else A.push(R('R7-01','l',`字幕做法：${d.subtitle}。`));
+  if(d1.platform){if(wide!==r169){A.push(R('R7-02','m',`主平台 ${d1.platform} 適合${wide?' 16:9 橫式':' 9:16 直式'}，主版本卻選 ${d.ratio}。`));score-=8;}
+    else A.push(R('R7-02','l',`${d.ratio}符合主平台 ${d1.platform}。`));}
+  if(pc.includes(POSTCHECKS[1])&&vM>25){A.push(R('R7-03','m',`勾了「音量依金字塔調整」，但第 5 階段配樂仍是 ${vM}%，超過 25%。`));score-=8;}
+  if(logoHook&&!pc.includes(POSTCHECKS[2])){A.push(R('R7-04','m',`第 3 階段開場是「${d3.hookType}」，後製檢查卻沒勾「片頭 3 秒沒有 Logo」。`));score-=6;}
+  if(ai&&!pc.includes(POSTCHECKS[4])){A.push(R('R7-05','m','影片有 AI 生成畫面，後製檢查卻沒勾「AI 生成內容已標示」。'));score-=6;}
+  if(String(d.reviewer||'').trim())A.push(R('R7-06','l',`已安排 ${cut(d.reviewer,16)} 看初剪。`));
+  const m=String(d.exportSpec||'').match(/(\d{3,4})\s*[×xX*]\s*(\d{3,4})/);
+  if(m){const portrait=num(m[2])>num(m[1]);if((portrait&&r169)||(!portrait&&/9:16/.test(d.ratio||''))){A.push(R('R7-07','m',`匯出規格 ${m[1]}×${m[2]} 和畫面比例 ${d.ratio} 方向相反。`));score-=6;}}
+  if(!pc.includes(POSTCHECKS[5])){A.push(R('R7-08','m','沒勾「匯出前用手機看過一次」：大部分觀眾用手機看，字太小或太靠邊在電腦上看不出來。'));score-=4;}
+  H.push(R('R7-09','m','審片的人看得出影片哪裡拖、哪裡看不懂。','另找一位沒看過企劃的人看初剪，請他說出影片在講什麼、哪一段想快轉，和你的主線比對。'));
+  if(noProof)N.push(R('R7-N1','h','字幕改成 AI 產生後逐字校對，對照旁白稿檢查專有名詞、數字與時間。'));
+  const fix=[pc.includes(POSTCHECKS[1])&&vM>25&&'配樂調到 15～25%',logoHook&&!pc.includes(POSTCHECKS[2])&&'開場 Logo 移到結尾',ai&&!pc.includes(POSTCHECKS[4])&&'AI 畫面加上標示'].filter(Boolean);
+  if(fix.length)N.push(R('R7-N2','m',`後製前先修：${fix.join('、')}，再回來勾對應的檢查項目。`));
+  if(!N.length)N.push(R('R7-N1','m','約好審片的人和時間，初剪完成當天就請他看。'));
+  M.push({label:'字幕',value:noProof?'AI 不校對':d.subtitle||'－',cls:noProof?'r':d.subtitle==='不加字幕'?'y':'g'},{label:'畫面比例',value:d.ratio||'－',cls:d1.platform&&wide!==r169?'r':'g'},{label:'後製檢查',value:`${pc.length}／${POSTCHECKS.length} 項`,cls:pc.length>=5?'g':'y'},{label:'後製待修',value:fix.length+' 項',cls:fix.length?'r':'g'});
+  /* 每個檢查項目：勾了但和前面階段矛盾＝warn；沒勾但有理由要做＝顯示提醒 */
+  const clash=[noProof?'字幕做法選了不校對':'',vM>25?`第 5 階段配樂仍是 ${vM}%`:'',logoHook?`第 3 階段開場仍是${d3.hookType}`:'','','',''];
+  const needOff=[noProof?'字幕選了不校對':'','',logoHook?`開場是${d3.hookType}`:'','',ai?'有 AI 生成畫面':'','觀眾多用手機看'];
+  const box=(st,i)=>`<svg viewBox="0 0 20 20" aria-hidden="true">${skRect(2,2,16,16,{seed:60+i,roughness:1})}${st==='on'?skLine(5,10,9,15,{stroke:'#4f7d5c',strokeWidth:2.2,seed:70+i})+skLine(9,15,16,4,{stroke:'#4f7d5c',strokeWidth:2.2,seed:80+i}):st==='warn'?skLine(10,4,10,12,{stroke:'#d9a23a',strokeWidth:2.4,seed:70+i})+skLine(10,14.5,10,16,{stroke:'#d9a23a',strokeWidth:2.4,seed:80+i}):''}</svg>`;
+  const visual=`<h4>後製檢查表</h4><div class="checklist">${POSTCHECKS.map((x,i)=>{const on=pc.includes(x),st=on?(clash[i]?'warn':'on'):'off',note=on?clash[i]:needOff[i];return`<div class="ck ${st}">${box(st,i)}<span>${x}</span>${note?`<em>${esc(note)}</em>`:''}</div>`;}).join('')}</div><p class="tiny muted mt8">綠勾＝已安排；黃色驚嘆號＝勾了但和前面階段矛盾；空框＝還沒安排。</p>`;
+  return{score:Math.max(0,Math.min(100,score)),scoreLabel:'後製規劃完整度',metrics:M,assessment:A,hypotheses:H,recommendations:C,nextActions:N,visual};};
+
+/* ---------------------------------------------------------------- 8 發布與改編 */
+RULES[8]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d1=S.d(1)||{};
+  const vs=filled(d.versions,'plat'),outR=vs.filter(v=>{const r=PLAT_RANGE[v.plat];return r&&(num(v.sec)<r[0]||num(v.sec)>r[1]);});
+  const badRatio=vs.filter(v=>isWide(v.plat)?v.ratio!=='16:9':v.ratio==='16:9');
+  const has169=vs.some(v=>v.ratio==='16:9'),same=vs.length>=2&&vs.every(v=>num(v.sec)===num(vs[0].sec)),okM=GOAL_MEASURE[d1.goal]||[];
+  if(outR.length){A.push(R('R8-01','m',`${outR.map(v=>`${v.plat} ${num(v.sec)} 秒（建議 ${PLAT_RANGE[v.plat][0]}～${PLAT_RANGE[v.plat][1]} 秒）`).join('、')}超出平台建議長度。`));C.push(R('R8-01','m','超出建議長度的平台另剪精華版，只留開場鉤子、主線與行動呼籲。'));score-=8;}
+  else if(vs.length)A.push(R('R8-01','l','每個版本的長度都符合平台建議。'));
+  if(badRatio.length){A.push(R('R8-02','m',`${badRatio.map(v=>`${v.plat}（${v.ratio}）`).join('、')} 比例和平台不符。`));score-=6;}
+  if(!has169){A.push(R('R8-03','m','沒有 16:9 橫式版本：放進作品集、YouTube 或簡報播放時，直式畫面會很小。'));C.push(R('R8-03','m','用 Google Vids 另存一個 16:9 版本，字卡與字幕位置重新排過。'));score-=8;}
+  if(same){A.push(R('R8-04','m',`${vs.length} 個版本都是 ${num(vs[0].sec)} 秒，同一支影片直接上傳，沒有依平台改編。`));score-=4;}
+  if(okM.length&&!okM.includes(d.measure)){A.push(R('R8-05','m',`目的是「${d1.goal}」，用「${d.measure}」判斷成效不夠直接，建議看${okM.join('或')}。`));score-=6;}
+  else if(d.measure)A.push(R('R8-05','l',`用「${d.measure}」判斷成效，和影片目的一致。`));
+  if(hasNum(d.target))A.push(R('R8-06','l',`目標「${cut(unquote(d.target),20)}」有數字，發布後可以對照。`));
+  else{A.push(R('R8-06','m','目標沒有數字，發布後無法判斷算不算成功。'));score-=6;}
+  if(!hasNum(d.caption)&&!/私訊|預訂|留言|點|連結|追蹤|分享|購買|報名/.test(d.caption||'')){A.push(R('R8-07','m','貼文文案沒有行動或數字，觀眾不知道看完要做什麼。'));score-=4;}
+  if(d1.platform&&vs.length&&!vs.some(v=>v.plat===d1.platform)){A.push(R('R8-08','m',`第 1 階段的主平台 ${d1.platform} 不在版本表中。`));score-=6;}
+  H.push(R('R8-09','m',`發布時間「${cut(lead(d.postDate),16)}」是你的觀眾最常滑手機的時段。`,'發布後 48 小時打開平台的數據頁（例：IG 專業主控板），看觀看高峰時段，下一支依此調整。'));
+  if(outR.length)N.push(R('R8-N1','m',`剪 ${outR.map(v=>`${v.plat} ${PLAT_RANGE[v.plat][1]} 秒`).join('、')} 精華版，保留開場鉤子與行動呼籲。`));
+  if(!has169)N.push(R('R8-N2','m','另存 16:9 版本給作品集，字卡與字幕位置重新排過。'));
+  if(!N.length)N.push(R('R8-N1','m','發布前一天把文案、Hashtag 和封面先存成草稿。'));
+  M.push({label:'版本數',value:vs.length+' 個',cls:'b'},{label:'超出建議長度',value:outR.length+' 個',cls:outR.length?'r':'g'},{label:'16:9 版本',value:has169?'有':'無',cls:has169?'g':'y'},{label:'目標',value:cut(d.target,10)||'－',cls:hasNum(d.target)?'g':'y'});
+  const visual=`<h4>各版本長度（綠色帶＝平台建議）</h4>${skBars(vs.map(v=>{const r=PLAT_RANGE[v.plat],s=num(v.sec);return{label:`${v.plat}｜${v.ratio||'－'}`,value:s,band:r,cls:r&&(s<r[0]||s>r[1])?'r':'g',text:s+' 秒'};}),{max:Math.max(90,...vs.map(v=>num(v.sec)))})}<p class="tiny muted mt8">橫式與作品集沒有固定長度建議，只看比例是否為 16:9。</p>`;
+  return{score:Math.max(0,Math.min(100,score)),scoreLabel:'發布規劃完整度',metrics:M,assessment:A,hypotheses:H,recommendations:C,nextActions:N,visual};};
+
+/* ---------------------------------------------------------------- 9 執行時程 */
+RULES[9]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d1=S.d(1)||{},d2=S.d(2)||{},d6=S.d(6)||{};
+  const ts=filled(d.schedule,'task'),total=+sumOf(ts,'hours').toFixed(1),wh=num(d1.weeklyHours),wk=num(d1.weeks),cap=wh*wk;
+  const wi=t=>WEEKS.indexOf(t.week)+1,maxW=Math.max(wk,...ts.map(wi),1);
+  const per=Array.from({length:maxW},(_,i)=>+sumOf(ts.filter(t=>wi(t)===i+1),'hours').toFixed(1));
+  const overW=per.map((h,i)=>wh&&h>wh?i+1:0).filter(Boolean),late=ts.filter(t=>wk&&wi(t)>wk);
+  const txt=ts.map(t=>`${t.task} ${t.output||''}`).join(' ');
+  const toolMiss=[...new Set(filled(d6.tools,'tool').map(r=>r.tool).filter(t=>!['其他','手機相機'].includes(t)).map(t=>t.replace(/^Google /,'').split(' ')[0]))].filter(t=>!txt.includes(t));
+  const weakBk=/應該|不會卡|照計畫/.test(d.backupPlan||'')||charsOf(d.backupPlan)<10;
+  if(cap&&total>cap){A.push(R('R9-01','h',`任務合計 ${total} 小時，超過可投入的 ${cap} 小時（每週 ${wh} 小時 × ${wk} 週），多了 ${+(total-cap).toFixed(1)} 小時。`));score-=15;}
+  else if(cap)A.push(R('R9-01','l',`任務合計 ${total} 小時，在可投入的 ${cap} 小時內。`));
+  if(overW.length){A.push(R('R9-02','m',`第 ${overW.join('、')} 週超過每週 ${wh} 小時（${overW.map(w=>per[w-1]+' 小時').join('、')}）。`));score-=12;}
+  if(late.length){A.push(R('R9-03','m',`${late.map(t=>cut(t.task,10)).join('、')} 排在第 ${wk} 週之後，超出預計完成週數。`));score-=8;}
+  if(weakBk){A.push(R('R9-04','h',`備案「${cut(unquote(d.backupPlan),16)}」沒有寫出卡點與替代做法，一出狀況就只能延期。`));C.push(R('R9-04','m','至少寫 3 個卡點與備案：額度用完、拍攝當天下雨或沒人幫忙、生成結果不滿意。'));score-=12;}
+  else A.push(R('R9-04','l','已寫出卡點與備案。'));
+  if(toolMiss.length){A.push(R('R9-05','m',`第 6 階段的 ${toolMiss.join('、')} 沒有出現在任何任務裡，可能漏排時間。`));score-=5;}
+  const shoot=ts.filter(t=>/拍/.test(t.task));
+  if(d2.route==='實拍'&&shoot.some(t=>wi(t)===1))A.push(R('R9-06','l','實拍排在第 1 週，拍壞了還有時間補拍。'));
+  else if(d2.route==='實拍'&&shoot.length)C.push(R('R9-06','m','實拍盡量排在第 1 週，拍壞或天候不佳還有時間補拍。'));
+  if(ts.some(t=>/審片|試看|給.*看/.test(t.task)))A.push(R('R9-07','l','時程裡有審片，發布前有人幫你把關。'));
+  else{A.push(R('R9-07','m','時程裡沒有審片，第 7 階段安排的審片人沒有時間點。'));score-=5;}
+  if(!hasNum(d.minVersion)){A.push(R('R9-08','m','最低可交付版本沒有寫秒數或數量，時間不夠時很難判斷要砍多少。'));score-=4;}
+  else A.push(R('R9-08','l',`最低可交付版本：${cut(lead(d.minVersion),40)}`));
+  const f=flowCalc(num(d6.flowClips),d6.flowModel,num(d6.flowTries),num(d6.flowDays));
+  if(f.cost&&num(d6.flowClips)>0)H.push(R('R9-09','m',`Flow 生成需要 ${f.daysNeed} 個不同的日子（每天 50 點），時程排得下。`,'把 Flow 生成日逐天寫進行事曆，確認那幾天都有空登入生成。'));
+  else H.push(R('R9-09','m','每個任務的時數估得準。','第 1 週結束時記錄實際花的時數，和計畫對照，再調整後面幾週。'));
+  if(d.needHelp==='是')C.push(R('R9-10','m',`發表前需要協助（${cut(lead(d.helpNote),30)}）：Day15 前把問題和截圖整理好，帶去問老師。`));
+  if(cap&&total>cap)N.push(R('R9-N1','h',`把總時數從 ${total} 降到 ${cap} 小時內（少 ${+(total-cap).toFixed(1)} 小時）：照最低可交付版本，先砍最花時間又非必要的任務。`));
+  if(weakBk)N.push(R('R9-N2','h','今天寫出 3 個最可能卡住的地方與備案，貼在作品資料夾第一頁。'));
+  if(!N.length)N.push(R('R9-N1','m','把每週任務排進行事曆的真實日期，設好提醒。'));
+  M.push({label:'總時數',value:`${total}／${cap} 小時`,cls:cap&&total>cap?'r':'g'},{label:'超量週數',value:overW.length+' 週',cls:overW.length?'r':'g'},{label:'任務數',value:ts.length+' 個',cls:'b'},{label:'最低版本',value:hasNum(d.minVersion)?'有':'不明確',cls:hasNum(d.minVersion)?'g':'y'});
+  const visual=`<h4>每週時數${wh?`（紅線＝每週可投入 ${wh} 小時）`:''}</h4>${skBars(per.map((h,i)=>({label:`第 ${i+1} 週`,value:h,cls:wh&&h>wh?'r':'g',text:h+' 小時'})),{max:Math.ceil(Math.max(wh,...per,1)*1.2),cap:wh||null,capLabel:wh?`紅線：每週 ${wh} 小時`:''})}`;
+  return{score:Math.max(0,Math.min(100,score)),scoreLabel:'時程可執行度',metrics:M,assessment:A,hypotheses:H,recommendations:C,nextActions:N,visual};};
+
+/* =====================================================================
+   擴充分頁：第 6 階段「額度試算器」
+   EXTRA_TABS=[{stage,key,label,html:()=>字串,run:()=>void}]；切到該分頁時先放 html() 再呼叫 run()
+   ===================================================================== */
+const QUOTA_MODEL={lite:'Veo 3.1 Lite（每段 10 點）',fast:'Veo 3.1 Fast（每段 20 點）',none:'不用 Flow'};
+const QUOTA_PRESETS={
+  a:{name:'典型：Lite 2 段',clips:2,model:'lite',tries:2,days:3},
+  b:{name:'邊界：天數剛好',clips:3,model:'lite',tries:2,days:3},
+  c:{name:'異常：Fast 試太多',clips:2,model:'fast',tries:3,days:2}};
+/* 參數來源：第 6 階段已確認資料 → 草稿 → 參考範例 */
+function quotaCfg(){const r=rec(6),ex=stage(6).example,src=(r.confirmed?r.data:(r.draft||r.data))||{};
+  const g=k=>src[k]!==undefined&&src[k]!==''?num(src[k]):num(ex[k]),m=src.flowModel||ex.flowModel;
+  return{clips:g('flowClips'),model:/Lite/.test(m)?'lite':/Fast/.test(m)?'fast':'none',tries:g('flowTries'),days:g('flowDays'),vids:g('vidsAI'),canva:g('canvaAI'),suno:g('sunoTries'),
+    src:r.confirmed?'第 6 階段已確認設定':r.draft?'第 6 階段草稿（尚未確認）':'參考範例預設值'};}
+function quotaHTML(){const c=quotaCfg();
+  const inp=(id,l,v,attr)=>`<div class="field mb8"><label class="lbl" style="font-size:12.5px">${l}</label><input type="number" id="sim_${id}" value="${v}" ${attr} oninput="quotaRun()"></div>`;
+  const sel=`<div class="field mb8"><label class="lbl" style="font-size:12.5px">Flow 模型</label><select id="sim_model" onchange="quotaRun()">${Object.entries(QUOTA_MODEL).map(([k,v])=>`<option value="${k}"${k===c.model?' selected':''}>${v}</option>`).join('')}</select></div>`;
+  return`<div class="card"><div class="card-h"><h2>額度試算器｜Flow 點數排得完嗎</h2><span class="engine-tag"><i></i>規則引擎即時計算（透明可追溯）</span></div>
+  <div class="note">Flow 每天 50 點、不累積，一次生成 2 段，兩段都要扣點。輸入段數、模型、每段試幾次與預計天數，即時算出需要幾天；修改第 6 階段後回到本分頁即會更新。</div>
+  <div class="sim-grid3 mt12">
+    <div class="form-section"><h3>① 生成計畫 <span class="badge in">你的資料</span></h3><div class="btn-row mb8">${Object.entries(QUOTA_PRESETS).map(([k,v])=>`<button class="btn sm" onclick="quotaPreset('${k}')">${v.name}</button>`).join('')}</div>
+      <div class="grid g2" style="gap:6px">${inp('clips','動畫段數（0～10）',c.clips,'min="0" max="10" step="1"')}${sel}${inp('tries','每段試幾次（1～10）',c.tries,'min="1" max="10" step="1"')}${inp('days','預計分幾天（1～14）',c.days,'min="1" max="14" step="1"')}</div></div>
+    <div class="form-section"><h3>② 目前額度設定</h3><div class="tiny muted mb8">來源：${esc(c.src)}</div><div class="tbl-wrap"><table class="tbl compact"><tr><th>工具</th><th>計畫</th><th>免費額度</th></tr>
+      <tr><td>Google Flow</td><td>${c.clips} 段 × ${c.tries} 次</td><td>每天 50 點</td></tr>
+      <tr><td>Google Vids</td><td>${c.vids} 次</td><td>每月 6 次</td></tr>
+      <tr><td>Canva AI</td><td>${c.canva} 次</td><td>每月 20 次</td></tr>
+      <tr><td>Suno</td><td>${c.suno} 次</td><td>每天 50 次</td></tr></table></div>
+      <button class="btn sm mt8" onclick="renderStage(6,'input')">到「填寫資料」調整設定</button></div>
+    <div class="form-section" id="simOut"></div></div></div>`;}
+function quotaPreset(k){const p=QUOTA_PRESETS[k];['clips','model','tries','days'].forEach(id=>document.getElementById('sim_'+id).value=p[id]);quotaRun();}
+function quotaRun(){const out=document.getElementById('simOut');if(!out)return;const el=id=>document.getElementById('sim_'+id),warn=[];
+  const clamp=(id,l,lo,hi)=>{const v=num(el(id).value),c=Math.min(hi,Math.max(lo,Math.round(v)));if(c!==v)warn.push(`${l}需介於 ${lo}～${hi}（目前 ${v}），已以 ${c} 計算。`);return c;};
+  const clips=clamp('clips','動畫段數',0,10),tries=clamp('tries','每段試幾次',1,10),days=clamp('days','預計天數',1,14);
+  const mk=QUOTA_MODEL[el('model').value]?el('model').value:'none',f=flowCalc(clips,QUOTA_MODEL[mk],tries,days),use=mk!=='none'&&clips>0;
+  if(mk==='none'&&clips>0)warn.push('選了「不用 Flow」但段數大於 0：段數改成 0，或選一個模型。');
+  if(use&&f.daysNeed>days){const lite=flowCalc(clips,'Lite',tries,days);warn.push(`以目前設定需要 ${f.daysNeed} 天，只排了 ${days} 天：${mk==='fast'?`改用 Lite 只要 ${lite.daysNeed} 天；`:''}或減少每段次數、把生成分散到更多天。`);}
+  else if(use&&f.daysNeed===days)warn.push('天數剛好用完，沒有重試空間；任何一次生成不滿意就會延誤。');
+  if(use&&tries===1)warn.push('每段只試 1 次：AI 生成常要重試，建議至少預留 2 次。');
+  const dl=!use?'g':f.daysNeed>days?'r':f.daysNeed===days?'y':'g',pl=!use?'g':f.points>50*days?'r':f.points===50*days?'y':'g';
+  const shown=Math.min(14,Math.max(days,f.daysNeed));let left=f.req;
+  const bars=use?Array.from({length:shown},(_,i)=>{const k=Math.min(f.perDay,Math.max(0,left));left-=k;const p=k*2*f.cost;return{label:`第 ${i+1} 天`,value:p,cls:i+1>days?'r':'g',text:p+' 點'};}):[];
+  out.innerHTML=`<h3>③ 試算結果 <span class="badge dx">診斷推論</span></h3>
+  <div class="sim-lights"><div class="sim-light"><i class="light ${dl}"></i><b>${!use?'不用 Flow':dl==='r'?'天數不夠':dl==='y'?'天數剛好':'天數足夠'}</b><span>${use?`需要 ${f.daysNeed} 天／排了 ${days} 天`:'不消耗 Flow 點數'}</span></div>
+  <div class="sim-light"><i class="light ${pl}"></i><b>共 ${f.points} 點</b><span>可用 ${50*days} 點（${days} 天 × 50）</span></div>
+  <div class="sim-light"><i class="light ${use&&f.perDay<=1?'y':'g'}"></i><b>每天可生成 ${f.perDay} 次</b><span>${use?`一次 2 段 × ${f.cost} 點 = ${2*f.cost} 點`:'－'}</span></div></div>
+  ${use?`<h4 class="mt12">每天點數（紅線＝50 點；紅色＝超出排定天數）</h4>${skBars(bars,{max:60,cap:50,capLabel:'每天上限 50 點，不累積'})}${f.daysNeed>14?'<p class="tiny muted">超過 14 天的部分未列出。</p>':''}`:''}
+  <p class="tiny muted mt8">計算式：生成次數 = 段數 × 每段次數；每次扣 2 段 × 每段點數；每天可生成 = 50 ÷ 每次點數（無條件捨去）；需要天數 = 生成次數 ÷ 每天可生成（無條件進位）。點數規則以 Flow 當下公告為準。</p>
+  ${warn.length?`<div class="note warn mt8"><b>注意：</b><ul class="clean small">${warn.map(w=>`<li>${esc(w)}</li>`).join('')}</ul></div>`:'<div class="note ok mt8 small">點數與天數都在額度內，記得把生成日排進第 9 階段時程。</div>'}`;}
+const EXTRA_TABS=[{stage:6,key:'quota',label:'額度試算器',html:quotaHTML,run:quotaRun}];
+
+/* =====================================================================
+   成果報告設定（renderReport 讀取）
+   ctx={n,all,d:id=>已確認資料或{},dx:id=>診斷或null,avgScore}
+   subtitle、coverLines 由引擎 esc，這裡回傳純文字；summary 回傳 HTML，使用者文字要自己 esc
+   ===================================================================== */
+const REPORT={
+  eyebrow:'VIDEO PRODUCTION PLAN',
+  title:'影片企劃與預計流程報告',
+  subtitle:c=>plain(cut(c.d(1).theme,40))||APP.topic,
+  coverLines:c=>{const d1=c.d(1),d2=c.d(2),d9=c.d(9),L=[];
+    if(d1.name)L.push(`企劃人：${d1.name}${d1.identity?`｜${d1.identity}`:''}`);
+    if(d1.email)L.push(`Email：${d1.email}`);
+    if(d1.length)L.push(`${num(d1.length)} 秒｜${d1.platform||'－'}${d2.route?`｜${d2.route}路線`:''}`);
+    if(d9.pitchLine)L.push(`一句話介紹：${plain(d9.pitchLine)}`);
+    return L;},
+  caseLines:()=>[],
+  summary:c=>{const d1=c.d(1),d2=c.d(2),d3=c.d(3),d6=c.d(6),d8=c.d(8),d9=c.d(9),na='<span class="muted">（待完成）</span>';
+    const len=num(d1.length)||num(d3.act1)+num(d3.act2)+num(d3.act3),n=charsOf(d3.script),limit=Math.floor(len*3.3);
+    const ts=filled(d9.schedule,'task'),total=+sumOf(ts,'hours').toFixed(1),cap=num(d1.weeklyHours)*num(d1.weeks);
+    const clips=num(d6.flowClips),f=flowCalc(clips,d6.flowModel,num(d6.flowTries),num(d6.flowDays));
+    const used=filled(d2.parts,'part').filter(r=>r.use!=='不用'),vs=filled(d8.versions,'plat');
+    const kpi=(cls,v,l)=>`<div class="kpi ${cls}"><div class="v">${v}</div><div class="l">${l}</div></div>`;
+    return`<div class="grid g4">${kpi('b',c.avgScore||'－','平均診斷分數')}${kpi(d3.script&&n>limit?'r':'g',d3.script?`${n}／${limit} 字`:'－','旁白字數／上限')}${kpi(cap&&total>cap?'r':'g',ts.length?`${total}／${cap} 小時`:'－','任務時數／可投入')}${kpi(f.daysNeed>f.days?'r':'g',d6.flowModel?(f.cost&&clips?`${f.points} 點／${f.daysNeed} 天`:'不用 Flow'):'－','Flow 點數／需要天數')}</div>
+    <ul class="clean mt12 small">
+      <li><b>一句話主題：</b>${d1.theme?esc(d1.theme):na}</li>
+      <li><b>路線與零件：</b>${d2.route?`${esc(d2.route)}路線，使用 ${used.length} 個零件（${used.map(r=>esc(partNo(r.part))).join('、')}）`:na}</li>
+      <li><b>故事主線：</b>${d3.mainLine?`${esc(d3.mainLine)}（三幕 ${num(d3.act1)}／${num(d3.act2)}／${num(d3.act3)} 秒）`:na}</li>
+      <li><b>發布與目標：</b>${vs.length?`${vs.map(v=>esc(v.plat)).join('、')}；以${esc(d8.measure||'－')}判斷，目標 ${esc(d8.target||'－')}`:na}</li>
+      <li><b>時程與最低版本：</b>${d9.minVersion?`${num(d1.weeks)||'－'} 週、${ts.length} 個任務；最低版本：${esc(cut(d9.minVersion,40))}`:na}</li></ul>`;},
+  sections:[
+    {title:'二、主題與素材',stages:[1,2]},
+    {title:'三、腳本與分鏡',stages:[3,4]},
+    {title:'四、聲音與工具',stages:[5,6]},
+    {title:'五、剪輯與發布',stages:[7,8]},
+    {title:'六、執行時程',stages:[9]}
+  ]};
+/* =====================================================================
+   PART B：通用核心引擎（換主題時通常不需修改）
+   依賴 PART A 的：APP、CASE、AVATAR_SVG、STAGES、RULES、EXTRA_TABS、REPORT
+   ===================================================================== */
+
+/* ---------------- 共用小工具（RULES 內可直接使用） ---------------- */
+const R=(rule,sev,text,verify)=>({rule,sev,text,verify});
+const num=v=>{const n=parseFloat(v);return isNaN(n)?0:n};
+const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+const pct=(a,b)=>b?Math.round(a/b*100):0;
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const cut=(s,n)=>{s=String(s||'');return s.length>n?s.slice(0,n)+'…':s};
+const barRows=(rows,max)=>rows.map(r=>`<div class="bar-row"><span title="${esc(r.label)}">${esc(cut(r.label,14))}</span><div class="bar"><i class="${r.cls||''}" style="width:${Math.min(100,pct(r.value,max))}%"></i></div><b>${r.text!=null?r.text:r.value}</b></div>`).join('');
+
+/* 泳道流程圖：steps=[{step,lane,work,wait,value|ecrs}]；colorBy(s) 回傳 'r'|'y'|'g'|''（預設藍） */
+function swimlaneSVG(steps,colorBy){
+  steps=steps.filter(s=>s.step);if(!steps.length)return'';
+  const lanes=[...new Set(steps.map(s=>s.lane||'未指定'))];
+  const colW=132,laneH=78,left=150,top=30;const W=left+steps.length*colW+20,Hh=top+lanes.length*laneH+10;
+  let svg=`<svg viewBox="0 0 ${W} ${Hh}" xmlns="http://www.w3.org/2000/svg" font-family="inherit" font-size="11">`;
+  svg+=`<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#8795a7"/></marker></defs>`;
+  lanes.forEach((l,i)=>{const y=top+i*laneH;svg+=`<rect x="0" y="${y}" width="${W}" height="${laneH}" fill="${i%2?'#f8fafc':'#ffffff'}" stroke="#e3e9f2"/><text x="10" y="${y+laneH/2+4}" font-weight="700" fill="#0f2a4a">${esc(cut(l,11))}</text>`;});
+  const color=s=>{const v=colorBy(s);return v==='r'?['#fde8e8','#dc2626']:v==='y'?['#fff4dd','#b7791f']:v==='g'?['#e7f7ec','#16a34a']:['#e8efff','#2563eb']};
+  const pos=steps.map((s,i)=>{const li=lanes.indexOf(s.lane||'未指定');return{x:left+i*colW+8,y:top+li*laneH+12,w:colW-16,h:laneH-24}});
+  pos.forEach((p,i)=>{if(i<pos.length-1){const n=pos[i+1];svg+=`<path d="M${p.x+p.w},${p.y+p.h/2} C${p.x+p.w+10},${p.y+p.h/2} ${n.x-10},${n.y+n.h/2} ${n.x},${n.y+n.h/2}" fill="none" stroke="#8795a7" stroke-width="1.5" marker-end="url(#arr)"/>`}});
+  steps.forEach((s,i)=>{const p=pos[i],[bg,st]=color(s);svg+=`<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" rx="8" fill="${bg}" stroke="${st}" stroke-width="1.5"/><text x="${p.x+8}" y="${p.y+18}" font-weight="700" fill="#1b2a41">${i+1}. ${esc(cut(s.step,8))}</text><text x="${p.x+8}" y="${p.y+34}" fill="#5b6b7f" font-size="10">作業 ${num(s.work)}h｜等待 ${num(s.wait)}h</text><text x="${p.x+8}" y="${p.y+48}" fill="${st}" font-size="10">${esc(cut(s.value||s.ecrs||'',10))}</text>`;});
+  return svg+'</svg>';
+}
+
+/* 魚骨圖：d 需含 problem 與六大類欄位；cats 可自訂 [[欄位id,標籤]]×6 */
+const FISHBONE_CATS=[['fb_man','人'],['fb_machine','機／系統'],['fb_material','料／資料'],['fb_method','法／流程'],['fb_env','環'],['fb_measure','量測']];
+function fishboneSVG(d,cats){
+  cats=cats||FISHBONE_CATS;
+  const W=900,Hh=330,spineY=165,headX=700;
+  let s=`<svg viewBox="0 0 ${W} ${Hh}" xmlns="http://www.w3.org/2000/svg" font-size="10.5" font-family="inherit">`;
+  s+=`<line x1="40" y1="${spineY}" x2="${headX}" y2="${spineY}" stroke="#0f2a4a" stroke-width="3"/><polygon points="${headX},${spineY-8} ${headX+12},${spineY} ${headX},${spineY+8}" fill="#0f2a4a"/>`;
+  s+=`<rect x="${headX+14}" y="${spineY-48}" width="176" height="96" rx="10" fill="#fde8e8" stroke="#dc2626" stroke-width="1.5"/>`;
+  const prob=cut(d.problem||'問題',60);const lines=[];for(let i=0;i<prob.length;i+=13)lines.push(prob.slice(i,i+13));
+  lines.slice(0,5).forEach((l,i)=>{s+=`<text x="${headX+22}" y="${spineY-30+i*16}" fill="#7f1d1d" font-weight="700">${esc(l)}</text>`});
+  cats.forEach((c,i)=>{const top=i<3;const x=90+(i%3)*210;const yEnd=top?40:290;const txt=(d[c[0]]||'').trim();
+    s+=`<line x1="${x+70}" y1="${spineY}" x2="${x}" y2="${yEnd}" stroke="#2563eb" stroke-width="2"/>`;
+    s+=`<rect x="${x-34}" y="${top?yEnd-28:yEnd+4}" width="80" height="22" rx="6" fill="#0f2a4a"/><text x="${x+6}" y="${top?yEnd-13:yEnd+19}" fill="#fff" font-weight="700" text-anchor="middle">${esc(c[1])}</text>`;
+    if(txt){const t=cut(txt,44);const ls=[];for(let k=0;k<t.length;k+=16)ls.push(t.slice(k,k+16));ls.slice(0,3).forEach((l,k)=>{s+=`<text x="${x+10}" y="${top?yEnd+22+k*13:yEnd-40+k*13}" fill="#1b2a41">${esc(l)}</text>`});}
+    else s+=`<text x="${x+10}" y="${top?yEnd+22:yEnd-28}" fill="#a3aebb">（未填）</text>`;});
+  return s+'</svg>';
+}
+
+/* ---------------- 透明規則引擎（非 LLM） ---------------- */
+const Engine={
+  name:'透明規則引擎 v1.0（Rule-based，非 LLM）',version:'1.0.0',adapter:null,
+  registerAIAdapter(a){if(!a||typeof a.analyze!=='function')throw new Error('adapter 需提供 analyze(payload) 函式');this.adapter=a;},
+  async diagnose(stageId,data,S){
+    const t0=performance.now();const base=RULES[stageId](data,S);
+    base.engine=this.name;base.generatedAt=new Date().toISOString();base.rulesFired=[...new Set([...base.assessment,...base.hypotheses,...base.recommendations,...base.nextActions].map(x=>x.rule))];
+    base.ms=Math.round(performance.now()-t0);
+    if(this.adapter){try{const extra=await this.adapter.analyze({stageId,data,context:S.all(),ruleResult:JSON.parse(JSON.stringify(base))});base.aiExtra={name:this.adapter.name||'External AI Adapter',text:String(extra&&extra.text||extra||'')};}catch(e){base.aiExtra={name:this.adapter.name||'External AI Adapter',error:String(e.message||e)};}}
+    return base;
+  }
+};
+
+/* ---------------- 狀態 ---------------- */
+const N_STAGES=STAGES.length;
+let STATE={stages:{},view:'home',updatedAt:null};
+const S={d:id=>(STATE.stages[id]&&STATE.stages[id].confirmed)?STATE.stages[id].data:null,all:()=>Object.fromEntries(STAGES.map(s=>[s.id,S.d(s.id)]))};
+const stage=id=>STAGES.find(s=>s.id===+id);
+const rec=id=>STATE.stages[id]||{};
+/* 修正：須「所有」前面階段皆已確認才解鎖（原版只檢查前一階段，返回修改後下游仍可進入） */
+const unlocked=id=>STAGES.every(s=>s.id>=+id||!!rec(s.id).confirmed);
+const statusOf=id=>!unlocked(id)?'locked':rec(id).confirmed?'done':rec(id).draft?'draft':'open';
+const isDone=id=>statusOf(id)==='done';
+const doneCount=()=>STAGES.filter(s=>isDone(s.id)).length;
+/* 前面階段在本階段確認之後又重新確認 → 本階段診斷依據舊資料（回傳那些階段 id） */
+const staleBy=id=>{const r=rec(id);if(!r.confirmed)return[];return STAGES.filter(s=>s.id<+id&&rec(s.id).confirmedAt>r.confirmedAt).map(s=>s.id);};
+/* dep 欄位：d[f.dep]===(f.depVal||'是') 才顯示；f.depReq 表示顯示時必填 */
+const visibleOf=(f,d)=>!f.dep||d[f.dep]===(f.depVal||'是');
+const requiredOf=f=>!!(f.req||(f.dep&&f.depReq));
+let CURRENT_CARRY=[];let saveTimer=null;
+
+function load(){try{const raw=localStorage.getItem(APP.storageKey);if(raw){const o=JSON.parse(raw);if(o&&o.stages)STATE=o;}}catch(e){console.warn('localStorage 讀取失敗',e);}}
+function save(){STATE.updatedAt=new Date().toISOString();try{localStorage.setItem(APP.storageKey,JSON.stringify(STATE));}catch(e){console.warn('localStorage 寫入失敗',e);toast('無法儲存至瀏覽器（儲存空間或隱私模式限制）',true);}}
+function toast(msg,err){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(err?' err':'');clearTimeout(t._t);t._t=setTimeout(()=>t.className='toast',2600);}
+function modal(html){const m=document.getElementById('modal');document.getElementById('modalBody').innerHTML=html;m.classList.add('show');}
+function closeModal(){document.getElementById('modal').classList.remove('show');}
+function toggleSidebar(open){const sb=document.getElementById('sidebar'),ov=document.getElementById('sbOverlay');const o=open==null?!sb.classList.contains('open'):open;sb.classList.toggle('open',o);ov.classList.toggle('show',o);}
+document.getElementById('menuBtn').onclick=()=>toggleSidebar();
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal();});
+function renderBrand(){document.title=`${APP.platform}｜${APP.topic}`;document.getElementById('brandText').innerHTML=`${esc(APP.platform)}<span class="sub">${esc(APP.brandSub)}</span>`;}
+
+/* ---------------- 路由 ---------------- */
+function go(v,tab){if(location.hash.slice(1)===v){route(tab);}else{location.hash=v;if(tab)window._pendingTab=tab;}toggleSidebar(false);window.scrollTo({top:0});}
+window.addEventListener('hashchange',()=>route(window._pendingTab));
+function route(tab){const v=location.hash.slice(1)||STATE.view||'home';window._pendingTab=null;STATE.view=v;
+  if(v==='home')renderHome();else if(v==='report')renderReport();else if(/^stage-\d+$/.test(v)&&stage(v.split('-')[1]))renderStage(+v.split('-')[1],tab);else renderHome();
+  renderSidebar();renderProgress();}
+function renderProgress(){const n=doneCount();document.getElementById('progText').textContent=`${n} / ${N_STAGES} 階段`;document.getElementById('progBar').style.width=(n/N_STAGES*100)+'%';}
+function lockedMsg(id){const m=STAGES.find(s=>s.id<id&&!rec(s.id).confirmed);return`請先完成第 ${m?m.id:id-1} 階段並確認診斷`;}
+
+/* ---------------- 側欄 ---------------- */
+function renderSidebar(){const v=STATE.view;const sb=document.getElementById('sidebar');
+  const stLabel={locked:'鎖定',open:'可開始',draft:'草稿中',done:'已確認'};
+  sb.innerHTML=`<div class="sb-home ${v==='home'?'active':''}" onclick="go('home')">🎬 首頁｜開工說明</div><div class="sb-sep"></div><div class="sb-title">${esc(APP.flowName)}</div>
+  ${STAGES.map(s=>{const st=statusOf(s.id);const lbl=st==='done'&&staleBy(s.id).length?'已確認（需更新）':stLabel[st];return`<div class="step ${st} ${v==='stage-'+s.id?'active':''} ${st==='done'?'done':st==='draft'||st==='open'?'current':''}" onclick="${st==='locked'?`toast('${lockedMsg(s.id)}',true)`:`go('stage-${s.id}')`}"><div class="num">${st==='done'?'✓':st==='locked'?'🔒':s.id}</div><div><div class="lbl">${s.title}</div><span class="en">${s.en}</span><span class="st">${lbl}</span></div></div>`}).join('')}
+  <div class="sb-sep"></div><div class="sb-home ${v==='report'?'active':''}" onclick="go('report')">📄 企劃報告（${doneCount()}/${N_STAGES}）</div>
+  <div class="sb-sep"></div><div class="tiny muted" style="padding:0 10px">進度自動儲存於此瀏覽器（localStorage）。<br>最後儲存：${STATE.updatedAt?new Date(STATE.updatedAt).toLocaleString('zh-TW'):'－'}</div>
+  <div class="btn-row mt8" style="padding:0 6px"><button class="btn sm" onclick="exportJSON()">匯出進度</button><button class="btn sm" onclick="importJSON()">匯入進度</button><button class="btn sm danger ghost" onclick="confirmReset()">重置</button></div>`;}
+
+/* ---------------- 首頁（場記板版面） ---------------- */
+/* HERO_IMG 為空時的備援插圖：rough.js 手繪三格分鏡＋ 1:2:1 秒數條 */
+function homeSketch(){const ink='#2b2622',P=[[14,'開場','#c8553d'],[128,'重點','#d9a23a'],[242,'行動','#4f7d5c']];
+  let s=`<svg viewBox="0 0 360 236" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="手繪分鏡草圖：開場、重點、行動三格與 1 比 2 比 1 的秒數分配" font-family="LXGW WenKai TC,DFKai-SB,serif">`;
+  P.forEach((p,i)=>{const x=p[0];
+    s+=skRect(x,14,104,74,{stroke:ink,seed:3+i,roughness:1.3});
+    s+=skLine(x+8,74,x+96,74,{stroke:ink,seed:9+i,roughness:1.6,strokeWidth:1});
+    if(i===0)s+=`<text x="${x+52}" y="62" text-anchor="middle" font-size="36" fill="${p[2]}">?</text>`;
+    if(i===1)s+=skDraw(g=>g.ellipse(x+52,50,62,30,{stroke:ink,strokeWidth:1.4,fill:p[2],fillStyle:'hachure',hachureGap:4,roughness:1.4,seed:5}),`<ellipse cx="${x+52}" cy="50" rx="31" ry="15" fill="${p[2]}" stroke="${ink}"/>`);
+    if(i===2)s+=skRect(x+38,22,28,46,{stroke:ink,seed:6,roughness:1})+skLine(x+44,46,x+50,53,{stroke:p[2],strokeWidth:2.4,seed:7})+skLine(x+50,53,x+61,36,{stroke:p[2],strokeWidth:2.4,seed:8});
+    s+=`<text x="${x+52}" y="110" text-anchor="middle" font-size="15" fill="${ink}">${i+1}. ${p[1]}</text>`;
+    if(i<2)s+=skLine(x+108,51,x+122,51,{stroke:ink,seed:20+i,strokeWidth:1.6});});
+  s+=`<text x="14" y="140" font-size="13" fill="#76695c">60 秒的時間分配（1：2：1）</text>`;
+  [[14,83,'#c8553d','15 秒'],[97,166,'#d9a23a','30 秒'],[263,83,'#4f7d5c','15 秒']].forEach((b,i)=>{
+    s+=skRect(b[0],150,b[1],26,{stroke:ink,fill:b[2],fillStyle:'hachure',hachureGap:4,hachureAngle:-41,roughness:1.2,seed:30+i});
+    s+=`<text x="${b[0]+b[1]/2}" y="198" text-anchor="middle" font-size="14" fill="${ink}">${b[3]}</text>`;});
+  return s+'</svg>';}
+
+function renderHome(){const n=doneCount(),all=n===N_STAGES;const nx=STAGES.find(s=>!isDone(s.id));const next=(nx||STAGES[N_STAGES-1]).id;
+  const art=HERO_IMG?`<img src="${HERO_IMG}" alt="導演筆記本插圖：分鏡草圖、場記板與鉛筆">`:homeSketch();
+  const stTxt={done:'已確認',locked:'鎖定',draft:'草稿',open:'可開始'},stCls={done:'g',locked:'ex',draft:'y',open:'in'};
+  const tileGo=s=>statusOf(s.id)==='locked'?`toast('${lockedMsg(s.id)}',true)`:`go('stage-${s.id}')`;
+  document.getElementById('view').innerHTML=`
+  <section class="slate"><div class="slate-clap" aria-hidden="true"></div><div class="slate-body"><div>
+    <div class="eyebrow">${esc(APP.eyebrow)}</div><h1>${esc(APP.platform)}</h1><p class="lead">${CASE.heroLead}</p>
+    <div class="slate-grid"><div><b>PROD.</b><span>期末專題</span></div><div><b>SCENE</b><span>${N_STAGES} 階段</span></div><div><b>TAKE</b><span>${n} / ${N_STAGES}</span></div><div><b>ROLL</b><span>約 3 小時</span></div></div>
+    <div class="btn-row">${all?`<button class="btn primary lg" onclick="go('report')">九階段完成：查看企劃報告</button>`:`<button class="btn primary lg" onclick="go('stage-${next}')">${n?`繼續第 ${next} 階段`:'開始第 1 階段'}</button><button class="btn lg" onclick="go('report')">查看企劃報告</button>`}<button class="btn ghost" onclick="introOpen(0)">▶ 重播開場說明</button></div></div>
+    <figure class="slate-art">${art}<figcaption>先想清楚，再開機</figcaption></figure></div></section>
+  <div class="card"><div class="card-h"><h2>${esc(APP.flowName)}</h2><span class="pill">${n}/${N_STAGES} 已確認</span></div>
+    <div class="reel"><div class="stage-tiles">${STAGES.map(s=>{const st=statusOf(s.id);return`<div class="tile ${st==='locked'?'locked':''} ${nx&&nx.id===s.id?'now':''}" onclick="${tileGo(s)}"><div class="n">SCENE ${String(s.id).padStart(2,'0')}</div><b>${s.title}</b><span>${s.en}</span><span class="st badge ${stCls[st]}">${stTxt[st]}</span></div>`}).join('')}</div></div>
+    <p class="tiny muted mt8">黃框是下一格；鎖定的格子要等前面確認後才會打開。畫面窄時可左右滑動。</p></div>
+  <div class="grid g2"><div class="card"><div class="card-h"><h2>參考範例人物</h2><span class="badge ex">虛構範例</span></div>
+    <div class="profile"><div><div class="avatar-wrap">${AVATAR_SVG}<i class="corner c1"></i><i class="corner c2"></i><i class="corner c3"></i><i class="corner c4"></i></div></div>
+    <div><h3 style="font-size:21px;margin-bottom:2px">${CASE.name}</h3><div class="small muted">${CASE.title}｜${CASE.system}</div><div class="small mt8">${CASE.intro}</div>
+      <dl class="meta">${CASE.meta.map(m=>`<dt>${m[0]}</dt><dd>${m[1]}</dd>`).join('')}<dt>核心邏輯</dt><dd><b>${CASE.logic}</b></dd></dl></div></div></div>
+    <div class="card"><div class="card-h"><h2>企劃常見 NG</h2><span class="badge r">NG TAKE</span></div><div class="grid" style="gap:10px">${CASE.pains.map((p,i)=>`<div class="pain"><div class="ic">NG${i+1}</div><div><b>${p[0]}</b><span>${p[1]}</span></div></div>`).join('')}</div><p class="tiny muted mt8">填寫時先對照這六個 NG，避免回家才發現做不完。</p></div></div>
+  <div class="card"><div class="card-h"><h2>填完你會拿到</h2><span class="badge in">CALL SHEET</span></div>
+    <div class="grid g3" style="gap:10px">${CASE.outcomes.map((o,i)=>`<div class="kpi ${'rygbyr'[i]||'b'}"><div class="v">${o[0]}</div><div class="l">${o[1]}</div></div>`).join('')}</div><p class="small muted mt12">${CASE.outcomeNote}</p>
+    <hr class="sep"><h3>九階段做完的六件事</h3><div class="grid g3" style="gap:10px">${CASE.visionItems.map((v,i)=>`<div class="pain" style="border-style:solid"><div class="ic" style="border-color:var(--green);color:var(--green)">${i+1}</div><div><b>${v[0]}</b><span>${v[1]}</span></div></div>`).join('')}</div></div>
+  <div class="card"><div class="card-h"><h2>使用說明</h2><span class="engine-tag"><i></i>${Engine.name}</span></div><div class="grid g2"><div><ol class="steps">
+    <li>每個階段先看「方法說明」「操作指引」「參考範例」三張說明卡，再到「填寫資料」寫自己的版本。</li>
+    <li>欄位下方的灰字是參考範例提示，只能對照；主題、數字與時間都要換成你自己的。</li>
+    <li>按「確認診斷」後，系統依規則檢查秒數、字數、工具額度與每週時數，並解鎖下一階段。</li>
+    <li>前面確認過的資料會出現在「前階段帶入」區塊，點一下就能帶進來，不用重打。</li>
+    <li>九階段完成後，到「企劃報告」下載 PDF，再按「寄給老師」送出，Day15 用這份報告發表。</li>
+    <li>資料只存在這台電腦的瀏覽器裡；換電腦或清除瀏覽紀錄前，先按側欄「匯出進度」備份。</li></ol></div>
+    <div><h4>內容標示</h4><div class="legend"><div class="it"><span class="badge ex">範例</span>參考範例，供對照</div><div class="it"><span class="badge in">你的資料</span>你填寫並確認的內容</div><div class="it"><span class="badge dx">診斷推論</span>規則依你的輸入推導</div><div class="it"><span class="badge hy">待驗證假設</span>證據不足，實際試過才知道</div></div>
+    <div class="note gray mt12"><b>關於診斷：</b>這裡沒有串接 AI 聊天機器人。所有結論都由固定規則產生，每條附規則編號，看得到是哪一條規則、根據哪一格資料。</div>
+    <div class="note warn mt12"><b>寄出前確認：</b>第 1 階段的姓名會當作信件主旨，Email 讓老師知道是誰寄的、方便回信。</div></div></div></div>`;
+  fxEnter('home');}
+
+/* ---------------- 階段頁 ---------------- */
+function renderStage(id,tab){const st=stage(id);if(!st)return renderHome();const r=rec(id);
+  if(!unlocked(id)){const m=STAGES.find(s=>s.id<id&&!rec(s.id).confirmed);document.getElementById('view').innerHTML=`<div class="card lock-screen"><div class="ic">🔒</div><h2>第 ${id} 階段尚未解鎖</h2><p class="muted">請先完成第 ${m.id} 階段「${m.title}」並按「確認診斷」。</p><button class="btn primary" onclick="go('stage-${m.id}')">前往第 ${m.id} 階段</button></div>`;return;}
+  tab=tab||(r.confirmed?'dx':r.draft?'input':'method');
+  const st_=statusOf(id);const stale=staleBy(id);
+  const extras=EXTRA_TABS.filter(x=>x.stage===id);
+  const tabs=[['method','方法說明'],['guide','操作指引'],['demo','參考範例'],['input','填寫資料'],['dx','診斷結果'],...extras.map(x=>[x.key,x.label])];
+  document.getElementById('view').innerHTML=`
+  <div class="stage-hero"><div class="big">${id}</div><div style="flex:1"><div class="flex sb"><div><h1>${st.title}</h1><div class="en">STAGE ${id} ｜ ${st.en}</div></div><span class="badge ${st_==='done'?'g':'in'}">${st_==='done'?'已確認 '+new Date(r.confirmedAt).toLocaleString('zh-TW'):st_==='draft'?'草稿中':'可開始'}</span></div><div class="goal"><b>階段目標：</b>${st.goal}</div>
+  ${stale.length?`<div class="note warn mt8"><b>前階段資料已更新：</b>第 ${stale.join('、')} 階段在本階段確認後重新確認過，本階段的帶入資料與診斷可能過期。建議按「返回修改」並重新確認診斷。</div>`:''}</div></div>
+  <div class="tabs">${tabs.map(t=>`<div class="tab ${tab===t[0]?'active':''} ${(t[0]==='dx'&&r.dx)||(t[0]==='input'&&r.draft)?'has':''}" onclick="renderStage(${id},'${t[0]}')"><span class="dot"></span>${t[1]}</div>`).join('')}</div>
+  <div class="tabpanel ${tab==='method'?'active':''}">${methodHTML(st)}</div>
+  <div class="tabpanel ${tab==='guide'?'active':''}">${guideHTML(st)}</div>
+  <div class="tabpanel ${tab==='demo'?'active':''}">${demoHTML(st)}</div>
+  <div class="tabpanel ${tab==='input'?'active':''}" id="inputPanel">${inputHTML(st)}</div>
+  <div class="tabpanel ${tab==='dx'?'active':''}">${r.dx?dxHTML(st,r.dx,r):`<div class="card lock-screen"><div class="ic">🧭</div><h3>尚未產生診斷</h3><p class="muted">請於「填寫資料」完成必填欄位並按「確認診斷」。</p><button class="btn primary" onclick="renderStage(${id},'input')">前往填寫資料</button></div>`}</div>
+  ${extras.map(x=>`<div class="tabpanel ${tab===x.key?'active':''}">${x.html()}</div>`).join('')}`;
+  if(tab==='input')bindForm(st);const ex=extras.find(x=>x.key===tab);if(ex&&ex.run)ex.run();
+  window.scrollTo({top:0});
+  fxEnter('stage-'+id+'-'+tab,_fxKey.indexOf('stage-'+id+'-')===0?'#view .tabpanel.active > *':null);setTimeout(fxAnnotate,420);}
+
+function methodHTML(st){const m=st.method;return`<div class="card"><div class="card-h"><h2>方法說明</h2><span class="pill">${st.en}</span></div><p>${m.intro}</p><div class="grid g2 mt12">${m.points.map(p=>`<div class="kpi" style="border-left:4px solid var(--teal)"><b style="color:var(--navy)">${p[0]}</b><div class="small muted mt8" style="line-height:1.6">${p[1]}</div></div>`).join('')}</div><h4 class="mt16">使用工具</h4><div class="flex">${m.tools.map(t=>`<span class="pill" title="${t[1]}"><b>${t[0]}</b>｜${t[1]}</span>`).join('')}</div><div class="note mt12"><b>本階段交付物：</b>${m.deliverable}</div><div class="btn-row mt12"><button class="btn primary" onclick="renderStage(${st.id},'guide')">下一步：操作指引 →</button></div></div>`;}
+function guideHTML(st){return`<div class="card"><div class="card-h"><h2>操作指引</h2></div><ol class="steps">${st.guide.map(g=>`<li>${g}</li>`).join('')}</ol><div class="legend mt16"><div class="it"><span class="badge ex">範例</span>參考範例資料</div><div class="it"><span class="badge in">你的資料</span>你填寫的資料</div><div class="it"><span class="badge dx">診斷推論</span>規則引擎輸出</div><div class="it"><span class="badge hy">待驗證假設</span>需驗證</div></div><div class="btn-row mt12"><button class="btn primary" onclick="renderStage(${st.id},'demo')">下一步：參考範例 →</button></div></div>`;}
+function demoHTML(st){return`<div class="card"><div class="card-h"><h2>參考範例</h2><span class="badge ex">範例</span></div><div class="note gray">${st.demo}</div>${renderData(st,st.example,'ex')}<div class="footer-actions"><button class="btn primary" onclick="renderStage(${st.id},'input')">前往填寫資料 →</button></div></div>`;}
+
+/* 唯讀資料渲染（參考範例／報告共用） */
+const isEmptyVal=v=>v==null||v===''||(Array.isArray(v)&&!v.length)||(typeof v==='object'&&!Array.isArray(v)&&!Object.keys(v).length);
+function renderData(st,d,badge){d=d||{};return st.sections.map(sec=>{const fs=sec.fields.filter(f=>visibleOf(f,d)&&!isEmptyVal(d[f.id]));if(!fs.length)return'';
+  return`<div class="form-section"><h3><span class="badge ${badge}">${badge==='ex'?'範例':'你的資料'}</span>${sec.title}</h3>${fs.map(f=>{const v=d[f.id];let body='';
+    if(f.type==='table')body=roTable(f,v);else if(f.type==='checks')body=`<div class="flex">${(v||[]).map(x=>`<span class="pill">${esc(x)}</span>`).join('')}</div>`;
+    else if(f.type==='likert')body=barRows(f.items.map(it=>({label:it[1],value:num(v[it[0]]),text:num(v[it[0]])+'/5'})),5);
+    else body=`<div style="white-space:pre-wrap">${esc(v)}</div>`;
+    return`<div class="field"><label class="lbl">${esc(f.label)}</label>${body}</div>`;}).join('')}</div>`;}).join('');}
+function roTable(f,rows){rows=(rows||[]).filter(r=>Object.values(r).some(x=>String(x??'').trim()));if(!rows.length)return'<span class="muted small">－</span>';
+  return`<div class="tbl-wrap"><table class="tbl compact"><thead><tr>${f.cols.map(c=>`<th>${c.l}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${f.cols.map(c=>`<td style="${c.t==='calc'?'font-weight:700;text-align:center':''}">${c.t==='calc'?c.calc(r):esc(r[c.k])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;}
+
+/* ---------------- 表單 ---------------- */
+function inputHTML(st){const r=rec(st.id);const d=r.draft||{};CURRENT_CARRY=st.carry(S)||[];const nxt=stage(st.id+1);
+  const carry=CURRENT_CARRY.length?`<div class="carry"><h4>🔗 前階段帶入（已確認資料）</h4>${CURRENT_CARRY.map((b,bi)=>`<div class="mb8"><b class="small">${esc(b.title)}</b>${b.note?`<div class="tiny muted">${esc(b.note)}</div>`:''}<div class="chips mt8">${(b.chips||[]).map((c,ci)=>`<span class="chip" onclick="applyChip(${st.id},${bi},${ci})" title="點選帶入">＋ ${esc(c.label)}</span>`).join('')}${(b.static||[]).map(s=>`<span class="chip static">${esc(s)}</span>`).join('')}</div>${(b.chips||[]).length>1&&!b.chips.every(c=>c.replace&&c.field===b.chips[0].field)?`<button class="btn sm mt8" onclick="applyAll(${st.id},${bi})">全部帶入</button>`:''}</div>`).join('')}</div>`:'';
+  const banner=r.confirmed?`<div class="note ok"><b>本階段已確認。</b>表單為唯讀；如需修改請按「返回修改」，修改後需重新確認診斷，後續階段將暫時鎖定（資料保留）。 <button class="btn sm" onclick="reopen(${st.id})">返回修改</button></div>`:'';
+  const form=st.sections.map((sec,i)=>`<div class="form-section"><h3><span class="n">${i+1}</span>${sec.title}${sec.desc?`<span class="tiny muted">${sec.desc}</span>`:''}</h3>${sec.fields.map(f=>fieldHTML(st,f,d)).join('')}</div>`).join('');
+  return`<div class="card">${banner}${carry}<form id="stageForm" onsubmit="return false" ${r.confirmed?'class="ro"':''}>${form}</form><div id="formErrors"></div>
+  <div class="footer-actions">${r.confirmed?`<button class="btn" onclick="renderStage(${st.id},'dx')">查看診斷結果</button>${nxt?`<button class="btn primary" onclick="go('stage-${nxt.id}')">前往第 ${nxt.id} 階段 →</button>`:`<button class="btn primary" onclick="go('report')">前往企劃報告 →</button>`}`:
+  `<button class="btn" onclick="saveDraft(${st.id},true)">儲存草稿</button><button class="btn danger ghost" onclick="clearStage(${st.id})">清除本階段</button><span style="flex:1"></span><button class="btn primary lg" onclick="confirmStage(${st.id})">確認診斷 ✓</button>`}</div></div>`;}
+
+/* 範例只以灰字提示呈現（本站不提供載入範例按鈕）；表格取前 2 列摘要 */
+function exHint(f,v){if(isEmptyVal(v)||f.type==='likert')return'';let t;
+  if(f.type==='checks')t=(v||[]).join('、');
+  else if(f.type==='table'){const rows=(v||[]).filter(r=>Object.values(r).some(x=>String(x??'').trim()));if(!rows.length)return'';
+    t=rows.slice(0,2).map(r=>f.cols.filter(c=>c.t!=='calc'&&String(r[c.k]??'').trim()).map(c=>`${c.l}：${cut(String(r[c.k]),18)}`).join('｜')).join('；')+(rows.length>2?`（範例共 ${rows.length} 列）`:'');}
+  else t=String(v);
+  return`<div class="ex"><b>範例：</b>${esc(t)}</div>`;}
+function fieldHTML(st,f,d){const v=d[f.id];const req=requiredOf(f)?'<span class="req">*</span>':'';
+  const exHtml=exHint(f,st.example[f.id]);
+  const help=f.help?`<div class="help">${f.help}</div>`:'';let c='';
+  switch(f.type){
+    case'text':c=`<input type="text" data-f="${f.id}" value="${esc(v??'')}" placeholder="${esc(f.ph||'')}">`;break;
+    case'number':c=`<input type="number" step="any" data-f="${f.id}" value="${esc(v??'')}" placeholder="${esc(f.ph||'')}">`;break;
+    case'textarea':c=`<textarea data-f="${f.id}" placeholder="${esc(f.ph||'')}">${esc(v??'')}</textarea>`;break;
+    case'select':c=`<select data-f="${f.id}"><option value="">請選擇</option>${f.options.map(o=>`<option ${v===o?'selected':''}>${o}</option>`).join('')}</select>`;break;
+    case'checks':c=`<div class="chk-group">${f.options.map(o=>`<label class="chk ${(v||[]).includes(o)?'on':''}"><input type="checkbox" data-f="${f.id}" value="${esc(o)}" ${(v||[]).includes(o)?'checked':''}>${esc(o)}</label>`).join('')}</div>`;break;
+    case'likert':c=f.items.map(it=>`<div class="flex mb8" style="gap:12px"><span style="width:110px;font-size:13px;font-weight:600">${it[1]}</span><div class="likert" style="flex:1">${[1,2,3,4,5].map(n=>`<label class="${v&&+v[it[0]]===n?'on':''}"><input type="radio" name="lk_${f.id}_${it[0]}" value="${n}" ${v&&+v[it[0]]===n?'checked':''}>${n}</label>`).join('')}</div></div>`).join('');break;
+    case'table':c=tableHTML(f,v||[]);break;}
+  const hidden=visibleOf(f,d)?'':'style="display:none"';
+  return`<div class="field" id="fld_${f.id}" ${f.dep?`data-dep="${f.dep}" data-depval="${esc(f.depVal||'是')}"`:''} ${hidden}><label class="lbl">${esc(f.label)}${req}</label>${help}${c}${exHtml}<div class="err-msg" id="err_${f.id}"></div></div>`;}
+function tableHTML(f,rows){if(!rows.length)rows=[{}];return`<div class="tbl-wrap"><table class="tbl tbl-edit" data-tbl="${f.id}"><thead><tr>${f.cols.map(c=>`<th style="width:${c.w||'auto'}">${c.l}</th>`).join('')}<th style="width:34px"></th></tr></thead><tbody>${rows.map((r,i)=>rowHTML(f,r,i)).join('')}</tbody></table></div><div class="btn-row mt8 no-print"><button class="btn sm" onclick="addRow('${f.id}')">＋ 新增一列</button><span class="tiny muted">至少 ${f.min||1} 列有效資料</span></div>`;}
+function rowHTML(f,r,i){return`<tr data-row="${i}">${f.cols.map(c=>{const v=r[c.k]??'';
+  if(c.t==='calc')return`<td class="calc" data-calc="${c.k}">${c.calc(r)}</td>`;
+  if(c.t==='select')return`<td><select data-k="${c.k}"><option value="">－</option>${c.o.map(o=>`<option ${String(v)===o?'selected':''}>${o}</option>`).join('')}</select></td>`;
+  if(c.t==='number')return`<td><input type="number" step="any" data-k="${c.k}" value="${esc(v)}"></td>`;
+  if(c.t==='textarea')return`<td><textarea data-k="${c.k}" rows="2">${esc(v)}</textarea></td>`;
+  return`<td><input type="text" data-k="${c.k}" value="${esc(v)}"></td>`;}).join('')}<td><button type="button" class="rm" title="刪除此列" onclick="rmRow('${f.id}',${i})">✕</button></td></tr>`;}
+
+function collect(st){const d={};st.sections.forEach(sec=>sec.fields.forEach(f=>{const el=document.getElementById('fld_'+f.id);if(!el)return;
+  if(f.type==='table'){const rows=[];el.querySelectorAll('tbody tr').forEach(tr=>{const r={};tr.querySelectorAll('[data-k]').forEach(inp=>r[inp.dataset.k]=inp.value);rows.push(r);});d[f.id]=rows;}
+  else if(f.type==='checks')d[f.id]=[...el.querySelectorAll('input[type=checkbox]:checked')].map(i=>i.value);
+  else if(f.type==='likert'){const o={};f.items.forEach(it=>{const c=el.querySelector(`input[name="lk_${f.id}_${it[0]}"]:checked`);if(c)o[it[0]]=+c.value;});d[f.id]=o;}
+  else{const inp=el.querySelector('[data-f]');d[f.id]=inp?inp.value:'';}}));return d;}
+function bindForm(st){const form=document.getElementById('stageForm');if(!form)return;const r=rec(st.id);
+  if(r.confirmed){form.querySelectorAll('input,select,textarea,button').forEach(e=>e.disabled=true);return;}
+  const h=e=>{const t=e.target;
+    if(t.closest('.chk'))t.closest('.chk').classList.toggle('on',t.checked);
+    if(t.type==='radio'&&t.closest('.likert'))t.closest('.likert').querySelectorAll('label').forEach(l=>l.classList.toggle('on',l.querySelector('input').checked));
+    const tr=t.closest('tr');if(tr){const tbl=t.closest('table');const f=findField(st,tbl.dataset.tbl);const row={};tr.querySelectorAll('[data-k]').forEach(i=>row[i.dataset.k]=i.value);tr.querySelectorAll('[data-calc]').forEach(td=>{const c=f.cols.find(x=>x.k===td.dataset.calc);td.textContent=c.calc(row);});}
+    if(t.dataset.f){document.querySelectorAll(`[data-dep="${t.dataset.f}"]`).forEach(el=>el.style.display=t.value===el.dataset.depval?'':'none');}
+    const fld=t.closest('.field');if(fld)fld.classList.remove('invalid');
+    clearTimeout(saveTimer);saveTimer=setTimeout(()=>saveDraft(st.id,false),500);};
+  form.addEventListener('input',h);form.addEventListener('change',h);}
+function findField(st,id){for(const s of st.sections)for(const f of s.fields)if(f.id===id)return f;return null;}
+function saveDraft(id,notify){const st=stage(id);const form=document.getElementById('stageForm');if(!form)return;const d=collect(st);STATE.stages[id]={...rec(id),draft:d};save();if(notify){toast('草稿已儲存');renderSidebar();}}
+function refreshField(st,fid,d){const f=findField(st,fid);const el=document.getElementById('fld_'+fid);if(!el)return;const tmp=document.createElement('div');tmp.innerHTML=fieldHTML(st,f,d);el.replaceWith(tmp.firstElementChild);}
+function addRow(fid){const st=stage(STATE.view.split('-')[1]);const d=collect(st);(d[fid]=d[fid]||[]).push({});refreshField(st,fid,d);saveDraft(st.id,false);}
+function rmRow(fid,i){const st=stage(STATE.view.split('-')[1]);const d=collect(st);d[fid].splice(i,1);refreshField(st,fid,d);saveDraft(st.id,false);}
+function loadExample(id){const st=stage(id);if(rec(id).confirmed){toast('本階段已確認，請先「返回修改」',true);return;}
+  const d=JSON.parse(JSON.stringify(st.example));STATE.stages[id]={...rec(id),draft:d};save();renderStage(id,'input');toast('已載入範例資料（標示為範例，請依需求修改）');}
+function clearStage(id){modal(`<h3>清除第 ${id} 階段資料？</h3><p class="muted">將刪除本階段草稿與診斷結果；後續階段資料保留但將鎖定。</p><div class="btn-row"><button class="btn danger" onclick="doClear(${id})">確認清除</button><button class="btn" onclick="closeModal()">取消</button></div>`);}
+function doClear(id){delete STATE.stages[id];save();closeModal();renderStage(id,'input');renderSidebar();renderProgress();toast('已清除');}
+function reopen(id){STATE.stages[id]={...rec(id),confirmed:false};save();renderSidebar();renderProgress();renderStage(id,'input');toast('已開放修改；完成後請重新確認診斷');}
+/* 帶入規則：表格欄位 → 新增一列（深拷貝）；文字欄位 → 空白或 replace 時取代，否則換行附加 */
+function mergeChip(st,d,c){const f=findField(st,c.field);
+  if(f.type==='table'){const rows=(d[c.field]||[]).filter(r=>Object.values(r).some(x=>String(x??'').trim()));
+    const same=r=>Object.keys(c.value).every(k=>String(r[k]??'').trim()===String(c.value[k]??'').trim()); // skip rows already carried in
+    if(!rows.some(same))rows.push(JSON.parse(JSON.stringify(c.value)));d[c.field]=rows;}
+  else{const cur=String(d[c.field]||'').trim();d[c.field]=c.replace||!cur?c.value:cur.includes(String(c.value).trim())?cur:cur+'\n'+c.value;}}
+function applyChip(id,bi,ci){const st=stage(id);if(rec(id).confirmed)return toast('本階段已確認，請先「返回修改」',true);const c=CURRENT_CARRY[bi].chips[ci];const d=collect(st);
+  mergeChip(st,d,c);refreshField(st,c.field,d);saveDraft(id,false);toast('已帶入');}
+function applyAll(id,bi){const st=stage(id);if(rec(id).confirmed)return toast('本階段已確認，請先「返回修改」',true);const b=CURRENT_CARRY[bi];const d=collect(st);
+  const seen=new Set(),use=b.chips.filter(c=>!c.replace||(!seen.has(c.field)&&seen.add(c.field))); // first replace chip per field wins
+  use.forEach(c=>mergeChip(st,d,c));[...new Set(use.map(c=>c.field))].forEach(fid=>refreshField(st,fid,d));saveDraft(id,false);toast(`已帶入 ${use.length} 筆`);}
+
+/* ---------------- 驗證 ---------------- */
+function validate(st,d){const errs=[];st.sections.forEach(sec=>sec.fields.forEach(f=>{if(!visibleOf(f,d))return;const req=requiredOf(f);const v=d[f.id];let msg='';
+  if(f.type==='table'){const rows=(v||[]).filter(r=>String(r[f.cols[0].k]??'').trim());if(req&&rows.length<(f.min||1))msg=`至少需填寫 ${f.min||1} 列有效資料（目前 ${rows.length} 列；第一欄為必填）`;
+    else{const bad=[];rows.forEach((r,i)=>f.cols.forEach(c=>{if((c.t==='select'||c.t==='number')&&String(r[c.k]??'').trim()==='')bad.push(`第 ${i+1} 列「${c.l}」`);}));if(bad.length)msg='請完成：'+bad.slice(0,4).join('、')+(bad.length>4?` 等 ${bad.length} 處`:'');}}
+  else if(f.type==='checks'){if(req&&(v||[]).length<(f.min||1))msg=`至少選擇 ${f.min||1} 項`;}
+  else if(f.type==='likert'){const miss=f.items.filter(it=>!(v&&v[it[0]]));if(req&&miss.length)msg='請完成評分：'+miss.map(m=>m[1]).join('、');}
+  else if(req&&String(v??'').trim()==='')msg='此欄位為必填';
+  if(msg)errs.push({id:f.id,msg});}));
+  if(st.validate)errs.push(...st.validate(d).map(m=>({id:null,msg:m})));return errs;}
+
+async function confirmStage(id){const st=stage(id);const d=collect(st);const errs=validate(st,d);
+  document.querySelectorAll('.field.invalid').forEach(e=>e.classList.remove('invalid'));
+  document.querySelectorAll('.err-msg').forEach(e=>e.textContent='');
+  errs.forEach(e=>{if(e.id){const el=document.getElementById('fld_'+e.id);el.classList.add('invalid');document.getElementById('err_'+e.id).textContent=e.msg;}});
+  const box=document.getElementById('formErrors');
+  if(errs.length){box.innerHTML=`<div class="note err"><b>尚有 ${errs.length} 處待修正：</b><ul class="clean small">${errs.map(e=>`<li>${e.id?esc(findField(st,e.id).label)+'：':''}${esc(e.msg)}</li>`).join('')}</ul></div>`;const first=errs.find(e=>e.id);if(first)document.getElementById('fld_'+first.id).scrollIntoView({behavior:'smooth',block:'center'});toast(`尚有 ${errs.length} 處待修正`,true);return;}
+  box.innerHTML='';
+  st.sections.forEach(sec=>sec.fields.forEach(f=>{if(f.type==='table')d[f.id]=(d[f.id]||[]).filter(r=>String(r[f.cols[0].k]??'').trim());if(f.type==='number'&&d[f.id]!=='')d[f.id]=+d[f.id];}));
+  const dx=await Engine.diagnose(id,d,S);
+  STATE.stages[id]={draft:d,data:d,dx,confirmed:true,confirmedAt:new Date().toISOString()};save();renderSidebar();renderProgress();renderStage(id,'dx');fxConfetti(id===N_STAGES||doneCount()===N_STAGES);
+  const nxt=stage(id+1);toast(nxt?(unlocked(nxt.id)?`第 ${id} 階段診斷完成，第 ${nxt.id} 階段已解鎖`:`第 ${id} 階段診斷完成`):`${APP.flowName}全部完成！可前往企劃報告`);}
+
+/* ---------------- 診斷結果 ---------------- */
+function dxHTML(st,dx,r){const sc=dx.score;const col=sc>=75?'var(--green)':sc>=50?'var(--yellow)':'var(--red)';const nxt=stage(st.id+1);
+  const item=x=>`<div class="dx-item"><span class="sev ${x.sev||'i'}"></span><div style="flex:1">${esc(x.text)}${x.verify?`<div class="tiny muted mt8">驗證方式：${esc(x.verify)}</div>`:''}</div><span class="rule" title="規則編號（可追溯）">${x.rule}</span></div>`;
+  return`<div class="card"><div class="card-h"><h2>診斷結果</h2><div class="flex"><span class="badge dx">診斷推論</span><span class="engine-tag"><i></i>${esc(dx.engine||Engine.name)}｜${(dx.rulesFired||[]).length} 條規則觸發｜${dx.ms||0} ms</span></div></div>
+  <div class="dx-head"><div class="score-ring"><div class="ring" style="background:conic-gradient(${col} ${sc*3.6}deg,var(--line) 0)"><b>${sc}</b></div><div><div class="small muted">${dx.scoreLabel}</div><div style="font-size:18px;font-weight:800;color:${col}">${dx.scoreKind==='state'?(sc>=75?'現況穩健':sc>=50?'現況有明顯缺口':'現況急需改善'):(sc>=75?'良好':sc>=50?'尚可，需補強':'不足，需重做')}</div><div class="tiny muted">${dx.scoreKind==='state'?'評估目前現況（分數越低，越需要優先改善）':'評估本階段資料的完整度與一致性'}；依規則扣分計算，非 LLM 評分</div></div></div>
+  <div class="grid g4" style="gap:10px">${dx.metrics.map(m=>`<div class="kpi ${m.cls||''}"><div class="v" style="font-size:20px">${esc(m.value)}</div><div class="l">${esc(m.label)}</div></div>`).join('')}</div></div>
+  <div class="grid g2 mt16"><div class="dx-block"><h3><span class="badge dx">診斷推論</span>問題評估</h3>${dx.assessment.map(item).join('')||'<span class="muted small">無</span>'}</div>
+  <div class="dx-block" style="border-color:#f3d9a4;background:#fffcf5"><h3><span class="badge hy">待驗證假設</span>根因假設</h3>${dx.hypotheses.map(item).join('')||'<span class="muted small">本階段未產生需驗證之假設。</span>'}</div>
+  <div class="dx-block"><h3><span class="badge dx">診斷推論</span>改善建議</h3>${dx.recommendations.map(item).join('')||'<span class="muted small">無額外建議，請依方法說明持續精進。</span>'}</div>
+  <div class="dx-block"><h3><span class="badge dx">診斷推論</span>下一步行動</h3>${dx.nextActions.map(item).join('')}</div></div>
+  <div class="dx-block"><h3><span class="badge dx">視覺化分析</span></h3>${dx.visual||''}</div>
+  ${dx.aiExtra?`<div class="dx-block" style="border-color:#c7d7ff"><h3><span class="badge in">外部 AI 補充</span>${esc(dx.aiExtra.name)}</h3><div class="small" style="white-space:pre-wrap">${esc(dx.aiExtra.text||dx.aiExtra.error||'')}</div></div>`:''}
+  <div class="flex tiny muted"><span><span class="sev h" style="display:inline-block;width:8px;height:8px;border-radius:50%"></span> 高嚴重度</span><span><span class="sev m" style="display:inline-block;width:8px;height:8px;border-radius:50%"></span> 中</span><span><span class="sev l" style="display:inline-block;width:8px;height:8px;border-radius:50%"></span> 正向／低</span><span><span class="sev i" style="display:inline-block;width:8px;height:8px;border-radius:50%"></span> 資訊</span><span>產生時間：${new Date(dx.generatedAt||Date.now()).toLocaleString('zh-TW')}</span></div>
+  <div class="footer-actions"><button class="btn" onclick="renderStage(${st.id},'input')">檢視／修改輸入</button><button class="btn" onclick="reopen(${st.id})">返回修改</button><span style="flex:1"></span>${nxt?`<button class="btn primary lg" onclick="go('stage-${nxt.id}')">前往第 ${nxt.id} 階段：${nxt.title} →</button>`:`<button class="btn primary lg" onclick="go('report')">產生企劃報告 →</button>`}</div></div>`;}
+
+/* ---------------- 企劃報告（由 REPORT 設定驅動） ---------------- */
+const DX_KEY_LABEL={assessment:'問題評估',hypotheses:'根因假設（待驗證）',recommendations:'改善建議',nextActions:'下一步行動'};
+function renderReport(){const n=doneCount();const all=n===N_STAGES;
+  const dx=id=>isDone(id)?rec(id).dx:null;const d=id=>(isDone(id)&&rec(id).data)||{};
+  const scores=STAGES.filter(s=>dx(s.id)).map(s=>dx(s.id).score);
+  const ctx={n,all,d,dx,avgScore:scores.length?Math.round(avg(scores)):0};
+  const sec=(t,body)=>`<div class="report-section"><h2>${t}</h2>${body}</div>`;
+  const miss=STAGES.filter(s=>!isDone(s.id));
+  const head=`<div class="no-print card tight flex sb"><div><b>${all?`${APP.flowName}已全部完成，報告已自動彙整。`:`已完成 ${n}/${N_STAGES} 階段，以下為部分彙整（完成後自動更新）。`}</b>${all?'':`<div class="tiny muted">尚未完成：${miss.map(s=>`第 ${s.id} 階段 ${s.title}`).join('、')}</div>`}</div><div class="btn-row"><button class="btn primary" onclick="savePDF()">⬇ 下載 PDF</button><button class="btn teal" onclick="sendPlan()">✉ 寄給老師</button>${all?'':`<button class="btn" onclick="go('stage-${miss[0].id}')">繼續第 ${miss[0].id} 階段</button>`}</div></div>`;
+  const caseLines=REPORT.caseLines?REPORT.caseLines(ctx):[`案主：${CASE.name}｜${CASE.title}`]; // client-type: replaces CASE.system + case line
+  const coverLines=(REPORT.coverLines?REPORT.coverLines(ctx):[]).concat(caseLines,[`報告日期：${new Date().toLocaleDateString('zh-TW')}　·　完成階段：${n}/${N_STAGES}　·　診斷引擎：${Engine.name}`]);
+  const cover=`<div class="report-cover"><div class="tiny" style="opacity:.8;letter-spacing:2px">${esc(REPORT.eyebrow)}</div><h1>${esc(REPORT.title)}</h1><div class="sub">${esc(REPORT.subtitle(ctx))}</div>${REPORT.caseLines?'':`<div class="sub mt8">${CASE.system}</div>`}${coverLines.map(l=>`<div class="sub">${esc(l)}</div>`).join('')}</div>`;
+  const dxList=(id,keys)=>{const x=dx(id);if(!x)return'';return keys.map(k=>x[k].length?`<h4 class="mt8">${DX_KEY_LABEL[k]}</h4><ul class="clean small">${x[k].map(i=>`<li>${esc(i.text)} <span class="rule tiny muted">[${i.rule}]</span>${i.verify?`<div class="tiny muted">驗證：${esc(i.verify)}</div>`:''}</li>`).join('')}</ul>`:'').join('');};
+  const stHead=id=>{const x=dx(id);return x?`<div class="flex sb mb8"><span class="badge dx">${x.scoreLabel}：${x.score}／100</span><span class="tiny muted">${(x.rulesFired||[]).length} 條規則</span></div>`:'';};
+  const summary=sec('一、執行摘要（Executive Summary）',REPORT.summary(ctx)+`<div class="legend mt12"><div class="it"><span class="badge in">你的資料</span>你確認的資料</div><div class="it"><span class="badge dx">診斷推論</span>規則引擎</div><div class="it"><span class="badge hy">待驗證假設</span>需驗證</div></div>`);
+  const body=REPORT.sections.map((g,gi)=>sec(g.title,g.stages.map((id,k)=>{const st=stage(id);const x=dx(id);
+    return`<h3 class="${k?'mt16':''}">${g.stages.length>1?`${gi+2}.${k+1} `:''}${esc(st.title)} <span class="badge in">你的資料</span></h3>${stHead(id)}${x?renderData(st,d(id),'in')+(x.visual||'')+dxList(id,g.keys||['assessment','hypotheses','recommendations']):'<span class="muted small">（未完成）</span>'}`;}).join('')));
+  const actions=sec('優先行動清單（各階段彙整）',`<ol class="steps">${STAGES.filter(s=>dx(s.id)).flatMap(s=>dx(s.id).nextActions.map(a=>`<li><b>第 ${s.id} 階段</b>｜${esc(a.text)} <span class="tiny muted">[${a.rule}]</span></li>`)).join('')||'<li class="muted">（尚無）</li>'}</ol>`);
+  const appendix=sec('附錄：待驗證假設總表與規則追溯',`<p class="small muted">以下假設由規則引擎依你填寫的資料推導，證據不足，需再查證、請教專業人士或實際試行後確認；每條附規則編號以供追溯。</p><div class="tbl-wrap"><table class="tbl compact"><tr><th>階段</th><th>假設</th><th>驗證方式</th><th>規則</th></tr>${STAGES.filter(s=>dx(s.id)).flatMap(s=>dx(s.id).hypotheses.map(h=>`<tr><td>${s.id}</td><td><span class="badge hy">待驗證</span> ${esc(h.text)}</td><td>${esc(h.verify||'')}</td><td class="mono tiny">${h.rule}</td></tr>`)).join('')||'<tr><td colspan="4" class="muted">（尚無）</td></tr>'}</table></div><p class="tiny muted mt12">本報告由 ${Engine.name} 產生，未使用大型語言模型；所有「診斷推論」皆可追溯至規則編號與你填寫的資料。報告產生時間：${new Date().toLocaleString('zh-TW')}</p>`);
+  document.getElementById('view').innerHTML=head+'<div id="reportDoc">'+cover+summary+body.map(b=>'<div class="page-break"></div>'+b).join('')+'<div class="page-break"></div>'+actions+appendix+'</div>'+`<div class="no-print btn-row mt16"><button class="btn primary" onclick="savePDF()">⬇ 下載 PDF</button><button class="btn teal" onclick="sendPlan()">✉ 寄給老師</button><button class="btn" onclick="go('home')">回首頁</button></div>`;
+  fxEnter('report');}
+
+/* ---------------- 重置 / 匯出匯入 ---------------- */
+function confirmReset(){modal(`<h3>重置全部進度？</h3><p class="muted">將清除${esc(APP.flowName)}所有輸入與診斷（localStorage）。此動作無法復原，建議先「匯出進度」備份。</p><div class="btn-row"><button class="btn danger" onclick="doReset()">確認重置</button><button class="btn" onclick="exportJSON()">先匯出備份</button><button class="btn" onclick="closeModal()">取消</button></div>`);}
+function doReset(){STATE={stages:{},view:'home',updatedAt:null};try{localStorage.removeItem(APP.storageKey);}catch(e){console.warn('localStorage 清除失敗',e);}closeModal();go('home');renderSidebar();renderProgress();toast('已重置');}
+function exportJSON(){const blob=new Blob([JSON.stringify(STATE,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`${APP.exportPrefix}_${new Date().toLocaleDateString('sv-SE')}.json`; /* sv-SE = local YYYY-MM-DD */a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+function importJSON(){const i=document.createElement('input');i.type='file';i.accept='application/json';i.onchange=()=>{const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!o||typeof o.stages!=='object')throw new Error('格式不符');STATE=o;save();route();toast('進度已匯入');}catch(e){toast('匯入失敗：'+e.message,true);}};r.readAsText(f);};i.click();}
+
+/* ---------------- 擴充介面（未來串接地端 LLM） ---------------- */
+window.AITC={version:APP.version,engine:Engine,stages:STAGES,state:()=>STATE,
+  /** 註冊外部 AI 分析介接。adapter = { name:'Local LLM', analyze: async ({stageId,data,context,ruleResult}) => ({text:'...'}) }
+   *  - 規則引擎之判定不會被覆寫；外部分析僅以「外部 AI 補充」區塊呈現，並標示來源。
+   *  - 建議於地端 LLM 服務前加上去識別化與權限檢查。 */
+  registerAIAdapter:a=>Engine.registerAIAdapter(a),
+  unregisterAIAdapter:()=>{Engine.adapter=null;}};
+
+/* ---------------- 動效（GSAP／rough-notation／canvas-confetti；CDN 未載入或偏好減少動態時略過） ---------------- */
+let _fxKey='',_ann=[];
+const fxReduced=()=>typeof matchMedia==='function'&&!!matchMedia('(prefers-reduced-motion: reduce)').matches;
+function fxEnter(key,sel){const same=key===_fxKey;_fxKey=key;if(same||typeof gsap==='undefined'||fxReduced())return;
+  try{gsap.from(sel||'#view > *',{y:14,opacity:0,duration:.35,stagger:.05,ease:'power2.out',clearProps:'transform,opacity'});}catch(e){console.warn('GSAP 進場動畫失敗',e);}}
+/* 截圖前把進行中的進場動畫跑到終點，避免 PDF 截到半透明內容 */
+function fxFinish(){if(typeof gsap==='undefined')return;
+  try{gsap.getTweensOf('#view, #view *').forEach(t=>t.progress(1));}catch(e){console.warn('結束進場動畫失敗',e);}}
+if(typeof addEventListener==='function')addEventListener('beforeprint',fxFinish);
+function fxAnnotate(){_ann.forEach(a=>{try{a.remove();}catch(e){console.warn('移除手繪標註失敗',e);}});_ann=[];
+  if(typeof RoughNotation==='undefined'||fxReduced())return;
+  try{const A=RoughNotation.annotate,h=document.querySelector('#view .stage-hero h1'),r=document.querySelector('#view .tabpanel.active .ring');
+    if(h)_ann.push(A(h,{type:'underline',color:'#c8553d',strokeWidth:2,padding:2,iterations:1}));
+    if(r)_ann.push(A(r,{type:'circle',color:'#d9a23a',strokeWidth:2,padding:6}));
+    _ann.forEach(a=>a.show());}catch(e){console.warn('rough-notation 標註失敗',e);}}
+function fxConfetti(big){if(typeof confetti!=='function'||fxReduced())return;
+  try{const colors=['#c8553d','#d9a23a','#4f7d5c','#2f5d73','#2b2622'];
+    if(big){confetti({particleCount:160,spread:100,origin:{y:.6},colors});
+      setTimeout(()=>confetti({particleCount:90,angle:60,spread:70,origin:{x:0,y:.7},colors}),250);
+      setTimeout(()=>confetti({particleCount:90,angle:120,spread:70,origin:{x:1,y:.7},colors}),400);}
+    else confetti({particleCount:60,spread:60,origin:{y:.7},colors,scalar:.9});}catch(e){console.warn('confetti 失敗',e);}}
+
+/* ---------------- PDF（html2canvas 截圖 → jsPDF 分頁，A4 直式） ---------------- */
+let _pdfBusy=false;
+function pdfName(){const nm=String((S.d(1)||{}).name||'').replace(/[\\/:*?"<>|\s]/g,'');return`影片企劃_${nm||'未填姓名'}_${new Date().toLocaleDateString('sv-SE')}.pdf`;}
+async function makePDF(){if(typeof html2canvas!=='function'||!window.jspdf)throw new Error('PDF 元件尚未載入（需要網路）');
+  const docEl=document.getElementById('reportDoc');if(!docEl)throw new Error('找不到報告內容，請先開啟企劃報告頁');
+  fxFinish();document.body.classList.add('pdf-mode');
+  try{if(document.fonts&&document.fonts.ready)await document.fonts.ready;window.scrollTo(0,0);
+    let marks=null;
+    const canvas=await html2canvas(docEl,{scale:1.5,logging:false,backgroundColor:'#fffdf7',useCORS:true,windowWidth:1280,
+      ignoreElements:el=>!!(el.classList&&(el.classList.contains('no-print')||el.classList.contains('rough-annotation'))),
+      onclone:cd=>{const c=cd.getElementById('reportDoc');
+        /* html2canvas 會把畫面上 SVG 的計算尺寸寫死成 inline style；畫面寬度與 1280 不同時會撐破版面，移除後交回 CSS 計算 */
+        c.querySelectorAll('svg').forEach(s=>['width','height','inline-size','block-size','transform-origin','perspective-origin'].forEach(k=>s.style.removeProperty(k)));
+        const box=c.getBoundingClientRect();const rel=el=>el.getBoundingClientRect().top-box.top;
+        marks={w:box.width,force:[...c.querySelectorAll('.page-break')].map(rel),
+          cand:[...c.querySelectorAll('.report-section>*,.form-section,.field,tr,li,.dx-item,.kpi,.skbox')].map(rel)};}});
+    const W=canvas.width,Ht=canvas.height,k=marks&&marks.w?W/marks.w:1.5,pageH=Math.floor(W*277/190);
+    const force=(marks?marks.force:[]).map(v=>Math.round(v*k)).sort((a,b)=>a-b);
+    const cand=(marks?marks.cand:[]).map(v=>Math.round(v*k)).sort((a,b)=>a-b);
+    /* 斷頁：範圍內有強制分頁就用；否則取超過 4 成頁高後最後一個區塊起點；都沒有才硬切 */
+    const cuts=[0];let y=0;
+    while(y<Ht-4){const lim=y+pageH;const f=force.find(v=>v>y+20&&v<=lim&&v<Ht-20);let nx;
+      if(f!=null)nx=f;else if(lim>=Ht)nx=Ht;else{const c=cand.filter(v=>v>y+pageH*.4&&v<=lim);nx=c.length?c[c.length-1]:lim;}
+      cuts.push(nx);y=nx;}
+    const pdf=new window.jspdf.jsPDF({unit:'mm',format:'a4',orientation:'portrait'});const n=cuts.length-1;
+    for(let i=0;i<n;i++){const sy=cuts[i],sh=cuts[i+1]-sy;const pc=document.createElement('canvas');pc.width=W;pc.height=sh;
+      const g=pc.getContext('2d');g.fillStyle='#fffdf7';g.fillRect(0,0,W,sh);g.drawImage(canvas,0,sy,W,sh,0,0,W,sh);
+      if(i)pdf.addPage();pdf.addImage(pc.toDataURL('image/jpeg',.85),'JPEG',10,10,190,sh*190/W);
+      pdf.setFontSize(9);pdf.setTextColor(120);pdf.text(`${i+1} / ${n}`,200,292,{align:'right'});}
+    return pdf;
+  }finally{document.body.classList.remove('pdf-mode');}}
+async function savePDF(){if(_pdfBusy)return toast('PDF 產生中，請稍候');_pdfBusy=true;toast('正在產生 PDF，約需 5～15 秒…');
+  try{const pdf=await makePDF();pdf.save(pdfName());toast('PDF 已下載：'+pdfName());}
+  catch(e){console.error('PDF 產生失敗',e);toast('PDF 產生失敗：'+e.message,true);}
+  finally{_pdfBusy=false;}}
+
+/* ---------------- 寄給老師（Google Apps Script 轉寄；MAIL.endpoint 空白 = 尚未設定） ---------------- */
+function sendPlan(){const d=S.d(1)||{};const name=String(d.name||'').trim(),email=String(d.email||'').trim();
+  if(!MAIL.endpoint)return toast('寄信尚未設定，請先下載 PDF 再交給老師',true);
+  if(!name)return toast('請先完成第 1 階段（姓名會當作信件主旨）',true);
+  const n=doneCount();
+  modal(`<h3>寄給老師</h3><dl class="meta"><dt>信件主旨</dt><dd>${esc(name)}</dd><dt>你的 Email</dt><dd>${esc(email||'（未填）')}</dd><dt>完成階段</dt><dd>${n} / ${N_STAGES}</dd></dl>${n<N_STAGES?`<div class="note warn mt12">還有 ${N_STAGES-n} 個階段沒完成，寄出的是部分報告。建議全部完成再寄。</div>`:''}<p class="small muted mt12">信件會附上這份報告的 PDF；老師可以直接回信到你的 Email。</p><div class="btn-row mt12"><button class="btn primary" id="sendGo" onclick="doSendPlan()">確認寄出</button><button class="btn" onclick="closeModal()">取消</button></div>`);}
+async function doSendPlan(){if(_pdfBusy)return;_pdfBusy=true;const btn=document.getElementById('sendGo');if(btn){btn.disabled=true;btn.textContent='寄送中…';}
+  const d=S.d(1)||{};const name=String(d.name||'').trim(),email=String(d.email||'').trim();
+  try{const pdf=await makePDF();const b64=pdf.output('datauristring').split(',')[1];
+    const res=await fetch(MAIL.endpoint,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({name,email,subject:name,filename:pdfName(),pdf:b64,done:doneCount(),total:N_STAGES})});
+    let j;try{j=await res.json();}catch(e){throw new Error('伺服器回應格式錯誤（HTTP '+res.status+'）');}
+    if(!res.ok||!j.ok)throw new Error(j.error||('HTTP '+res.status));
+    closeModal();toast('已寄出，老師會收到你的企劃報告');}
+  catch(e){console.error('寄送失敗',e);toast('寄送失敗：'+e.message+'。請改用下載 PDF',true);if(btn){btn.disabled=false;btn.textContent='確認寄出';}}
+  finally{_pdfBusy=false;}}
+
+/* ---------------- 開場說明（p5.js instance mode，無音效；第一次造訪自動播放） ---------------- */
+const INTRO_MS=7500;let _introI=0,_introP5=null,_introT=null,_introStart=0;
+const introSeenKey=()=>APP.storageKey+'_intro';
+function introMaybe(){const b=id=>document.getElementById(id);
+  b('introPrev').onclick=()=>introGo(_introI-1);
+  b('introNext').onclick=()=>_introI>=INTRO.length-1?introClose():introGo(_introI+1);
+  b('introSkip').onclick=introClose;
+  b('introDots').innerHTML=INTRO.map((x,i)=>`<i title="${i+1}. ${esc(x.t)}" onclick="introGo(${i})"></i>`).join('');
+  document.addEventListener('keydown',e=>{if(!b('intro').classList.contains('show'))return;
+    if(e.key==='Escape')introClose();else if(e.key==='ArrowRight')b('introNext').click();else if(e.key==='ArrowLeft')introGo(_introI-1);});
+  let seen=false;try{seen=localStorage.getItem(introSeenKey())==='1';}catch(e){console.warn('無法讀取開場說明紀錄',e);}
+  if(!seen)introOpen(0);}
+function introOpen(i){const el=document.getElementById('intro');el.classList.add('show');document.body.style.overflow='hidden';introGo(i||0);introStartSketch();}
+function introStartSketch(){const el=document.getElementById('intro');if(_introP5||!el.classList.contains('show'))return;
+  if(fxReduced()){el.classList.add('no-p5');return;}
+  if(typeof p5==='undefined'){if(document.readyState!=='complete'){window.addEventListener('load',introStartSketch,{once:true});return;}
+    console.warn('p5.js 未載入，開場說明改為純文字');el.classList.add('no-p5');return;}
+  el.classList.remove('no-p5');
+  try{_introP5=new p5(introSketch,document.getElementById('introStage'));}catch(e){console.warn('p5 開場動畫啟動失敗',e);el.classList.add('no-p5');}}
+function introGo(i){if(i<0||i>=INTRO.length)return;_introI=i;const x=INTRO[i],b=id=>document.getElementById(id),last=i===INTRO.length-1;
+  b('introNo').textContent=String(i+1).padStart(2,'0')+' / '+String(INTRO.length).padStart(2,'0');
+  b('introT').textContent=x.t;b('introS').textContent=x.s;
+  b('introNext').textContent=last?'開始填寫':'下一段';b('introPrev').disabled=i===0;
+  [...b('introDots').children].forEach((d,k)=>{d.className='';void d.offsetWidth;d.className=k<i?'done':k===i?'on'+(last?' hold':''):'';});
+  _introStart=performance.now();clearTimeout(_introT);
+  if(!last&&!fxReduced())_introT=setTimeout(()=>introGo(_introI+1),INTRO_MS);}
+function introClose(){clearTimeout(_introT);document.getElementById('intro').classList.remove('show');document.body.style.overflow='';
+  try{localStorage.setItem(introSeenKey(),'1');}catch(e){console.warn('無法記錄開場說明已看過',e);}
+  if(_introP5){_introP5.remove();_introP5=null;}}
+
+const INTRO_GLYPHS='先想清楚再開機期末專題前一格確認下一格才解鎖主題零件腳本分鏡聲音額度剪輯發布時程方法說明為什麼要做操作指引怎麼填參考範例別人先看三張卡再動手我家阿嬤的炒米粉影片林佳穎巷口麵包店開店只能寫你自己回家做得出來秒數旁白約字三幕比例每週可用小時需要每天有點你排規則扣分看到原因企劃與預計流程報告旨姓名，：（）';
+/* 手繪風場景：設計座標 800×380，等比縮放置中；線條每 4 格重抖一次（line boil） */
+function introSketch(p){const INK='#2b2622',RED='#c8553d',YEL='#d9a23a',GRN='#4f7d5c',BLU='#2f5d73',GRAY='#a3968a',CARD='#fffcf5';
+  const host=()=>document.getElementById('introStage');let W=10,H=10;
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),seg=(t,a,b)=>clamp((t-a)/(b-a),0,1),ease=u=>u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+  const boil=()=>Math.floor(p.frameCount/4);
+  /* wobbly line drawn up to fraction k */
+  const wl=(x1,y1,x2,y2,sd,k)=>{k=k==null?1:k;if(k<=0)return;p.noFill();const n=Math.max(2,Math.ceil(p.dist(x1,y1,x2,y2)/14));p.beginShape();
+    for(let i=0;i<=n;i++){const u=i/n*k;const jx=(p.noise(sd+i*.37,boil()*1.7)-.5)*3,jy=(p.noise(sd+40+i*.37,boil()*1.7)-.5)*3;p.vertex(p.lerp(x1,x2,u)+jx,p.lerp(y1,y2,u)+jy);}p.endShape();};
+  const wr=(x,y,w,h,sd,k,fc)=>{k=k==null?1:k;if(fc&&k>.9){p.push();p.noStroke();p.fill(fc);p.rect(x,y,w,h);p.pop();}const e=[[x,y,x+w,y],[x+w,y,x+w,y+h],[x+w,y+h,x,y+h],[x,y+h,x,y]];e.forEach((s,i)=>wl(s[0],s[1],s[2],s[3],sd+i*9,clamp(k*4-i,0,1)));};
+  const wc=(cx,cy,rx,ry,sd,k)=>{k=k==null?1:k;if(k<=0)return;p.noFill();const n=40;p.beginShape();for(let i=0;i<=n*k;i++){const a=i/n*p.TWO_PI-p.HALF_PI;const j=(p.noise(sd+i*.3,boil()*1.7)-.5)*4;p.vertex(cx+(rx+j)*Math.cos(a),cy+(ry+j)*Math.sin(a));}p.endShape();};
+  const hatch=(x,y,w,h,col,sd)=>{p.push();p.stroke(col);p.strokeWeight(1.4);for(let d=6;d<w+h;d+=7){const x1=x+Math.max(0,d-h),y1=y+Math.min(h,d),x2=x+Math.min(w,d),y2=y+Math.max(0,d-w);wl(x1,y1,x2,y2,sd+d,1);}p.pop();};
+  const check=(x,y,s,col,k,sd)=>{p.push();p.stroke(col);p.strokeWeight(3.2);wl(x,y,x+s*.35,y+s*.4,sd,seg(k,0,.4));wl(x+s*.35,y+s*.4,x+s,y-s*.45,sd+5,seg(k,.4,1));p.pop();};
+  const txt=(s,x,y,sz,col,al,font)=>{p.push();p.noStroke();p.fill(col);p.textFont(font||'LXGW WenKai TC');p.textSize(sz);p.textAlign(al||p.LEFT,p.BASELINE);p.text(s,x,y);p.pop();};
+  p.setup=()=>{W=host().clientWidth||10;H=host().clientHeight||10;p.createCanvas(W,H);p.frameRate(30);
+    if(document.fonts&&document.fonts.load)document.fonts.load('24px "LXGW WenKai TC"',INTRO_GLYPHS).catch(e=>console.warn('開場字型載入失敗，改用備用字型',e));};
+  p.windowResized=()=>{W=host().clientWidth||10;H=host().clientHeight||10;p.resizeCanvas(W,H);};
+  const scenes={
+    title:t=>{const ph=t%3.2,open=ph<.5?ease(seg(ph,0,.5)):ph<1.9?1:ph<2.05?1-seg(ph,1.9,2.05):0,ang=-.42*open;
+      wr(250,140,300,170,11,ease(seg(t,0,.9)),CARD);
+      txt('PROD.',272,186,15,RED,p.LEFT,'Special Elite');txt('期末專題',350,188,24,INK);
+      txt('SCENE',272,230,15,RED,p.LEFT,'Special Elite');txt('01',350,232,26,INK,p.LEFT,'Special Elite');
+      txt('TAKE',430,230,15,RED,p.LEFT,'Special Elite');txt('1',494,232,26,INK,p.LEFT,'Special Elite');
+      wl(262,200,538,200,31,seg(t,.4,1.1));wl(262,250,538,250,33,seg(t,.5,1.2));wl(410,205,410,245,35,seg(t,.6,1.2));
+      txt('先想清楚，再開機',400,290,18,GRAY,p.CENTER);
+      p.push();p.translate(250,140);p.rotate(ang);wr(0,-34,300,30,51,1,INK);
+      p.stroke(CARD);p.strokeWeight(7);for(let x=22;x<300;x+=46)wl(x,-32,x+18,-6,60+x,1);p.pop();
+      if(ph>2.05&&ph<2.45){const u=seg(ph,2.05,2.45);p.push();p.stroke(YEL);p.strokeWeight(3);[[-.9,0],[-.5,1],[-.1,2]].forEach(r=>{const a=r[0];wl(560+Math.cos(a)*14,128+Math.sin(a)*14,560+Math.cos(a)*(14+30*u),128+Math.sin(a)*(14+30*u),70+r[1],1);});p.pop();}},
+    strip:t=>{const fw=130,gap=12,total=9*(fw+gap),off=-ease(seg(t,.4,6.4))*(total-700),x0=50+off;
+      wr(20,120,760,140,5,1,INK);
+      for(let i=0;i<9;i++){const x=x0+i*(fw+gap);if(x>800||x+fw<0)continue;const done=t>.9+i*.62,cur=!done&&t>.9+(i-1)*.62;
+        p.push();p.stroke(CARD);for(let h=0;h<4;h++){wr(x+10+h*32,128,14,9,200+i*7+h,1);wr(x+10+h*32,243,14,9,300+i*7+h,1);}p.pop();
+        p.stroke(cur?YEL:INK);p.strokeWeight(cur?4:2.4);wr(x,145,fw,90,400+i,1,CARD);p.stroke(INK);p.strokeWeight(2.4);
+        txt('SCENE 0'+(i+1),x+10,166,12,RED,p.LEFT,'Special Elite');
+        txt(['主題','零件','腳本','分鏡','聲音','額度','剪輯','發布','時程'][i],x+fw/2,205,24,INK,p.CENTER);
+        if(done)check(x+fw-38,182,26,GRN,seg(t,.9+i*.62,1.25+i*.62),500+i);
+        else if(!cur){p.push();p.stroke(GRAY);p.strokeWeight(2);wr(x+fw-30,212,18,14,600+i,1);wc(x+fw-21,212,6,7,610+i,.5);p.pop();}}
+      txt('前一格確認，下一格才解鎖',400,300,18,GRAY,p.CENTER);},
+    cards:t=>{const u=ease(seg(t,.3,1.6)),L=[['方法說明','為什麼要做',RED],['操作指引','怎麼填',YEL],['參考範例','別人怎麼填',BLU]];
+      L.forEach((c,i)=>{const tx=400+(i-1)*230*u,rot=(i-1)*.1*u;p.push();p.translate(tx,200);p.rotate(rot);
+        wr(-95,-120,190,230,700+i*13,1,CARD);hatch(-93,-118,186,34,c[2],720+i*9);
+        txt(c[0],0,-62,24,INK,p.CENTER);txt(c[1],0,-34,15,GRAY,p.CENTER);
+        for(let r=0;r<4;r++)wl(-70,-6+r*24,-70+(r===3?80:140),-6+r*24,740+i*11+r,seg(t,1.7+i*.35+r*.12,2.1+i*.35+r*.12));
+        p.pop();});
+      txt('先看三張卡，再動手填',400,350,18,GRAY,p.CENTER);},
+    write:t=>{const mine='我家阿嬤的炒米粉，60 秒',shown=mine.slice(0,Math.floor(seg(t,1,4.6)*mine.length));
+      wr(150,60,500,270,800,ease(seg(t,0,.8)),CARD);
+      p.push();p.stroke('#d8ccb6');p.strokeWeight(1.2);for(let r=0;r<4;r++)wl(170,140+r*44,630,140+r*44,820+r,seg(t,.3,1));p.pop();
+      txt('影片主題',172,98,16,RED);txt(shown,172,132,30,INK);
+      p.push();p.textFont('LXGW WenKai TC');p.textSize(30);const tw=p.textWidth(shown);p.pop();
+      if(t<4.9){const px=172+tw+6,py=128;p.push();p.translate(px,py);p.rotate(-.75);wr(0,-7,70,14,850,1,YEL);p.fill(INK);p.noStroke();p.triangle(-14,0,0,-7,0,7);p.stroke(INK);wl(52,-7,52,7,860,1);p.pop();}
+      txt('範例：林佳穎，巷口麵包店的開店 60 秒（只能參考）',172,184,17,GRAY);
+      if(t>4.9)check(560,112,28,GRN,seg(t,4.9,5.4),870);
+      if(t>5.4)txt('寫你自己的，回家才做得出來',400,300,18,RED,p.CENTER);},
+    check:t=>{const rows=[['秒數 60 秒，旁白約 198 字','ok'],['三幕比例 1：2：1','ok'],['Flow 需要 120 點，每天只有 50 點','bad'],['每週可用 4 小時','ok']];
+      rows.forEach((r,i)=>{const y=100+i*56+(i===3?24:0),k0=.6+i*.8;wr(90,y-26,40,40,900+i,1,CARD);txt(r[0],150,y+2,21,INK);
+        if(t>k0&&r[1]==='ok')check(98,y-4,24,GRN,seg(t,k0,k0+.35),910+i);
+        if(t>k0&&r[1]==='bad'){p.push();p.stroke(RED);p.strokeWeight(3);wc(270,y-6,200,26,930,ease(seg(t,k0,k0+.6)));p.pop();if(t>k0+.6)txt('R6-01 需要 3 天，你只排 2 天',150,y+42,15,RED);}});
+      const sc=Math.round(65*ease(seg(t,.8,4.2))),a=p.PI+p.PI*sc/100;
+      p.beginShape();for(let i=0;i<=30;i++){const g=p.PI+p.PI*i/30,j=(p.noise(960+i*.3,boil()*1.7)-.5)*3;p.vertex(620+(110+j)*Math.cos(g),250+(110+j)*Math.sin(g));}p.endShape();wl(500,250,740,250,965,1);
+      p.push();p.stroke(RED);p.strokeWeight(4);wl(620,250,620+Math.cos(a)*90,250+Math.sin(a)*90,970,1);p.pop();
+      txt(String(sc),620,300,40,INK,p.CENTER,'Special Elite');txt('規則扣分，看得到原因',620,330,15,GRAY,p.CENTER);},
+    send:t=>{const u=ease(seg(t,1,4)),bx=(a,b,c,d,v)=>(1-v)**3*a+3*(1-v)**2*v*b+3*(1-v)*v*v*c+v**3*d;
+      wr(110,110,130,170,1000,ease(seg(t,0,.7)),CARD);hatch(112,112,126,30,RED,1010);
+      txt('PDF',175,138,20,INK,p.CENTER,'Special Elite');for(let r=0;r<5;r++)wl(130,170+r*20,220,170+r*20,1020+r,1);
+      txt('影片企劃與預計流程報告',175,305,15,GRAY,p.CENTER);
+      const ex=560,ey=150,ew=170,eh=110,cl=seg(t,4.1,4.6);wr(ex,ey,ew,eh,1100,1,CARD);
+      wl(ex,ey+eh,ex+ew/2,ey+eh*.45,1110,1);wl(ex+ew,ey+eh,ex+ew/2,ey+eh*.45,1115,1);
+      const fy=p.lerp(ey-50,ey+eh*.55,cl);wl(ex,ey,ex+ew/2,fy,1120,1);wl(ex+ew,ey,ex+ew/2,fy,1125,1);
+      txt('主旨：你的姓名',ex+ew/2,ey+eh+34,17,INK,p.CENTER);
+      if(t>1&&cl<1){p.push();p.stroke(GRAY);p.strokeWeight(1.6);p.drawingContext.setLineDash([6,8]);p.noFill();p.beginShape();
+        for(let v=0;v<=u;v+=.02)p.vertex(bx(240,330,470,600,v),bx(190,30,40,175,v));p.endShape();p.drawingContext.setLineDash([]);p.pop();
+        const px=bx(240,330,470,600,u),py=bx(190,30,40,175,u),px2=bx(240,330,470,600,Math.min(1,u+.02)),py2=bx(190,30,40,175,Math.min(1,u+.02));
+        p.push();p.translate(px,py);p.rotate(Math.atan2(py2-py,px2-px));p.fill(CARD);p.stroke(INK);p.strokeWeight(2.2);p.triangle(22,0,-16,-13,-8,0);p.triangle(22,0,-16,11,-8,0);p.pop();}
+      if(cl>=1)check(ex+ew/2-14,ey+eh*.55,30,GRN,seg(t,4.6,5.1),1130);}};
+  p.draw=()=>{p.background('#f3ead8');const t=(performance.now()-_introStart)/1000,sc=Math.min(W/800,H/380);
+    p.push();p.translate((W-800*sc)/2,(H-380*sc)/2);p.scale(sc);p.noFill();p.stroke(INK);p.strokeWeight(2.4);p.strokeJoin(p.ROUND);p.strokeCap(p.ROUND);
+    txt('SCENE '+String(_introI+1).padStart(2,'0')+'  ·  TAKE 1',14,24,13,RED,p.LEFT,'Special Elite');
+    const f=scenes[(INTRO[_introI]||{}).k];if(f)f(t);p.pop();};}
+
+/* ---------------- 啟動 ---------------- */
+renderBrand();load();if(!location.hash&&STATE.view)location.hash=STATE.view;route();introMaybe();
+</script>
+</body>
+</html>
