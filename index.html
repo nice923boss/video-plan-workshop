@@ -2062,11 +2062,11 @@ function introSketch(p){const INK='#2b2622',RED='#c8553d',YEL='#d9a23a',GRN='#4f
       txt('範例：林佳穎，巷口麵包店的開店 60 秒（只能參考）',172,184,17,GRAY);
       if(t>4.9)check(560,112,28,GRN,seg(t,4.9,5.4),870);
       if(t>5.4)txt('寫你自己的，回家才做得出來',400,300,18,RED,p.CENTER);},
-    check:t=>{const rows=[['秒數 60 秒，旁白約 198 字','ok'],['三幕比例 1：2：1','ok'],['Flow 需要 120 點，每天只有 50 點','bad'],['每週可用 4 小時','ok']];
+    check:t=>{const rows=[['Vids、Canva 在免費額度內','ok'],['Flow 段數和分鏡一致','ok'],['Flow 生成天數排得完','bad'],['AI 生成內容有標示','ok']];
       rows.forEach((r,i)=>{const y=100+i*56+(i===3?24:0),k0=.6+i*.8;wr(90,y-26,40,40,900+i,1,CARD);txt(r[0],150,y+2,21,INK);
         if(t>k0&&r[1]==='ok')check(98,y-4,24,GRN,seg(t,k0,k0+.35),910+i);
-        if(t>k0&&r[1]==='bad'){p.push();p.stroke(RED);p.strokeWeight(3);wc(270,y-6,200,26,930,ease(seg(t,k0,k0+.6)));p.pop();if(t>k0+.6)txt('R6-01 需要 3 天，你只排 2 天',150,y+42,15,RED);}});
-      const sc=Math.round(65*ease(seg(t,.8,4.2))),a=p.PI+p.PI*sc/100;
+        if(t>k0&&r[1]==='bad'){p.push();p.stroke(RED);p.strokeWeight(3);wc(270,y-6,200,26,930,ease(seg(t,k0,k0+.6)));p.pop();if(t>k0+.6)txt('R6-01 需要 6 天，你只排 2 天',150,y+42,15,RED);}});
+      const sc=Math.round(52*ease(seg(t,.8,4.2))),a=p.PI+p.PI*sc/100;
       p.beginShape();for(let i=0;i<=30;i++){const g=p.PI+p.PI*i/30,j=(p.noise(960+i*.3,boil()*1.7)-.5)*3;p.vertex(620+(110+j)*Math.cos(g),250+(110+j)*Math.sin(g));}p.endShape();wl(500,250,740,250,965,1);
       p.push();p.stroke(RED);p.strokeWeight(4);wl(620,250,620+Math.cos(a)*90,250+Math.sin(a)*90,970,1);p.pop();
       txt(String(sc),620,300,40,INK,p.CENTER,'Special Elite');txt('規則扣分，看得到原因',620,330,15,GRAY,p.CENTER);},
