@@ -559,7 +559,7 @@ const CASE={
     ['觀眾寫成所有人','沒有指定給誰看，文案和畫面都抓不到重點。'],
     ['零件全都想用','13 個零件都想放，路線混在一起，做到一半就卡住。'],
     ['字數超過秒數','旁白寫了 9 句，以每秒 3.3 字估算超過 60 秒。'],
-    ['額度沒有算','Flow 每天 50 點，一次生成 2 段一起扣，重試幾次就用完。'],
+    ['額度沒有算','Flow 每天 50 點，一次可能生成 2 段、各自扣點，重試幾次就用完。'],
     ['時程靠感覺','沒有排每週要完成什麼，也沒有備案工具。']
   ],
   vision:'先收斂成「一支影片、一群觀眾、一個行動」，再用做過的零件拼出最短可完成路線，每一步都檢查字數、秒數、額度與時數。',
@@ -914,11 +914,11 @@ const STAGES=[
   id:6,key:'quota',title:'工具與額度',en:'Tools & Quota',
   goal:'把每一站的工具、備案與免費額度算清楚，避免做到一半額度用完。',
   method:{
-    intro:'免費額度就是你的製作預算。Flow 每天 50 點且不累積，一次生成 2 段都要扣點；Vids 的 AI 影片與分身每月共用 6 次；Canva AI 每月 20 次。先算清楚，再排進時程。',
+    intro:'免費額度就是你的製作預算。Flow 每天 50 點且不累積，一次可能生成 2 段、各自扣點；Vids 的 AI 影片與分身每月共用 6 次；Canva AI 每月 20 次。先算清楚，再排進時程。',
     points:[
       ['六站分工','構思、腳本、視覺、聲音、動態、組裝，每站寫一個主要工具。'],
       ['每個工具一個備案','工具當機、額度用完、生成不滿意，都要有退路。'],
-      ['Flow 點數最緊','Veo 3.1 Lite 每段 10 點、Fast 每段 20 點，一次 2 段一起扣；50 點大約只能試 2～3 次。'],
+      ['Flow 點數最緊','Veo 3.1 Lite 每段 10 點、Fast 每段 20 點，一次可能出 2 段、各自扣點；50 點請當成只能試 2～3 次。'],
       ['紅線先勾','肖像同意、音樂授權、個資、AI 標示、分身只用自己，開工前就確認。']
     ],
     tools:[['額度試算器','本階段擴充分頁，可試不同情境'],['Google Flow','每天 50 點，不累積'],['Google Vids','AI 影片與分身每月共用 6 次'],['Canva','AI 功能每月 20 次']],
@@ -1172,7 +1172,7 @@ const ROUTE_ONLY={'04':'實拍','11':'分身','09':'動畫','10':'動畫'};
 const DISALLOW={實拍:['Flow 動畫','Runway／Pika 動畫','數位分身'],分身:['Flow 動畫','Runway／Pika 動畫'],動畫:['實拍','數位分身'],翻新:['Flow 動畫','Runway／Pika 動畫','數位分身']};
 const GOAL_MEASURE={'推廣商品或服務':['私訊或預訂數'],'記錄生活或作品':['觀看次數','按讚與留言'],'知識分享':['分享次數','觀看次數'],'品牌形象':['分享次數','追蹤人數']};
 const FLOW_COST=m=>/Lite/.test(String(m||''))?10:/Fast/.test(String(m||''))?20:0;
-/* Flow：每天 50 點不累積；一次生成 2 段，兩段都扣點 */
+/* Flow：每天 50 點不累積；一次可能生成 2 段各自扣點，試算保守以 2 段計 */
 const flowCalc=(clips,model,tries,days)=>{const cost=FLOW_COST(model),req=Math.max(0,clips)*Math.max(0,tries),points=req*2*cost,perDay=cost?Math.floor(50/(2*cost)):0,daysNeed=perDay?Math.ceil(req/perDay):0;return{cost,req,points,perDay,daysNeed,days};};
 
 /* ---------------- 手繪風 SVG（rough.js；未載入或出錯時退回一般圖形） ---------------- */
@@ -1495,7 +1495,7 @@ function quotaHTML(){const c=quotaCfg();
   const inp=(id,l,v,attr)=>`<div class="field mb8"><label class="lbl" style="font-size:12.5px">${l}</label><input type="number" id="sim_${id}" value="${v}" ${attr} oninput="quotaRun()"></div>`;
   const sel=`<div class="field mb8"><label class="lbl" style="font-size:12.5px">Flow 模型</label><select id="sim_model" onchange="quotaRun()">${Object.entries(QUOTA_MODEL).map(([k,v])=>`<option value="${k}"${k===c.model?' selected':''}>${v}</option>`).join('')}</select></div>`;
   return`<div class="card"><div class="card-h"><h2>額度試算器｜Flow 點數排得完嗎</h2><span class="engine-tag"><i></i>規則引擎即時計算（透明可追溯）</span></div>
-  <div class="note">Flow 每天 50 點、不累積，一次生成 2 段，兩段都要扣點。輸入段數、模型、每段試幾次與預計天數，即時算出需要幾天；修改第 6 階段後回到本分頁即會更新。</div>
+  <div class="note">Flow 每天 50 點、不累積，一次可能生成 2 段、各自扣點，這裡保守以 2 段計算。輸入段數、模型、每段試幾次與預計天數，即時算出需要幾天；修改第 6 階段後回到本分頁即會更新。</div>
   <div class="sim-grid3 mt12">
     <div class="form-section"><h3>① 生成計畫 <span class="badge in">你的資料</span></h3><div class="btn-row mb8">${Object.entries(QUOTA_PRESETS).map(([k,v])=>`<button class="btn sm" onclick="quotaPreset('${k}')">${v.name}</button>`).join('')}</div>
       <div class="grid g2" style="gap:6px">${inp('clips','動畫段數（0～10）',c.clips,'min="0" max="10" step="1"')}${sel}${inp('tries','每段試幾次（1～10）',c.tries,'min="1" max="10" step="1"')}${inp('days','預計分幾天（1～14）',c.days,'min="1" max="14" step="1"')}</div></div>
@@ -1521,9 +1521,9 @@ function quotaRun(){const out=document.getElementById('simOut');if(!out)return;c
   out.innerHTML=`<h3>③ 試算結果 <span class="badge dx">診斷推論</span></h3>
   <div class="sim-lights"><div class="sim-light"><i class="light ${dl}"></i><b>${!use?'不用 Flow':dl==='r'?'天數不夠':dl==='y'?'天數剛好':'天數足夠'}</b><span>${use?`需要 ${f.daysNeed} 天／排了 ${days} 天`:'不消耗 Flow 點數'}</span></div>
   <div class="sim-light"><i class="light ${pl}"></i><b>共 ${f.points} 點</b><span>可用 ${50*days} 點（${days} 天 × 50）</span></div>
-  <div class="sim-light"><i class="light ${use&&f.perDay<=1?'y':'g'}"></i><b>每天可生成 ${f.perDay} 次</b><span>${use?`一次 2 段 × ${f.cost} 點 = ${2*f.cost} 點`:'－'}</span></div></div>
+  <div class="sim-light"><i class="light ${use&&f.perDay<=1?'y':'g'}"></i><b>每天可生成 ${f.perDay} 次</b><span>${use?`以 2 段計 × ${f.cost} 點 = ${2*f.cost} 點`:'－'}</span></div></div>
   ${use?`<h4 class="mt12">每天點數（紅線＝50 點；紅色＝超出排定天數）</h4>${skBars(bars,{max:60,cap:50,capLabel:'每天上限 50 點，不累積'})}${f.daysNeed>14?'<p class="tiny muted">超過 14 天的部分未列出。</p>':''}`:''}
-  <p class="tiny muted mt8">計算式：生成次數 = 段數 × 每段次數；每次扣 2 段 × 每段點數；每天可生成 = 50 ÷ 每次點數（無條件捨去）；需要天數 = 生成次數 ÷ 每天可生成（無條件進位）。點數規則以 Flow 當下公告為準。</p>
+  <p class="tiny muted mt8">計算式：生成次數 = 段數 × 每段次數；每次以 2 段 × 每段點數計；每天可生成 = 50 ÷ 每次點數（無條件捨去）；需要天數 = 生成次數 ÷ 每天可生成（無條件進位）。點數規則以 Flow 當下公告為準。</p>
   ${warn.length?`<div class="note warn mt8"><b>注意：</b><ul class="clean small">${warn.map(w=>`<li>${esc(w)}</li>`).join('')}</ul></div>`:'<div class="note ok mt8 small">點數與天數都在額度內，記得把生成日排進第 9 階段時程。</div>'}`;}
 const EXTRA_TABS=[{stage:6,key:'quota',label:'額度試算器',html:quotaHTML,run:quotaRun}];
 
