@@ -594,9 +594,9 @@ const AVATAR_SVG=`<svg viewBox="0 0 368 430" xmlns="http://www.w3.org/2000/svg" 
 
 /* ---------------- Shared option lists ---------------- */
 const PLATFORMS=['IG Reels','YouTube Shorts','FB Reels','LINE VOOM','YouTube（橫式）','作品集（16:9）'];
-const PARTS=['01 腳本初稿','02 主視覺海報','03 企劃分鏡','04 實拍素材','05 AI 旁白','06 專屬配樂','07 Vids 初剪','08 後製版','09 角色場景圖','10 動畫片段','11 數位分身','12 產製 SOP','13 直式版'];
-const SOURCES=['實拍','既有照片','ChatGPT 圖片','Photopea／Canva 合成','Flow 動畫','數位分身','Vids 素材庫'];
-const TOOLS=['ChatGPT','ChatGPT 圖片','Photopea','Canva','VoAI','Suno','Google Flow','Google Vids','手機相機','其他'];
+const PARTS=['01 腳本初稿','02 主視覺海報','03 企劃分鏡','04 實拍素材','05 AI 旁白','06 專屬配樂','07 剪輯初剪','08 後製版','09 角色場景圖','10 動畫片段','11 數位分身','12 產製 SOP','13 直式版'];
+const SOURCES=['實拍','既有照片','ChatGPT 圖片','Photopea／Canva 合成','Flow 動畫','Runway／Pika 動畫','數位分身','Vids 素材庫','Clipchamp 素材庫'];
+const TOOLS=['ChatGPT','ChatGPT 圖片','Photopea','Canva','VoAI','Suno','Google Flow','Runway／Pika','Google Vids','Clipchamp','手機相機','其他'];
 const REDLINES=['入鏡的人都簽肖像同意','配樂只用有授權或自己生成的','不把別人的個資上傳到 AI 工具','AI 生成內容會標示','數位分身只用自己的臉與聲音'];
 const POSTCHECKS=['字幕逐字校對','音量依金字塔調整','片頭 3 秒沒有 Logo','結尾有行動呼籲字卡','AI 生成內容已標示','匯出前用手機看過一次'];
 const FIVECHECKS=['前 3 秒有提問、衝突或驚喜','只有一條主線','每 5～10 秒有新資訊','一句旁白配一個畫面','結尾有明確行動呼籲'];
@@ -726,7 +726,7 @@ const STAGES=[
       {part:'04 實拍素材',status:'已完成',use:'會用',note:'店內出爐畫面'},
       {part:'05 AI 旁白',status:'已完成',use:'改了再用',note:'新稿重錄'},
       {part:'06 專屬配樂',status:'已完成',use:'會用',note:''},
-      {part:'07 Vids 初剪',status:'已完成',use:'會用',note:''},
+      {part:'07 剪輯初剪',status:'已完成',use:'會用',note:''},
       {part:'08 後製版',status:'半成品',use:'會用',note:''},
       {part:'09 角色場景圖',status:'已完成',use:'會用',note:'麵包吉祥物小麥君'},
       {part:'10 動畫片段',status:'半成品',use:'會用',note:'吉祥物跳舞'},
@@ -803,10 +803,10 @@ const STAGES=[
     points:[
       ['一鏡 5～8 秒','30 秒約 6 鏡 × 5 秒；單鏡超過 8 秒，觀眾就會滑走。'],
       ['動態分三級','微動、中動、大動；大動最吸睛也最難做，整支最多 1 鏡。'],
-      ['來源寫清楚','實拍、ChatGPT 圖片、Canva 合成、Flow 動畫：來源決定你要用哪個工具、花多少額度。'],
+      ['來源寫清楚','實拍、ChatGPT 圖片、Canva 合成、Flow 或 Runway／Pika 動畫：來源決定你要用哪個工具、花多少額度。'],
       ['肖像要同意','拍到認得出來的人臉就要取得同意；未成年要監護人同意，路人能避就避。']
     ],
-    tools:[['分鏡表','旁白、畫面、秒數、來源、動態'],['Google Flow','動畫片段，每天 50 點'],['ChatGPT 圖片／Photopea／Canva','靜態畫面與字卡']],
+    tools:[['分鏡表','旁白、畫面、秒數、來源、動態'],['Google Flow','動畫片段，每天 50 點'],['Runway／Pika','動畫片段，點數以介面為準'],['ChatGPT 圖片／Photopea／Canva','靜態畫面與字卡']],
     deliverable:'完整分鏡表（含秒數、來源、動態與肖像同意）。'
   },
   guide:[
@@ -927,7 +927,7 @@ const STAGES=[
   guide:[
     '用「前階段帶入」把分鏡與聲音用到的工具帶進分工表。',
     '每個工具寫要做的事與備案工具。',
-    '填 Flow 的段數、模型、每段試幾次、分幾天生成；其他工具填預計使用次數。',
+    '填 Flow 的段數、模型、每段試幾次、分幾天生成；動畫用 Runway／Pika 的人，Flow 段數填 0、模型選「不用 Flow」。其他工具填預計使用次數。',
     '到「額度試算器」分頁試算不同情境。',
     '勾選你會遵守的紅線。',
     '按「確認診斷」：系統會計算 Flow 點數夠不夠、各工具是否超額、哪些工具沒有備案、紅線是否與分鏡一致。'
@@ -966,13 +966,13 @@ const STAGES=[
   },
   carry:S=>{const d4=S.d(4),d5=S.d(5),rows=[];
     const add=(station,tool,task)=>{if(!rows.some(r=>r.tool===tool&&r.task===task))rows.push({station,tool,task,backup:''});};
-    const MAP={'ChatGPT 圖片':['視覺','ChatGPT 圖片','角色或場景圖'],'Photopea／Canva 合成':['視覺','Canva','字卡與合成畫面'],'Flow 動畫':['動態','Google Flow','動畫片段'],'數位分身':['組裝','Google Vids','數位分身片段'],'Vids 素材庫':['組裝','Google Vids','素材庫畫面'],'實拍':['視覺','手機相機','實拍畫面']};
+    const MAP={'ChatGPT 圖片':['視覺','ChatGPT 圖片','角色或場景圖'],'Photopea／Canva 合成':['視覺','Canva','字卡與合成畫面'],'Flow 動畫':['動態','Google Flow','動畫片段'],'Runway／Pika 動畫':['動態','Runway／Pika','動畫片段'],'數位分身':['組裝','Google Vids','數位分身片段'],'Vids 素材庫':['組裝','Google Vids','素材庫畫面'],'Clipchamp 素材庫':['組裝','Clipchamp','素材庫畫面'],'實拍':['視覺','手機相機','實拍畫面']};
     const shots=d4?(d4.shots||[]).filter(s=>String(s.line||'').trim()):[];
     shots.forEach(s=>{const m=MAP[s.source];if(m)add(...m);});
     if(d5){const V={'VoAI':['聲音','VoAI','旁白'],'Google Vids 旁白':['聲音','Google Vids','旁白'],'ChatGPT 語音':['聲音','ChatGPT','旁白']};if(V[d5.voiceTool])add(...V[d5.voiceTool]);if(d5.musicTool==='Suno')add('聲音','Suno','配樂');}
-    if(d4||d5)add('組裝','Google Vids','剪輯與匯出');
+    if(d4||d5)add('組裝',rows.some(r=>r.tool==='Clipchamp')?'Clipchamp':'Google Vids','剪輯與匯出');
     const out=[];
-    if(rows.length)out.push({title:'第 4、5 階段：用到的工具 → 分工表',note:'帶入後補上備案工具。',chips:rows.map(r=>({label:`${r.tool}：${r.task}`,field:'tools',value:r}))});
+    if(rows.length)out.push({title:'第 4、5 階段：用到的工具 → 分工表',note:'帶入後補上備案工具；剪輯用 Clipchamp 的人，把 Google Vids 改成 Clipchamp。',chips:rows.map(r=>({label:`${r.tool}：${r.task}`,field:'tools',value:r}))});
     if(d4){const n=shots.filter(s=>s.source==='Flow 動畫').length;out.push({title:'第 4 階段：Flow 動畫鏡數 → 段數',chips:[{label:`${n} 段`,field:'flowClips',value:String(n),replace:true}]});}
     return out;}
 },
@@ -988,7 +988,7 @@ const STAGES=[
       ['後製檢查表','開場沒有 Logo、結尾有行動字卡、AI 內容已標示、手機上看過一次。'],
       ['找人審片','找一位沒看過企劃的人看初剪，請他說出影片在講什麼。']
     ],
-    tools:[['Google Vids','剪輯、字幕、音量、匯出'],['Canva','封面與字卡'],['手機預覽','匯出前全螢幕看一次']],
+    tools:[['Google Vids／Clipchamp','剪輯、字幕、音量、匯出'],['Canva','封面與字卡'],['手機預覽','匯出前全螢幕看一次']],
     deliverable:'剪輯規格、後製檢查表與審片安排。'
   },
   guide:[
@@ -1002,7 +1002,7 @@ const STAGES=[
   demo:'範例用 AI 自動字幕卻不校對；勾了「音量依金字塔調整」，但第 5 階段的配樂仍是 40%；開場的 Logo 也還在。',
   sections:[
     {title:'剪輯規格',fields:[
-      {id:'editTool',type:'select',label:'剪輯工具',req:true,options:['Google Vids','CapCut','Canva','其他']},
+      {id:'editTool',type:'select',label:'剪輯工具',req:true,options:['Google Vids','Clipchamp','CapCut','Canva','其他']},
       {id:'ratio',type:'select',label:'主版本畫面比例',req:true,options:['9:16 直式','16:9 橫式','1:1 方形']},
       {id:'subtitle',type:'select',label:'字幕做法',req:true,options:['AI 產生後逐字校對','AI 產生，不校對','自己打字幕','不加字幕']},
       {id:'coverPlan',type:'textarea',label:'封面與標題',req:true,ph:'例：剛出爐的可頌特寫，大字「週末麵包先幫你留」'}
@@ -1169,7 +1169,7 @@ const isWide=s=>/橫式|16:9/.test(String(s||''));
 const partNo=s=>String(s||'').slice(0,2);
 const ROUTE_PARTS={實拍:['03','04','07','08'],分身:['03','11','07'],動畫:['09','10','07'],翻新:['07','08','06']};
 const ROUTE_ONLY={'04':'實拍','11':'分身','09':'動畫','10':'動畫'};
-const DISALLOW={實拍:['Flow 動畫','數位分身'],分身:['Flow 動畫'],動畫:['實拍','數位分身'],翻新:['Flow 動畫','數位分身']};
+const DISALLOW={實拍:['Flow 動畫','Runway／Pika 動畫','數位分身'],分身:['Flow 動畫','Runway／Pika 動畫'],動畫:['實拍','數位分身'],翻新:['Flow 動畫','Runway／Pika 動畫','數位分身']};
 const GOAL_MEASURE={'推廣商品或服務':['私訊或預訂數'],'記錄生活或作品':['觀看次數','按讚與留言'],'知識分享':['分享次數','觀看次數'],'品牌形象':['分享次數','追蹤人數']};
 const FLOW_COST=m=>/Lite/.test(String(m||''))?10:/Fast/.test(String(m||''))?20:0;
 /* Flow：每天 50 點不累積；一次生成 2 段，兩段都扣點 */
@@ -1300,7 +1300,7 @@ RULES[4]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d1=S.d(1)||{
   const total=sumOf(sh,'sec'),len=num(d1.length)||total,route=d2.route||'',bad=DISALLOW[route]||[];
   const fit=s=>charsOf(s.line)<=Math.floor(num(s.sec)*3.3);
   const idx=f=>sh.map((s,i)=>f(s)?i+1:0).filter(Boolean),nos=a=>`第 ${a.join('、')} 鏡`;
-  const long=idx(s=>num(s.sec)>8),over=idx(s=>!fit(s)),big=idx(s=>s.motion==='大動'),noOk=idx(s=>s.face==='未確認同意'),off=idx(s=>bad.includes(s.source)),flow=idx(s=>s.source==='Flow 動畫');
+  const long=idx(s=>num(s.sec)>8),over=idx(s=>!fit(s)),big=idx(s=>s.motion==='大動'),noOk=idx(s=>s.face==='未確認同意'),off=idx(s=>bad.includes(s.source)),flow=idx(s=>['Flow 動畫','Runway／Pika 動畫'].includes(s.source));
   if(total===len)A.push(R('R4-01','l',`${sh.length} 鏡合計 ${total} 秒，等於影片長度。`));
   else{A.push(R('R4-01','m',`分鏡合計 ${total} 秒，和影片長度 ${len} 秒差 ${Math.abs(total-len)} 秒。`));score-=8;}
   if(long.length){A.push(R('R4-02','m',`${nos(long)}超過 8 秒，觀眾會覺得停太久。`));C.push(R('R4-02','m','超過 8 秒的鏡頭拆成兩鏡，或加推近、橫移等動態。'));score-=5;}
@@ -1312,7 +1312,7 @@ RULES[4]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d1=S.d(1)||{
   const sLines=lines(d3.script).length;
   if(sLines&&sh.length<sLines){A.push(R('R4-07','m',`分鏡 ${sh.length} 鏡少於旁白 ${sLines} 句，有句子沒有畫面。`));score-=5;}
   else if(sLines)A.push(R('R4-07','l',`${sh.length} 鏡對應 ${sLines} 句旁白，一句一畫面。`));
-  H.push(R('R4-08','m',flow.length?`${nos(flow)}用 Flow 生成，同一個角色每次生成的長相可能不一樣。`:'規劃的秒數和實際拍出來的長度會有落差。',flow.length?'先用同一段角色描述生成 2 次並排比較；不一致就改用 ChatGPT 圖片當首幀再生成。':'先實拍或生成其中 2 鏡，計時後和分鏡表比對。'));
+  H.push(R('R4-08','m',flow.length?`${nos(flow)}用 AI 動畫生成，同一個角色每次生成的長相可能不一樣。`:'規劃的秒數和實際拍出來的長度會有落差。',flow.length?'先用同一段角色描述生成 2 次並排比較；不一致就改用 ChatGPT 圖片當首幀再生成。':'先實拍或生成其中 2 鏡，計時後和分鏡表比對。'));
   if(noOk.length)N.push(R('R4-N1','h',`拍攝前先取得${nos(noOk)}入鏡者的同意（未成年要監護人同意）；拿不到就改拍手部或背影。`));
   if(big.length>1)N.push(R('R4-N2','m','大動只留 1 鏡，其他改成微動或靜態字卡。'));
   if(!N.length)N.push(R('R4-N1','m','把分鏡表存到手機，拍攝當天逐鏡打勾。'));
@@ -1372,10 +1372,12 @@ RULES[6]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d3=S.d(3),d4
   const flowShots=srcs.filter(s=>s==='Flow 動畫').length;
   if(sh.length&&flowShots!==clips){A.push(R('R6-07','m',`第 4 階段有 ${flowShots} 鏡 Flow 動畫，這裡填 ${clips} 段，數量不一致。`));score-=5;}
   if(srcs.includes('數位分身')&&!rl.includes(REDLINES[4])){A.push(R('R6-08','m','分鏡用到數位分身，紅線卻沒勾「數位分身只用自己的臉與聲音」。'));score-=6;}
-  const ai=srcs.some(s=>['ChatGPT 圖片','Flow 動畫','數位分身'].includes(s))||clips>0;
+  const ai=srcs.some(s=>['ChatGPT 圖片','Flow 動畫','Runway／Pika 動畫','數位分身'].includes(s))||clips>0;
   if(ai&&!rl.includes(REDLINES[3])){A.push(R('R6-09','m','影片有 AI 生成畫面，紅線卻沒勾「AI 生成內容會標示」。'));score-=4;}
   H.push(R('R6-10','m',clips>0?`Flow 每段試 ${tries} 次就能得到可用的片段。`:'免費額度的規則在你製作期間不會改變。',clips>0?'第一天先生成 1 段，記錄試了幾次才滿意，再回來調整次數與天數。':'開工前到各工具的方案頁面確認目前的免費額度。'));
   if(suno>0)H.push(R('R6-11','m',`Suno 每天 50 點夠你生成 ${suno} 次配樂。`,'第一次生成後看介面扣了幾點，用 50 ÷ 每次點數算出每天能生成幾次；不夠就分天生成，排進第 9 階段。'));
+  const rp=srcs.filter(s=>s==='Runway／Pika 動畫').length;
+  if(rp)H.push(R('R6-12','m',`Runway／Pika 的免費點數夠你生成 ${rp} 鏡動畫。`,'Runway 是註冊送點數、Pika 是每天給免費點數；第一段生成後記下扣了幾點、試了幾次，再算總共要幾點；不夠就只動態化關鍵鏡，其餘用靜態圖加推近。'));
   if(clips>0&&f.cost&&f.daysNeed>f.days){const lite=flowCalc(clips,'Lite',tries,f.days);
     N.push(R('R6-N1','h',`Flow 以目前設定需要 ${f.daysNeed} 天：${f.cost>10?`改用 Lite 只要 ${lite.daysNeed} 天，`:''}或把每段次數降到 ${Math.max(1,Math.floor(f.days*f.perDay/Math.max(1,clips)))} 次，並把生成日排進第 9 階段。`));}
   if(noBk.length)N.push(R('R6-N2','m',`替 ${noBk.map(r=>r.tool).join('、')} 各寫一個備案（例：Flow 失敗改用靜態圖加推近、VoAI 用完改用 Vids 旁白）。`));
@@ -1391,7 +1393,7 @@ RULES[6]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d3=S.d(3),d4
 RULES[7]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d1=S.d(1)||{},d3=S.d(3)||{},d4=S.d(4)||{},d5=S.d(5)||{},d6=S.d(6)||{};
   const pc=d.postChecks||[],wide=isWide(d1.platform),r169=/16:9/.test(d.ratio||''),vM=num(d5.volMusic);
   const noProof=d.subtitle==='AI 產生，不校對',logoHook=['品牌 Logo','自我介紹'].includes(d3.hookType);
-  const ai=(d4.shots||[]).some(s=>['ChatGPT 圖片','Flow 動畫','數位分身'].includes(s.source))||num(d6.flowClips)>0;
+  const ai=(d4.shots||[]).some(s=>['ChatGPT 圖片','Flow 動畫','Runway／Pika 動畫','數位分身'].includes(s.source))||num(d6.flowClips)>0;
   if(noProof){A.push(R('R7-01','h','AI 字幕不校對：自動字幕常聽錯同音字、專有名詞與數字，錯字會直接出現在畫面上。'));C.push(R('R7-01','m','改成「AI 產生後逐字校對」，對照第 3 階段旁白稿檢查專有名詞、數字與時間。'));score-=15;}
   else if(d.subtitle==='不加字幕'){A.push(R('R7-01','m','不加字幕：很多人靜音滑短影音，沒有字幕就聽不到你的旁白。'));score-=6;}
   else A.push(R('R7-01','l',`字幕做法：${d.subtitle}。`));
