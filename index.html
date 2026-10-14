@@ -594,7 +594,7 @@ const AVATAR_SVG=`<svg viewBox="0 0 368 430" xmlns="http://www.w3.org/2000/svg" 
 
 /* ---------------- Shared option lists ---------------- */
 const PLATFORMS=['IG Reels','YouTube Shorts','FB Reels','LINE VOOM','YouTube（橫式）','作品集（16:9）'];
-const PARTS=['01 腳本初稿','02 主視覺海報','03 企劃分鏡','04 實拍素材','05 AI 旁白','06 專屬配樂','07 剪輯初剪','08 後製版','09 角色場景圖','10 動畫片段','11 數位分身','12 產製 SOP','13 直式版'];
+const PARTS=['01 腳本初稿','02 主視覺海報','03 企劃分鏡','04 實拍素材','05 AI 旁白','06 專屬配樂','07 剪輯初剪','08 後製版','09 角色場景圖','10 動畫片段','11 數位分身','12 產製 SOP','13 社群小編'];
 const SOURCES=['實拍','既有照片','ChatGPT 圖片','Photopea／Canva 合成','Flow 動畫','Runway／Pika 動畫','數位分身','Vids 素材庫','Clipchamp 素材庫'];
 const TOOLS=['ChatGPT','ChatGPT 圖片','Photopea','Canva','VoAI','Suno','Google Flow','Runway／Pika','Google Vids','Clipchamp','手機相機','其他'];
 const REDLINES=['入鏡的人都簽肖像同意','配樂只用有授權或自己生成的','不把別人的個資上傳到 AI 工具','AI 生成內容會標示','數位分身只用自己的臉與聲音'];
@@ -692,14 +692,14 @@ const STAGES=[
       ['零件先盤點再挑','逐一標出已完成、半成品、沒做；「沒做」的零件要用，就要算進時程。'],
       ['四大類不能缺','腳本、畫面、聲音、配樂四類都要有來源，缺一類影片就不完整。'],
       ['路線四選一','實拍（03、04、07、08）、分身（03、11、07）、動畫（09、10、07）、翻新（07、08、06）。'],
-      ['少即是多','5～6 個零件做到位，勝過 12 個零件都半套；其他留給下一支影片。']
+      ['少即是多','5～6 個零件做到位，勝過 12 個零件都半套；13 社群小編不放進影片，留到第 8 階段寫發片貼文。']
     ],
     tools:[['零件架','你在 D01～D13 做出的 13 個成品'],['路線表','四條路線各自的必要零件'],['數位分身紅線','只能用你自己的臉與聲音']],
     deliverable:'零件使用清單與一條確定的製作路線。'
   },
   guide:[
     '打開你前 13 天的作品資料夾，對照零件清單逐一確認狀態。',
-    '每個零件選「會用／改了再用／不用」，改了再用的要寫怎麼改。',
+    '每個零件選「會用／改了再用／不用」，改了再用的要寫怎麼改；13 社群小編選「會用」，第 8 階段就用它寫貼文。',
     '從四條路線選一條，寫下為什麼選它（你已經有什麼、還缺什麼）。',
     '如果還想混用其他路線的做法，選「是」並說明，系統會提醒你風險。',
     '按「確認診斷」：系統會檢查零件數量、是否跨路線、四大類是否齊全、沒做的零件是否被排進來。'
@@ -731,7 +731,7 @@ const STAGES=[
       {part:'09 角色場景圖',status:'已完成',use:'會用',note:'麵包吉祥物小麥君'},
       {part:'10 動畫片段',status:'半成品',use:'會用',note:'吉祥物跳舞'},
       {part:'11 數位分身',status:'已完成',use:'會用',note:'講店史'},
-      {part:'13 直式版',status:'沒做',use:'會用',note:''}
+      {part:'13 社群小編',status:'已完成',use:'會用',note:'第 8 階段寫發片貼文'}
     ],
     route:'實拍',routeWhy:'手上已經有店內出爐與揉麵的實拍素材，先生週六早上可以幫忙拍。',
     mixRoute:'是',mixNote:'想在中間加一段數位分身講店史，結尾放吉祥物動畫。'
@@ -1031,26 +1031,26 @@ const STAGES=[
 /* ---------------------------------------------------------------- 8 */
 {
   id:8,key:'release',title:'發布與改編',en:'Release & Adapt',
-  goal:'決定每個平台的版本長度與比例、發布時間、文案，以及判斷成效的數字。',
+  goal:'決定每個平台的版本長度與比例、發布時間，用社群小編 SKILL 寫好發片貼文，再定判斷成效的數字。',
   method:{
-    intro:'同一支影片放到不同平台，長度與比例要跟著改。先決定主平台，再決定要不要剪精華版或橫式版；最後寫下「看什麼數字算成功」，發布後才知道下一支怎麼改。',
+    intro:'同一支影片放到不同平台，長度與比例要跟著改。先決定主平台，再決定要不要剪精華版或橫式版；貼文交給 Day13 做好的社群小編 SKILL 寫初稿，你負責補事實、改口氣；最後寫下「看什麼數字算成功」，發布後才知道下一支怎麼改。',
     points:[
       ['平台長度不同','YouTube Shorts 15～60 秒；IG、FB Reels 15～30 秒；LINE VOOM 30～60 秒。'],
       ['作品集用 16:9','求職或作品集用橫式；只有直式版，放進作品集會很小。'],
-      ['文案帶行動','貼文第一行就寫行動呼籲，不要只寫心情。'],
+      ['貼文交給社群小編','輸入「寫貼文：影片主題」產初稿：第一行是鉤子，結尾一句行動引導；（待補）的地方補上真的事實再發。'],
       ['先定成功數字','依目的選指標：推廣看預訂或詢問數，品牌看分享與追蹤。']
     ],
-    tools:[['平台規格表','長度與比例'],['Google Vids','另存不同比例版本'],['IG 專業主控板','觀看、分享、私訊數據']],
-    deliverable:'發布版本表、發布時間與文案、成效指標與目標。'
+    tools:[['平台規格表','長度與比例'],['Google Vids','另存不同比例版本'],['社群小編 SKILL','零件 13，餵主題產貼文'],['IG 專業主控板','觀看、分享、私訊數據']],
+    deliverable:'發布版本表、發布時間、社群小編產出並補完的貼文、成效指標與目標。'
   },
   guide:[
     '用「前階段帶入」把主平台帶進版本表，再加其他平台的版本。',
     '每個版本填秒數、比例與要改的地方。',
-    '填發布日期時段、貼文文案與 Hashtag。',
+    '打開你的社群小編 SKILL，輸入「寫貼文：影片主題」並附上可以用的事實；補完（待補）後貼進貼文文案，再填發布時段與 Hashtag。',
     '選一個判斷成效的數字並寫目標。',
-    '按「確認診斷」：系統會檢查各平台長度、比例、是否有 16:9 版本、指標是否對應目的。'
+    '按「確認診斷」：系統會檢查各平台長度、比例、是否有 16:9 版本、文案是否還有（待補）、指標是否對應目的。'
   ],
-  demo:'範例三個版本都是 60 秒直式：IG Reels 超過建議長度，也沒有作品集要用的 16:9 版本。',
+  demo:'範例三個版本都是 60 秒直式：IG Reels 超過建議長度，也沒有作品集要用的 16:9 版本。文案只有一句行動呼籲，零件 13 社群小編做好了卻沒拿來用。',
   sections:[
     {title:'發布版本',fields:[
       {id:'versions',type:'table',label:'版本表',req:true,min:2,cols:[
@@ -1059,8 +1059,8 @@ const STAGES=[
     ]},
     {title:'發布計畫',fields:[
       {id:'postDate',type:'text',label:'預計發布日期與時段',req:true,ph:'例：第 3 週週四 19:00'},
-      {id:'caption',type:'textarea',label:'貼文文案',req:true},
-      {id:'hashtags',type:'text',label:'Hashtag'},
+      {id:'caption',type:'textarea',label:'貼文文案',req:true,help:'用社群小編 SKILL 產初稿再修；（待補）要補完才能發。',ph:'例：把「寫貼文：影片主題」丟給社群小編，初稿貼到這裡'},
+      {id:'hashtags',type:'text',label:'Hashtag',ph:'3 個就夠，例：#手工麵包 #週末預購 #社區麵包店'},
       {id:'measure',type:'select',label:'用哪個數字判斷成效？',req:true,options:['私訊或預訂數','觀看次數','按讚與留言','分享次數','追蹤人數']},
       {id:'target',type:'text',label:'目標數字',req:true,ph:'例：首週 20 筆預訂'}
     ]}
@@ -1232,12 +1232,13 @@ RULES[1]=(d)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;
 /* ---------------------------------------------------------------- 2 零件與路線 */
 RULES[2]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d1=S.d(1)||{};
   const rows=filled(d.parts,'part'),used=rows.filter(r=>r.use!=='不用'),nos=used.map(r=>partNo(r.part));
+  const vid=used.filter(r=>partNo(r.part)!=='13'),has13=nos.includes('13'); // 13 社群小編寫貼文用，不算影片零件
   const route=d.route||'',need=ROUTE_PARTS[route]||[],miss=need.filter(n=>!nos.includes(n));
   const cross=used.filter(r=>ROUTE_ONLY[partNo(r.part)]&&ROUTE_ONLY[partNo(r.part)]!==route);
   const notDone=used.filter(r=>r.status==='沒做'),rework=used.filter(r=>r.use==='改了再用');
-  if(used.length>8){A.push(R('R2-01','h',`這支影片要用 ${used.length} 個零件，超過 8 個，每個都只能做半套。`));C.push(R('R2-01','m','零件收斂到 5～6 個：路線必要零件加上旁白與配樂，其他留給下一支。'));score-=15;}
-  else if(used.length>6){A.push(R('R2-01','m',`要用 ${used.length} 個零件，略多；確認每個都在時程內做得完。`));score-=5;}
-  else A.push(R('R2-01','l',`只用 ${used.length} 個零件，做得到位。`));
+  if(vid.length>8){A.push(R('R2-01','h',`這支影片要用 ${vid.length} 個零件，超過 8 個，每個都只能做半套。`));C.push(R('R2-01','m','零件收斂到 5～6 個：路線必要零件加上旁白與配樂，其他留給下一支。'));score-=15;}
+  else if(vid.length>6){A.push(R('R2-01','m',`要用 ${vid.length} 個零件，略多；確認每個都在時程內做得完。`));score-=5;}
+  else A.push(R('R2-01','l',`只用 ${vid.length} 個零件，做得到位。`));
   if(need.length&&miss.length){A.push(R('R2-02','m',`${route}路線的必要零件缺 ${miss.join('、')}，這條路線走不完。`));C.push(R('R2-02','m',`把 ${miss.map(n=>PARTS.find(p=>p.startsWith(n))||n).join('、')} 排進這支影片，或改選手上零件更齊的路線。`));score-=8;}
   else if(need.length)A.push(R('R2-02','l',`${route}路線的必要零件（${need.join('、')}）都在清單裡。`));
   if(cross.length){A.push(R('R2-03','h',`選了${route}路線，卻用了其他路線專屬的零件：${cross.map(r=>`${cut(r.part,8)}（${ROUTE_ONLY[partNo(r.part)]}）`).join('、')}。`));score-=10;}
@@ -1249,17 +1250,19 @@ RULES[2]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d1=S.d(1)||{
   const lack=CATS.filter(c=>!c[1].some(n=>nos.includes(n))).map(c=>c[0]);
   if(lack.length){A.push(R('R2-08','m',`缺少 ${lack.join('、')} 類零件，要確認這一類素材從哪裡來。`));score-=6;}
   else A.push(R('R2-08','l','腳本、畫面、聲音、配樂四大類都有來源。'));
+  if(has13)A.push(R('R2-10','l','13 社群小編不放進影片、不算零件數，第 8 階段用它寫發片貼文。'));
+  else A.push(R('R2-10','i','沒有用 13 社群小編：第 8 階段的貼文要自己從零寫，建議先回 Day13 提示詞包把社群小編 SKILL 開好。'));
   if(route==='實拍'&&d1.hasPartner==='否'){A.push(R('R2-09','m','走實拍路線，但第 1 階段沒有人幫你拍攝或入鏡；自拍要多預留架設與重拍時間。'));score-=5;}
   const keep=[...new Set(need.concat(['05','06'].filter(n=>nos.includes(n))))];
-  if(used.length>6||cross.length)N.push(R('R2-N1','h',`本週把零件清單刪到 ${keep.length} 個：${keep.join('、')}，其他標成「不用」。`));
+  if(vid.length>6||cross.length)N.push(R('R2-N1','h',`本週把零件清單刪到 ${keep.length} 個：${keep.join('、')}，其他標成「不用」。`));
   else N.push(R('R2-N1','m','把每個要用的零件檔案集中到同一個資料夾，檔名加上零件編號。'));
   if(d.mixRoute==='是'||cross.length)N.push(R('R2-N2','m',`把混用的想法寫進「下一支影片」清單，這支只走${route}路線。`));
-  M.push({label:'使用零件數',value:used.length+' 個',cls:used.length>8?'r':used.length>6?'y':'g'},{label:'路線',value:route||'－',cls:'b'},{label:'跨路線零件',value:cross.length+' 個',cls:cross.length?'r':'g'},{label:'沒做但要用',value:notDone.length+' 個',cls:notDone.length?'y':'g'});
+  M.push({label:'使用零件數',value:vid.length+' 個',cls:vid.length>8?'r':vid.length>6?'y':'g'},{label:'路線',value:route||'－',cls:'b'},{label:'跨路線零件',value:cross.length+' 個',cls:cross.length?'r':'g'},{label:'沒做但要用',value:notDone.length+' 個',cls:notDone.length?'y':'g'});
   const slot=p=>{const no=partNo(p),r=rows.find(x=>partNo(x.part)===no),u=!!r&&r.use!=='不用';
     const cls=!u?'unused':ROUTE_ONLY[no]&&ROUTE_ONLY[no]!==route?'other':need.includes(no)?'need':'used';
-    const tag={need:'主路線',other:'跨路線',used:'會用',unused:need.includes(no)?'缺少':'不用'}[cls];
+    const tag=u&&no==='13'?'發布用':{need:'主路線',other:'跨路線',used:'會用',unused:need.includes(no)?'缺少':'不用'}[cls];
     return`<div class="slot ${cls}${!u&&need.includes(no)?' miss':''}"><b>${no}</b><span>${esc(p.slice(3))}</span><em>${tag}${u&&r.status==='沒做'?'｜沒做':''}</em></div>`;};
-  const visual=`<h4>零件架（13 格）</h4><div class="shelf">${PARTS.map(slot).join('')}</div><p class="tiny muted mt8">深色＝${esc(route||'主')}路線必要零件；紅框＝其他路線專屬；淡色＝不用。紅框越多，這支影片越可能做不完。</p>`;
+  const visual=`<h4>零件架（13 格）</h4><div class="shelf">${PARTS.map(slot).join('')}</div><p class="tiny muted mt8">深色＝${esc(route||'主')}路線必要零件；紅框＝其他路線專屬；淡色＝不用；13 社群小編是發布用，不算進零件數。紅框越多，這支影片越可能做不完。</p>`;
   return{score:Math.max(0,Math.min(100,score)),scoreLabel:'零件與路線可行度',metrics:M,assessment:A,hypotheses:H,recommendations:C,nextActions:N,visual};};
 
 /* ---------------------------------------------------------------- 3 故事結構 */
@@ -1424,6 +1427,9 @@ RULES[8]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d1=S.d(1)||{
   const vs=filled(d.versions,'plat'),outR=vs.filter(v=>{const r=PLAT_RANGE[v.plat];return r&&(num(v.sec)<r[0]||num(v.sec)>r[1]);});
   const badRatio=vs.filter(v=>isWide(v.plat)?v.ratio!=='16:9':v.ratio==='16:9');
   const has169=vs.some(v=>v.ratio==='16:9'),same=vs.length>=2&&vs.every(v=>num(v.sec)===num(vs[0].sec)),okM=GOAL_MEASURE[d1.goal]||[];
+  const has13=filled((S.d(2)||{}).parts,'part').some(r=>partNo(r.part)==='13'&&r.use!=='不用');
+  const todo=(String(d.caption||'').match(/[（(]\s*待補\s*[）)]/g)||[]).length,capN=charsOf(d.caption);
+  const feed=has13?'打開你的社群小編 SKILL（零件 13），輸入「寫貼文：這支影片的主題」並附上可以用的事實，初稿再修成你的口氣。':'回 Day13 提示詞包用社群小編 SKILL 範本開一個，再輸入「寫貼文：這支影片的主題」產初稿。';
   if(outR.length){A.push(R('R8-01','m',`${outR.map(v=>`${v.plat} ${num(v.sec)} 秒（建議 ${PLAT_RANGE[v.plat][0]}～${PLAT_RANGE[v.plat][1]} 秒）`).join('、')}超出平台建議長度。`));C.push(R('R8-01','m','超出建議長度的平台另剪精華版，只留開場鉤子、主線與行動呼籲。'));score-=8;}
   else if(vs.length)A.push(R('R8-01','l','每個版本的長度都符合平台建議。'));
   if(badRatio.length){A.push(R('R8-02','m',`${badRatio.map(v=>`${v.plat}（${v.ratio}）`).join('、')} 比例和平台不符。`));score-=6;}
@@ -1435,7 +1441,12 @@ RULES[8]=(d,S)=>{const A=[],H=[],C=[],N=[],M=[];let score=100;const d1=S.d(1)||{
   else{A.push(R('R8-06','m','目標沒有數字，發布後無法判斷算不算成功。'));score-=6;}
   if(!hasNum(d.caption)&&!/私訊|預訂|留言|點|連結|追蹤|分享|購買|報名/.test(d.caption||'')){A.push(R('R8-07','m','貼文文案沒有行動或數字，觀眾不知道看完要做什麼。'));score-=4;}
   if(d1.platform&&vs.length&&!vs.some(v=>v.plat===d1.platform)){A.push(R('R8-08','m',`第 1 階段的主平台 ${d1.platform} 不在版本表中。`));score-=6;}
+  if(todo){A.push(R('R8-10','h',`貼文文案還有 ${todo} 處（待補）：社群小編不知道的事實要你自己補，直接發出去觀眾會看到。`));C.push(R('R8-10','m','逐一補上真的時間、價格或地點；不確定的整句刪掉，不要讓 AI 猜。'));score-=10;}
+  if(capN&&capN<50){A.push(R('R8-11','m',`貼文文案只有 ${capN} 字，只放了行動呼籲；沒有鉤子和場景，觀眾滑過去就忘了。${has13?'第 2 階段標了 13 社群小編要用，這裡卻沒用上。':''}`));C.push(R('R8-11','m',feed));score-=4;}
+  if(has13)H.push(R('R8-12','m','社群小編寫的貼文，熟客讀起來像你本人說的話。','發布前念給一位熟客或家人聽，問哪一句不像你；把那句的說法補進 SKILL 的語氣規則。'));
   H.push(R('R8-09','m',`發布時間「${cut(lead(d.postDate),16)}」是你的觀眾最常滑手機的時段。`,'發布後 48 小時打開平台的數據頁（例：IG 專業主控板），看觀看高峰時段，下一支依此調整。'));
+  if(todo)N.push(R('R8-N3','h','發布前把文案裡的（待補）全部補完或刪掉。'));
+  if(capN&&capN<50)N.push(R('R8-N4','m',has13?'把影片主題丟給你的社群小編 SKILL 產一篇，補完後貼回貼文文案欄。':'先用 Day13 的社群小編 SKILL 範本開一個，再用它產這支影片的貼文。'));
   if(outR.length)N.push(R('R8-N1','m',`剪 ${outR.map(v=>`${v.plat} ${PLAT_RANGE[v.plat][1]} 秒`).join('、')} 精華版，保留開場鉤子與行動呼籲。`));
   if(!has169)N.push(R('R8-N2','m','另存 16:9 版本給作品集，字卡與字幕位置重新排過。'));
   if(!N.length)N.push(R('R8-N1','m','發布前一天把文案、Hashtag 和封面先存成草稿。'));
